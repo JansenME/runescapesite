@@ -1,4 +1,4 @@
-package com.laputa.island.controller;
+package com.runescape.info.controller;
 
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;

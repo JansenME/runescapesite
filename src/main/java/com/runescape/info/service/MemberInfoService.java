@@ -1,8 +1,7 @@
-package com.laputa.island.service;
+package com.runescape.info.service;
 
-import com.laputa.island.model.AdventurersLogInList;
-import com.laputa.island.model.Member;
-import com.laputa.island.model.SkillsInList;
+import com.runescape.info.model.AdventurersLogInList;
+import com.runescape.info.model.SkillsInList;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -36,10 +34,8 @@ public class MemberInfoService {
 
     private String gender;
 
-    public ModelAndView getMemberPageInfo(Member member) throws IOException, FeedException, ParseException {
+    public ModelAndView getMemberPageInfo(String name) throws FeedException {
         logger.info("In method getMemberPageInfo...");
-
-        String name = member.getName();
 
         List<SkillsInList> memberLevelsList = getMemberLevelsList(name);
         List<AdventurersLogInList> adventurersLogList = getAdventurersLogList(name);
@@ -49,15 +45,12 @@ public class MemberInfoService {
         model.addObject("memberName", name);
         model.addObject("listAdventurersLog", adventurersLogList);
 
-        if (member != null) {
-            model.addObject("showTableMember", true);
-            model.addObject("tableInfo", getMemberTableInfo(member));
-        }
+        model.addObject("showTableMember", true);
 
         return model;
     }
 
-    private List<AdventurersLogInList> getAdventurersLogList(String name) throws IOException, FeedException {
+    private List<AdventurersLogInList> getAdventurersLogList(String name) throws FeedException {
         logger.info("In method getAdventurersLogList...");
         List<AdventurersLogInList> list = new ArrayList<>();
 
@@ -95,32 +88,6 @@ public class MemberInfoService {
             return list;
         }
         return list;
-    }
-
-    private Member getMemberTableInfo(Member member) throws ParseException {
-        logger.info("In method getMemberTableInfo...");
-        //Get correct lines for biography
-        String biography;
-
-        if (member.getBiography() == null) biography = "This member did not give us an amazing text about themself!";
-        else biography = member.getBiography();
-
-        if (member.getGender() == null) {
-            gender = UNKNOWN;
-        } else {
-            gender = member.getGender().substring(0, 1).toUpperCase() + member.getGender().substring(1);
-        }
-
-        //Get the correct lines for the city
-        member.setCityStateCountry(member.getCity(), member.getState(), member.getCountry());
-        String cityStateCountry = member.getCityStateCountry();
-
-        //Get the correct date format
-        member.setDob(member.getDateOfBirth().toString());
-        String dob = member.getDob();
-
-        //Make the correct string for the ModelAndView
-        return new Member(biography, gender, dob, cityStateCountry);
     }
 
     private List<SkillsInList> getMemberLevelsList(String name) {

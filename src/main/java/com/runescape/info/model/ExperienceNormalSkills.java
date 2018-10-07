@@ -1,4 +1,4 @@
-package com.laputa.island.model;
+package com.runescape.info.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

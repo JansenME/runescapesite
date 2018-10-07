@@ -1,6 +1,6 @@
-package com.laputa.island.repository;
+package com.runescape.info.repository;
 
-import com.laputa.island.model.Items;
+import com.runescape.info.model.Items;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

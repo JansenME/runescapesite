@@ -1,6 +1,6 @@
-package com.laputa.island.repository;
+package com.runescape.info.repository;
 
-import com.laputa.island.model.ExperienceEliteSkills;
+import com.runescape.info.model.ExperienceEliteSkills;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

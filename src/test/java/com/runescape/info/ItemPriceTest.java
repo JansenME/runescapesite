@@ -1,4 +1,4 @@
-package com.laputa.island;
+package com.runescape.info;
 
 import org.junit.Test;
 

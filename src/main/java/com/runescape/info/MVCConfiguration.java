@@ -1,4 +1,4 @@
-package com.laputa.island;
+package com.runescape.info;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

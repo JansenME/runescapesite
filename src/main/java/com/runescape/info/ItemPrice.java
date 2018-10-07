@@ -1,4 +1,4 @@
-package com.laputa.island;
+package com.runescape.info;
 
 import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.gson.JsonElement;

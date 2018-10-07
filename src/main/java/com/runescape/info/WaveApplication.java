@@ -1,4 +1,4 @@
-package com.laputa.island;
+package com.runescape.info;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
