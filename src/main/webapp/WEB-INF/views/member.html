@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Runescape info - Members</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Martijn Jansen" />
+
+    <link rel="stylesheet" type="text/css" href="/resources/css/style.css"/>
+</head>
+<body>
+<div id="page">
+    <!--This is the header of the page-->
+    <div id="header">
+        <div id="section">
+            <span>Runescape Info Website</span>
+        </div>
+        <ul>
+            <li><a href="/index">Home</a></li>
+            <li class="current"><a href="/members">Members</a></li>
+            <li><a href="/calculators">Calculators</a></li>
+            <li><a href="/items">Items</a></li>
+        </ul>
+    </div>
+
+    <!--This is the content of the page-->
+    <div id="content">
+        <div>
+            <h3>Members</h3>
+            <div class="first">
+                <p>Enter your name below to view your own page.</p>
+            </div>
+
+            <form action="/member" method="post">
+                <input type="text" name="name" value="" />
+                <input type="submit" value="Send" />
+            </form>
+
+        </div>
+    </div>
+
+    <!--This is the footer of the website-->
+    <div id="footer">
+        <div>
+            <div class="section">
+                <p>&copy; Copyright 2016-<span id="currentYear"></span>. Martijn Jansen. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/resources/js/footer.js"></script>
+</body>
+</html>
