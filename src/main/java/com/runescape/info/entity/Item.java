@@ -1,4 +1,4 @@
-package com.runescape.info.model;
+package com.runescape.info.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,18 +6,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
-/**
- * Created by Martijn Jansen on 6/10/2017.
- */
 @Entity
-public class Items {
+public class Item {
     private Long id;
     private Long runescapeId;
 
     private String nameItem;
 
     private BigDecimal experience;
-    private Long levelNeeded;
+    private int levelNeeded;
     private String skill;
 
     @Id
@@ -54,11 +51,11 @@ public class Items {
         this.experience = experience;
     }
 
-    public Long getLevelNeeded() {
+    public int getLevelNeeded() {
         return levelNeeded;
     }
 
-    public void setLevelNeeded(Long levelNeeded) {
+    public void setLevelNeeded(int levelNeeded) {
         this.levelNeeded = levelNeeded;
     }
 

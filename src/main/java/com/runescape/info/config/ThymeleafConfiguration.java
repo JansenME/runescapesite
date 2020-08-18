@@ -9,7 +9,6 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 @Configuration
 @EnableWebMvc
 public class ThymeleafConfiguration {
-
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();

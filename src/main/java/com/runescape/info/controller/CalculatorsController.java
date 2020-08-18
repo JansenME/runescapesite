@@ -1,22 +1,18 @@
 package com.runescape.info.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
-/**
- * Created by Martijn Jansen on 6/10/2017.
- */
 @Controller
 public class CalculatorsController {
-
-    @RequestMapping(value = "/calculators", method = RequestMethod.POST)
-    public String goToCalculators() {
+    @GetMapping("/calculators")
+    public String getCalculators() {
         return "calculators";
     }
 
-    @RequestMapping(value = "/calculators", method = RequestMethod.GET)
-    public String getCalculators() {
+    @PostMapping("/calculators")
+    public String goToCalculators() {
         return "calculators";
     }
 }

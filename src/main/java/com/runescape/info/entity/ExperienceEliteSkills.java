@@ -1,13 +1,10 @@
-package com.runescape.info.model;
+package com.runescape.info.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-/**
- * Created by Martijn Jansen on 6/10/2017.
- */
 @Entity
 public class ExperienceEliteSkills {
     private Long id;
