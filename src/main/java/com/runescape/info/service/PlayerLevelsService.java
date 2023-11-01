@@ -5,7 +5,9 @@ import com.runescape.info.entity.PlayerLevels;
 import com.runescape.info.model.Skill;
 import com.runescape.info.model.exception.CorrectLevelException;
 import com.runescape.info.repository.PlayerLevelsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@Slf4j
 public class PlayerLevelsService {
     private final HiScoresService hiScoresService;
     private final PlayerLevelsRepository playerLevelsRepository;
@@ -25,6 +28,12 @@ public class PlayerLevelsService {
     public PlayerLevelsService(final HiScoresService hiScoresService, final PlayerLevelsRepository playerLevelsRepository) {
         this.hiScoresService = hiScoresService;
         this.playerLevelsRepository = playerLevelsRepository;
+    }
+
+    @Scheduled(cron = "0 */1 * * * *")
+    private void savePlayerLevelsToDatabaseTask() {
+        //savePlayerLevelsToDatabase("HC_Kloeperd");
+        log.info("Saved info for HC_Kloeperd at" + LocalDateTime.now());
     }
 
     public void savePlayerLevelsToDatabase(final String player) {
