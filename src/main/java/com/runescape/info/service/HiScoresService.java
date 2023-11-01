@@ -14,19 +14,19 @@ import java.util.Scanner;
 
 @Service
 public class HiScoresService {
-    public List<Integer[]> getLevels(final String name) {
-        return Lists.partition(getHiscores(name), 30).get(0);
+    public List<Integer[]> getLevels(final String player) {
+        return Lists.partition(getHiscores(player), 30).get(0);
     }
 
-    public List<Integer[]> getMinigamesScores(final String name) {
-        return Lists.partition(getHiscores(name), 30).get(1);
+    public List<Integer[]> getMinigamesScores(final String player) {
+        return Lists.partition(getHiscores(player), 30).get(1);
     }
 
-    private List<Integer[]> getHiscores(final String name) {
+    private List<Integer[]> getHiscores(final String player) {
         List<Integer[]> hiScoresLevels;
 
         try {
-            hiScoresLevels = getHiScoresLevels(name);
+            hiScoresLevels = getHiScoresLevels(player);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,10 +34,10 @@ public class HiScoresService {
         return hiScoresLevels;
     }
 
-    private List<Integer[]> getHiScoresLevels(final String name) throws IOException {
+    private List<Integer[]> getHiScoresLevels(final String player) throws IOException {
         String urlHiscore = "https://secure.runescape.com/m=hiscore/index_lite.ws?player=";
 
-        URL url = createFullHiscoreUrl(urlHiscore, name);
+        URL url = createFullHiscoreUrl(urlHiscore, player);
         HttpURLConnection connection = getConnection(url);
         checkConnectionResponse(connection);
 
@@ -53,8 +53,8 @@ public class HiScoresService {
         return levels;
     }
 
-    private URL createFullHiscoreUrl(final String start, final String name) throws MalformedURLException {
-        return new URL(start + name);
+    private URL createFullHiscoreUrl(final String start, final String player) throws MalformedURLException {
+        return new URL(start + player);
     }
 
     private HttpURLConnection getConnection(final URL url) throws IOException {

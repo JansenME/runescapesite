@@ -3,6 +3,7 @@ package com.runescape.info.service;
 import com.runescape.info.model.Level;
 import com.runescape.info.entity.PlayerLevels;
 import com.runescape.info.model.Skill;
+import com.runescape.info.repository.PlayerLevelsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,24 +15,38 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 public class PlayerLevelsService {
     private final HiScoresService hiScoresService;
+    private final PlayerLevelsRepository playerLevelsRepository;
 
     private static final Integer START_LEVEL_100_EXPERIENCE = 14391160;
     private static final Integer START_LEVEL_121_EXPERIENCE_ELITE = 83370445;
 
     @Autowired
-    public PlayerLevelsService(HiScoresService hiScoresService) {
+    public PlayerLevelsService(final HiScoresService hiScoresService, final PlayerLevelsRepository playerLevelsRepository) {
         this.hiScoresService = hiScoresService;
+        this.playerLevelsRepository = playerLevelsRepository;
     }
 
-    public PlayerLevels getPlayerLevels(final String name) {
+    public void savePlayerLevelsToDatabase(final String player) {
+        playerLevelsRepository.save(getPlayerLevels(player));
+    }
+
+    public List<PlayerLevels> getPlayerLevelsFromDatabase(final String player) {
+        return playerLevelsRepository.findAllByPlayer(player);
+    }
+
+    public PlayerLevels getNewestPlayerLevelsFromDatabase(final String player) {
+        return playerLevelsRepository.findFirstByPlayerOrderByDateDesc(player);
+    }
+
+    private PlayerLevels getPlayerLevels(final String player) {
         PlayerLevels playerLevels = new PlayerLevels();
 
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");
 
-        playerLevels.setPlayer(name);
+        playerLevels.setPlayer(player);
         playerLevels.setDate(dateTime.format(dateTimeFormatter));
-        playerLevels.setLevels(mapHiscoresToLevelsList(hiScoresService.getLevels(name)));
+        playerLevels.setLevels(mapHiscoresToLevelsList(hiScoresService.getLevels(player)));
 
         return playerLevels;
     }
