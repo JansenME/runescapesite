@@ -1,6 +1,7 @@
 package com.runescape.info.service;
 
 import com.google.common.collect.Lists;
+import com.runescape.info.model.exception.RunescapeConnectionException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class HiScoresService {
         try {
             hiScoresLevels = getHiScoresLevels(player);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RunescapeConnectionException(e.getMessage());
         }
 
         return hiScoresLevels;
@@ -65,12 +66,12 @@ public class HiScoresService {
         return connection;
     }
 
-    private void checkConnectionResponse (HttpURLConnection connection) throws IOException {
+    private void checkConnectionResponse(HttpURLConnection connection) throws IOException {
         if (connection.getResponseCode() == 200) {
             return;
         }
 
-        throw new RuntimeException("The connection gave back a" + connection.getResponseCode() + "response code");
+        throw new RunescapeConnectionException("The connection gave back a" + connection.getResponseCode() + "response code");
     }
 
     private Integer[] mapStringToIntegerArray(final String value) {

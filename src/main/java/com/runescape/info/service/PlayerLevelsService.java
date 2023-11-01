@@ -3,6 +3,7 @@ package com.runescape.info.service;
 import com.runescape.info.model.Level;
 import com.runescape.info.entity.PlayerLevels;
 import com.runescape.info.model.Skill;
+import com.runescape.info.model.exception.CorrectLevelException;
 import com.runescape.info.repository.PlayerLevelsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,7 +130,7 @@ public class PlayerLevelsService {
         else if(experience > 86186124) return 122;
         else if(experience > 83370445) return 121;
 
-        throw new RuntimeException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
+        throw new CorrectLevelException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
     }
 
     private Integer getCorrectLevelForStandardSkill(final Integer level, final Integer experience) {
@@ -159,6 +160,6 @@ public class PlayerLevelsService {
         else if(experience > 15889109) return 101;
         else if(experience > 14391160) return 100;
 
-        throw new RuntimeException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
+        throw new CorrectLevelException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
     }
 }
