@@ -1,7 +1,6 @@
 package com.runescape.info.service;
 
 import com.google.common.collect.Lists;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 @Service
 public class HiScoresService {
@@ -37,9 +35,9 @@ public class HiScoresService {
     }
 
     private List<Integer[]> getHiScoresLevels(final String name) throws IOException {
-        String URL_HISCORE = "https://secure.runescape.com/m=hiscore/index_lite.ws?player=";
+        String urlHiscore = "https://secure.runescape.com/m=hiscore/index_lite.ws?player=";
 
-        URL url = createFullHiscoreUrl(URL_HISCORE, name);
+        URL url = createFullHiscoreUrl(urlHiscore, name);
         HttpURLConnection connection = getConnection(url);
         checkConnectionResponse(connection);
 
