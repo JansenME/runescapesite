@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mauls Inc.</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{styles/css/main.css}" />
+    <noscript><link rel="stylesheet" th:href="@{styles/css/noscript.css}" /></noscript>
+</head>
+<body class="is-preload">
+<div id="wrapper">
+    <header id="header">
+        <div class="logo">
+            <span class="icon fa-gem"></span>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <h1>Mauls Inc.</h1>
+                <p>This is an awesome website!</p>
+                <p>And if you don't like it, you can leave! :D</p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#members">Members</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="main">
+        <article id="members">
+            <h2 class="major">Members</h2>
+            <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Rank</th>
+                            <th>Experience in clan</th>
+                            <th>Kills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="clanmember : ${clanmembers}">
+                            <td th:text="${clanmember.name}" />
+                            <td th:text="${clanmember.rank.getName()}" />
+                            <td th:text="${clanmember.getFormattedXp()}" />
+                            <td th:text="${clanmember.getFormattedKills()}" />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+
+    <footer id="footer">
+        <p class="copyright">&copy; 2023-2023 Martijn Jansen.</p>
+    </footer>
+
+</div>
+
+<div id="bg"></div>
+
+<script type="text/javascript" th:src="@{styles/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/browser.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/breakpoints.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/util.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/main.js}"></script>
+
+</body>
+</html>

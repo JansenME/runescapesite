@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,18 @@ public class Clanmember {
     private Rank rank;
     private Long totalXP;
     private Long kills;
+
+    public String getFormattedXp() {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(this.totalXP);
+
+    }
+
+    public String getFormattedKills() {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(this.kills);
+
+    }
 
     public static List<Clanmember> mapCsvRecordsToClanmembers(final List<CSVRecord> records) {
         return records.stream()

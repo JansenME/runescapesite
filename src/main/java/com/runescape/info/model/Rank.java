@@ -23,6 +23,10 @@ public enum Rank {
         this.name = name;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public static Rank getEnumWithName(final String name) {
         for (Rank rank : values()) {
             if(rank.name.equals(name)) {

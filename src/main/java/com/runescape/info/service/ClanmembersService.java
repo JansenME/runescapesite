@@ -40,8 +40,7 @@ public class ClanmembersService {
         throw new MemberNotFoundException("The member (" + player + ") was not found in the database.");
     }
 
-    //@Scheduled(cron = "0 0 10 * * *")
-    //@Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 10 * * *")
     public void saveAllPlayersFromRunescape() {
         try {
             ClanmembersEntity entity = clanmembersRepository.save(getPlayersFromRunescape("Mauls Inc"));

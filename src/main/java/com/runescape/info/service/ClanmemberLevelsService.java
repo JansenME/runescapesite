@@ -1,5 +1,6 @@
 package com.runescape.info.service;
 
+import com.google.common.collect.Lists;
 import com.runescape.info.model.Clanmember;
 import com.runescape.info.model.ClanmemberLevels;
 import com.runescape.info.model.Level;
@@ -17,8 +18,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,12 +51,13 @@ public class ClanmemberLevelsService {
         return ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity);
     }
 
-    //@Scheduled(cron = "0 */20 * * * *")
-    //@Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     public void getAllClanmembersAndSavePlayerLevels() {
         List<Clanmember> clanmembers = clanmembersService.getAllClanmembers();
 
-        clanmembers.forEach(this::savePlayerLevelsToDatabase);
+        if(!CollectionUtils.isEmpty(clanmembers)) {
+            clanmembers.forEach(this::savePlayerLevelsToDatabase);
+        }
     }
 
     private void savePlayerLevelsToDatabase(final Clanmember player) {
