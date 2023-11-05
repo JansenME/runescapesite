@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Level {
     private Skill skill;
-    private Integer rank;
-    private Integer level;
-    private Integer experience;
+    private Long rank;
+    private Long level;
+    private Long experience;
 }

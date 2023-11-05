@@ -1,4 +1,4 @@
-package com.runescape.info.entity;
+package com.runescape.info.model.entity;
 
 import com.runescape.info.model.Level;
 import lombok.Data;
@@ -8,11 +8,10 @@ import org.springframework.data.annotation.Id;
 import java.util.List;
 
 @Data
-public class PlayerLevels {
+public class ClanmemberLevelsEntity {
     @Id
     private ObjectId id;
 
-    private String player;
-    private String date;
+    private String clanmember;
     private List<Level> levels;
 }

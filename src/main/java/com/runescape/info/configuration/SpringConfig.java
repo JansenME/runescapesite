@@ -1,4 +1,4 @@
-package com.runescape.info;
+package com.runescape.info.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
