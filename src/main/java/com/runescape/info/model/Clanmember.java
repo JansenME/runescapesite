@@ -19,13 +19,11 @@ public class Clanmember {
     public String getFormattedXp() {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         return decimalFormat.format(this.totalXP);
-
     }
 
     public String getFormattedKills() {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         return decimalFormat.format(this.kills);
-
     }
 
     public static List<Clanmember> mapCsvRecordsToClanmembers(final List<CSVRecord> records) {

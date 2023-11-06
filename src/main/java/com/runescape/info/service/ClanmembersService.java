@@ -7,11 +7,13 @@ import com.runescape.info.model.exception.RunescapeConnectionException;
 import com.runescape.info.repository.ClanmembersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,17 +29,11 @@ public class ClanmembersService {
     }
 
     public List<Clanmember> getAllClanmembers() {
-        return clanmembersRepository.findFirstByOrderByIdDesc().getClanmembers();
-    }
-
-    public Clanmember findCorrectClanmember(final String player) {
-        for(Clanmember clanmember : getAllClanmembers()) {
-            if(player.equalsIgnoreCase(clanmember.getName())) {
-                return clanmember;
-            }
+        ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
+        if(clanmembersEntity == null) {
+            return new ArrayList<>();
         }
-
-        throw new MemberNotFoundException("The member (" + player + ") was not found in the database.");
+        return clanmembersRepository.findFirstByOrderByIdDesc().getClanmembers();
     }
 
     @Scheduled(cron = "0 0 10 * * *")

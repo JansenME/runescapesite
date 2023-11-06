@@ -1,28 +1,20 @@
 package com.runescape.info.service;
 
-import com.google.common.collect.Lists;
 import com.runescape.info.model.Clanmember;
 import com.runescape.info.model.ClanmemberLevels;
 import com.runescape.info.model.Level;
 import com.runescape.info.model.entity.ClanmemberLevelsEntity;
 import com.runescape.info.model.Skill;
-import com.runescape.info.model.entity.ClanmembersEntity;
 import com.runescape.info.model.exception.CorrectLevelException;
 import com.runescape.info.repository.ClanmemberLevelsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -89,7 +81,6 @@ public class ClanmemberLevelsService {
         }
 
         return levels;
-
     }
 
     private Level mapOneCsvRecordToLevel(final int index, final CSVRecord record) {
