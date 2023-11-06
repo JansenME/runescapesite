@@ -1,8 +1,5 @@
 package com.runescape.info.model;
 
-import java.util.Arrays;
-import java.util.List;
-
 public enum Rank {
     OWNER("Owner"),
     DEPUTY_OWNER("Deputy Owner"),
