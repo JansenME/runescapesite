@@ -30,7 +30,7 @@
     <div id="main">
         <article id="members">
             <h2 class="major">Members</h2>
-            <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -43,7 +43,10 @@
                     </thead>
                     <tbody>
                         <tr th:each="clanmember : ${clanmembers}">
-                            <td th:text="${clanmember.name}" />
+                            <td>
+                                <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
+                            </td>
+
                             <td th:text="${clanmember.rank.getName()}" />
                             <td th:text="${clanmember.getFormattedXp()}" />
                             <td th:text="${clanmember.getFormattedKills()}" />

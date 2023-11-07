@@ -42,6 +42,10 @@ public enum Skill {
         this.name = name;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public static String getNameWithNumber(final Integer number) {
         return List.of(values()).get(number).name;
     }

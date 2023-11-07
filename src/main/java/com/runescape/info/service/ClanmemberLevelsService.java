@@ -40,6 +40,10 @@ public class ClanmemberLevelsService {
     public ClanmemberLevels getOneClanmemberLevels(final String clanmemberName) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsRepository.findFirstByClanmemberOrderByIdDesc(clanmemberName);
 
+        if(clanmemberLevelsEntity == null) {
+            return new ClanmemberLevels();
+        }
+
         return ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity);
     }
 

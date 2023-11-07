@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${clanmemberName}"></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{../styles/css/main.css}" />
+    <noscript><link rel="stylesheet" th:href="@{../styles/css/noscript.css}" /></noscript>
+</head>
+<body class="is-preload">
+<div id="wrapper">
+    <header id="header">
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/#members">Members</a></li>
+            </ul>
+        </nav>
+
+        <div class="logo">
+            <span class="icon fa-gem"></span>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <span th:if="${clanmemberLevels.clanmember == null}">
+                    <h1 th:text="${clanmemberName}"></h1>
+                    <p>This member was not found in the database. Most likely because this player has not logged in for a while.</p>
+                    <p>If this is not true, please let HC_Kloeperd know about this problem.</p>
+                </span>
+                <span th:else>
+                    <h1 th:text="${clanmemberLevels.clanmember}"></h1>
+                </span>
+            </div>
+        </div>
+
+        <span th:if="${clanmemberLevels.clanmember != null}">
+            <nav>
+                <ul>
+                    <li><a href="#levels">Levels</a></li>
+                </ul>
+            </nav>
+        </span>
+    </header>
+
+    <div id="main">
+        <article id="levels">
+            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Skill</th>
+                        <th>Level</th>
+                        <th>Rank</th>
+                        <th>Experience</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
+                        <td>
+                            <img width="16" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                            <span th:text="${clanmemberLevel.skill.getName()}"></span>
+                        </td>
+
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
+                        <td th:text="${clanmemberLevel.getFormattedRank()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </article>
+    </div>
+
+    <footer id="footer">
+        <p class="copyright">&copy; 2023-2023 Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
+    </footer>
+</div>
+
+<div id="bg"></div>
+
+<script type="text/javascript" th:src="@{../styles/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{../styles/js/browser.min.js}"></script>
+<script type="text/javascript" th:src="@{../styles/js/breakpoints.min.js}"></script>
+<script type="text/javascript" th:src="@{../styles/js/util.js}"></script>
+<script type="text/javascript" th:src="@{../styles/js/main.js}"></script>
+
+</body>
+</html>

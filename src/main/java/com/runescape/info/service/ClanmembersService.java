@@ -2,12 +2,10 @@ package com.runescape.info.service;
 
 import com.runescape.info.model.entity.ClanmembersEntity;
 import com.runescape.info.model.Clanmember;
-import com.runescape.info.model.exception.MemberNotFoundException;
 import com.runescape.info.model.exception.RunescapeConnectionException;
 import com.runescape.info.repository.ClanmembersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
