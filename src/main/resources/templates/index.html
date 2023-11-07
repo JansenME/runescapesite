@@ -29,6 +29,7 @@
 
     <div id="main">
         <article id="members">
+            <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span></i></p>
             <h2 class="major">Members</h2>
 
             <div class="table-wrapper">
@@ -42,7 +43,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="clanmember : ${clanmembers}">
+                        <tr th:each="clanmember : ${clanmembers.getSecond()}">
                             <td>
                                 <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
                             </td>

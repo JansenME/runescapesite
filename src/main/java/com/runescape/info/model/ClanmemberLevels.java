@@ -13,8 +13,9 @@ import java.util.List;
 public class ClanmemberLevels {
     private String clanmember;
     private List<Level> levels;
+    private String date;
 
-    public static ClanmemberLevels mapEntityToModel(final ClanmemberLevelsEntity clanmemberLevelsEntity) {
-        return new ClanmemberLevels(clanmemberLevelsEntity.getClanmember(), clanmemberLevelsEntity.getLevels());
+    public static ClanmemberLevels mapEntityToModel(final ClanmemberLevelsEntity clanmemberLevelsEntity, final String date) {
+        return new ClanmemberLevels(clanmemberLevelsEntity.getClanmember(), clanmemberLevelsEntity.getLevels(), date);
     }
 }

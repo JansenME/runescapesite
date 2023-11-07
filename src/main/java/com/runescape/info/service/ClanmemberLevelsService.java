@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -49,7 +50,7 @@ public class ClanmemberLevelsService {
             return new ClanmemberLevels();
         }
 
-        ClanmemberLevels clanmemberLevels = ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity);
+        ClanmemberLevels clanmemberLevels = ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, getDateAsString(clanmemberLevelsEntity));
 
         setClanmemberLevelsFromToday(clanmemberName, clanmemberLevels.getLevels());
 
@@ -58,11 +59,18 @@ public class ClanmemberLevelsService {
 
     @Scheduled(cron = "0 */20 * * * *")
     public void getAllClanmembersAndSavePlayerLevels() {
-        List<Clanmember> clanmembers = clanmembersService.getAllClanmembers();
+        List<Clanmember> clanmembers = clanmembersService.getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             clanmembers.forEach(this::savePlayerLevelsToDatabase);
         }
+    }
+
+    private String getDateAsString(ClanmemberLevelsEntity clanmemberLevelsEntity) {
+        Date date = clanmemberLevelsEntity.getId().getDate();
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-M-yyyy h:mm a z");
+        return format.format(date);
     }
 
     private void setClanmemberLevelsFromToday(final String clanmemberName, final List<Level> currentLevels) {
