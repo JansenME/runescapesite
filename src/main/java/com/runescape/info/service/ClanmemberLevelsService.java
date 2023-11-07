@@ -9,12 +9,17 @@ import com.runescape.info.model.exception.CorrectLevelException;
 import com.runescape.info.repository.ClanmemberLevelsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,7 +49,11 @@ public class ClanmemberLevelsService {
             return new ClanmemberLevels();
         }
 
-        return ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity);
+        ClanmemberLevels clanmemberLevels = ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity);
+
+        setClanmemberLevelsFromToday(clanmemberName, clanmemberLevels.getLevels());
+
+        return clanmemberLevels;
     }
 
     @Scheduled(cron = "0 */20 * * * *")
@@ -56,21 +65,41 @@ public class ClanmemberLevelsService {
         }
     }
 
-    private void savePlayerLevelsToDatabase(final Clanmember player) {
-        ClanmemberLevelsEntity entity = getPlayerLevels(player.getName());
-        if(!entity.getLevels().isEmpty()) {
-            clanmemberLevelsRepository.save(entity);
-            log.info("Saved info for " + player + " at " + LocalDateTime.now());
-        } else {
-            log.info(player + " was not found in Runescape API");
+    private void setClanmemberLevelsFromToday(final String clanmemberName, final List<Level> currentLevels) {
+        Date min = Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant());
+
+        ObjectId idMin = new ObjectId(min);
+        ObjectId idMax = new ObjectId(new Date());
+        List<ClanmemberLevelsEntity> clanmemberLevelsEntities = clanmemberLevelsRepository.findByObjectIdsAndAllClanmemberLevelsByClanmember(clanmemberName, idMin, idMax);
+
+        ClanmemberLevelsEntity firstClanmemberLevelsEntity = clanmemberLevelsEntities.stream()
+                .filter(clanmemberLevelsEntity -> clanmemberName.equalsIgnoreCase(clanmemberLevelsEntity.getClanmember()))
+                .toList()
+                .get(0);
+
+        int count = 0;
+        for (Level currentLevel : currentLevels) {
+            Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
+            currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
+            count++;
         }
     }
 
-    private ClanmemberLevelsEntity getPlayerLevels(final String player) {
+    private void savePlayerLevelsToDatabase(final Clanmember clanmember) {
+        ClanmemberLevelsEntity entity = getClanmemberLevels(clanmember.getName());
+        if(!entity.getLevels().isEmpty()) {
+            clanmemberLevelsRepository.save(entity);
+            log.info("Saved info for " + clanmember + " at " + LocalDateTime.now());
+        } else {
+            log.info(clanmember + " was not found in Runescape API");
+        }
+    }
+
+    private ClanmemberLevelsEntity getClanmemberLevels(final String clanmember) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
-        clanmemberLevelsEntity.setClanmember(player);
-        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(hiScoresService.getLevels(player)));
+        clanmemberLevelsEntity.setClanmember(clanmember);
+        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(hiScoresService.getLevels(clanmember)));
 
         return clanmemberLevelsEntity;
     }

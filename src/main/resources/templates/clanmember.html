@@ -54,6 +54,7 @@
                         <th>Level</th>
                         <th>Rank</th>
                         <th>Experience</th>
+                        <th>Experience today</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,11 +67,11 @@
                         <td th:text="${clanmemberLevel.getFormattedLevel()}" />
                         <td th:text="${clanmemberLevel.getFormattedRank()}" />
                         <td th:text="${clanmemberLevel.getFormattedExperience()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
                     </tr>
                     </tbody>
                 </table>
             </div>
-
         </article>
     </div>
 

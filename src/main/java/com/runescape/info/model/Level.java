@@ -10,6 +10,7 @@ public class Level {
     private Long rank;
     private Long level;
     private Long experience;
+    private Long experienceToday;
 
     public String getFormattedRank() {
         if(experience == -1) {
@@ -36,5 +37,14 @@ public class Level {
 
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         return decimalFormat.format(this.experience);
+    }
+
+    public String getFormattedExperienceToday() {
+        if(experienceToday == -1 || experienceToday == 0) {
+            return "--";
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(this.experienceToday);
     }
 }
