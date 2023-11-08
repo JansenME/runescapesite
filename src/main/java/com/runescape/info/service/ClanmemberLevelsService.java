@@ -80,16 +80,19 @@ public class ClanmemberLevelsService {
         ObjectId idMax = new ObjectId(new Date());
         List<ClanmemberLevelsEntity> clanmemberLevelsEntities = clanmemberLevelsRepository.findByObjectIdsAndAllClanmemberLevelsByClanmember(clanmemberName, idMin, idMax);
 
-        ClanmemberLevelsEntity firstClanmemberLevelsEntity = clanmemberLevelsEntities.stream()
+        List<ClanmemberLevelsEntity> allClanmemberLevelsEntities = clanmemberLevelsEntities.stream()
                 .filter(clanmemberLevelsEntity -> clanmemberName.equalsIgnoreCase(clanmemberLevelsEntity.getClanmember()))
-                .toList()
-                .get(0);
+                .toList();
 
-        int count = 0;
-        for (Level currentLevel : currentLevels) {
-            Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
-            currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
-            count++;
+        if(!CollectionUtils.isEmpty(allClanmemberLevelsEntities)) {
+            ClanmemberLevelsEntity firstClanmemberLevelsEntity = allClanmemberLevelsEntities.get(0);
+
+            int count = 0;
+            for (Level currentLevel : currentLevels) {
+                Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
+                currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
+                count++;
+            }
         }
     }
 

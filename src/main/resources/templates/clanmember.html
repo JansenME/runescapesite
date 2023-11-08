@@ -45,6 +45,8 @@
     <div id="main">
         <article id="levels">
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberLevels.clanmember})}" />
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
 
             <div class="table-wrapper">

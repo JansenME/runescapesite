@@ -40,7 +40,7 @@ public class Level {
     }
 
     public String getFormattedExperienceToday() {
-        if(experienceToday == -1 || experienceToday == 0) {
+        if(experienceToday == null || experienceToday == -1 || experienceToday == 0) {
             return "--";
         }
 

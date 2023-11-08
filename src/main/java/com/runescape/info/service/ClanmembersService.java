@@ -1,7 +1,5 @@
 package com.runescape.info.service;
 
-import com.google.errorprone.annotations.Immutable;
-import com.runescape.info.model.entity.ClanmemberLevelsEntity;
 import com.runescape.info.model.entity.ClanmembersEntity;
 import com.runescape.info.model.Clanmember;
 import com.runescape.info.model.exception.RunescapeConnectionException;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
