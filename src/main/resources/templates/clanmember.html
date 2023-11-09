@@ -24,7 +24,7 @@
             <div class="inner">
                 <span th:if="${clanmemberLevels.clanmember == null}">
                     <h1 th:text="${clanmemberName}"></h1>
-                    <p>This member was not found in the database. Most likely because this player has not logged in for a while.</p>
+                    <p>This member was not found in the database. Most likely because this clanmember has not logged in for a while.</p>
                     <p>If this is not true, please let HC_Kloeperd know about this problem.</p>
                 </span>
                 <span th:else>
@@ -37,6 +37,7 @@
             <nav>
                 <ul>
                     <li><a href="#levels">Levels</a></li>
+                    <li><a href="#minigames">Minigames</a></li>
                 </ul>
             </nav>
         </span>
@@ -46,14 +47,14 @@
         <article id="levels">
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberLevels.clanmember})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
 
             <div class="table-wrapper">
                 <table>
                     <thead>
                     <tr>
-                        <th>Skill</th>
+                        <th colspan="2"1>Skill</th>
                         <th>Level</th>
                         <th>Rank</th>
                         <th>Experience</th>
@@ -62,15 +63,45 @@
                     </thead>
                     <tbody>
                     <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
-                        <td>
-                            <img width="16" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
-                            <span th:text="${clanmemberLevel.skill.getName()}"></span>
+                        <td style="text-align:right; padding:4px;">
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
                         </td>
 
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
                         <td th:text="${clanmemberLevel.getFormattedLevel()}" />
                         <td th:text="${clanmemberLevel.getFormattedRank()}" />
                         <td th:text="${clanmemberLevel.getFormattedExperience()}" />
                         <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article id="minigames">
+            <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2">Minigame</th>
+                        <th>Rank</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
+                        <td style="text-align:right; padding:1px;">
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.minigameEnum.getNameForImage().toLowerCase()})}" />
+                        </td>
+
+                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.minigameEnum.getName()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedRank()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
                     </tr>
                     </tbody>
                 </table>

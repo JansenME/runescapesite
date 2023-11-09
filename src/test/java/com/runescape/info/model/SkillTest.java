@@ -7,40 +7,6 @@ import static org.junit.Assert.assertEquals;
 public class SkillTest {
 
     @Test
-    public void testGetNameWithNumber() {
-        assertEquals("Overall", Skill.getNameWithNumber(0));
-        assertEquals("Attack", Skill.getNameWithNumber(1));
-        assertEquals("Defence", Skill.getNameWithNumber(2));
-        assertEquals("Strength", Skill.getNameWithNumber(3));
-        assertEquals("Constitution", Skill.getNameWithNumber(4));
-        assertEquals("Ranged", Skill.getNameWithNumber(5));
-        assertEquals("Prayer", Skill.getNameWithNumber(6));
-        assertEquals("Magic", Skill.getNameWithNumber(7));
-        assertEquals("Cooking", Skill.getNameWithNumber(8));
-        assertEquals("Woodcutting", Skill.getNameWithNumber(9));
-        assertEquals("Fletching", Skill.getNameWithNumber(10));
-        assertEquals("Fishing", Skill.getNameWithNumber(11));
-        assertEquals("Firemaking", Skill.getNameWithNumber(12));
-        assertEquals("Crafting", Skill.getNameWithNumber(13));
-        assertEquals("Smithing", Skill.getNameWithNumber(14));
-        assertEquals("Mining", Skill.getNameWithNumber(15));
-        assertEquals("Herblore", Skill.getNameWithNumber(16));
-        assertEquals("Agility", Skill.getNameWithNumber(17));
-        assertEquals("Thieving", Skill.getNameWithNumber(18));
-        assertEquals("Slayer", Skill.getNameWithNumber(19));
-        assertEquals("Farming", Skill.getNameWithNumber(20));
-        assertEquals("Runecrafting", Skill.getNameWithNumber(21));
-        assertEquals("Hunter", Skill.getNameWithNumber(22));
-        assertEquals("Construction", Skill.getNameWithNumber(23));
-        assertEquals("Summoning", Skill.getNameWithNumber(24));
-        assertEquals("Dungeoneering", Skill.getNameWithNumber(25));
-        assertEquals("Divination", Skill.getNameWithNumber(26));
-        assertEquals("Invention", Skill.getNameWithNumber(27));
-        assertEquals("Archaeology", Skill.getNameWithNumber(28));
-        assertEquals("Necromancy", Skill.getNameWithNumber(29));
-    }
-
-    @Test
     public void testGetSkillByNumber() {
         assertEquals(Skill.OVERALL, Skill.getSkillByNumber(0));
         assertEquals(Skill.ATTACK, Skill.getSkillByNumber(1));

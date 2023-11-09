@@ -1,8 +1,7 @@
 package com.runescape.info.model;
 
+import com.runescape.info.CommonsService;
 import lombok.Data;
-
-import java.text.DecimalFormat;
 
 @Data
 public class Level {
@@ -16,35 +15,27 @@ public class Level {
         if(experience == -1) {
             return "--";
         }
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.rank);
+        return CommonsService.getFormattedNumber(rank);
     }
 
     public String getFormattedLevel() {
         if(experience == -1) {
             return "--";
         }
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.level);
+        return CommonsService.getFormattedNumber(level);
     }
 
     public String getFormattedExperience() {
         if(experience == -1) {
             return "--";
         }
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.experience);
+        return CommonsService.getFormattedNumber(experience);
     }
 
     public String getFormattedExperienceToday() {
-        if(experienceToday == null || experienceToday == -1 || experienceToday == 0) {
+        if(experienceToday == -1 || experienceToday == 0) {
             return "--";
         }
-
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.experienceToday);
+        return CommonsService.getFormattedNumber(experienceToday);
     }
 }

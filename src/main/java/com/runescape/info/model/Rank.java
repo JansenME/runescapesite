@@ -1,5 +1,8 @@
 package com.runescape.info.model;
 
+import lombok.Getter;
+
+@Getter
 public enum Rank {
     OWNER("Owner"),
     DEPUTY_OWNER("Deputy Owner"),
@@ -18,10 +21,6 @@ public enum Rank {
 
     Rank(final String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public static Rank getEnumWithName(final String name) {

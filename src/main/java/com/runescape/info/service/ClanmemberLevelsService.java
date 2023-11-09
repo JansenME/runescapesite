@@ -1,6 +1,6 @@
 package com.runescape.info.service;
 
-import com.runescape.info.model.Clanmember;
+import com.runescape.info.CommonsService;
 import com.runescape.info.model.ClanmemberLevels;
 import com.runescape.info.model.Level;
 import com.runescape.info.model.entity.ClanmemberLevelsEntity;
@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,19 +25,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 @Slf4j
 public class ClanmemberLevelsService {
-    private final HiScoresService hiScoresService;
-    private final ClanmembersService clanmembersService;
     private final ClanmemberLevelsRepository clanmemberLevelsRepository;
 
     private static final Integer START_LEVEL_100_EXPERIENCE = 14391160;
     private static final Integer START_LEVEL_121_EXPERIENCE_ELITE = 83370445;
 
     @Autowired
-    public ClanmemberLevelsService(final HiScoresService hiScoresService,
-                                   final ClanmembersService clanmembersService,
-                                   final ClanmemberLevelsRepository clanmemberLevelsRepository) {
-        this.hiScoresService = hiScoresService;
-        this.clanmembersService = clanmembersService;
+    public ClanmemberLevelsService(final ClanmemberLevelsRepository clanmemberLevelsRepository) {
         this.clanmemberLevelsRepository = clanmemberLevelsRepository;
     }
 
@@ -50,27 +42,18 @@ public class ClanmemberLevelsService {
             return new ClanmemberLevels();
         }
 
-        ClanmemberLevels clanmemberLevels = ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, getDateAsString(clanmemberLevelsEntity));
+        ClanmemberLevels clanmemberLevels =
+                ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, CommonsService.getDateAsString(clanmemberLevelsEntity.getId().getDate()));
 
         setClanmemberLevelsFromToday(clanmemberName, clanmemberLevels.getLevels());
 
         return clanmemberLevels;
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
-    public void getAllClanmembersAndSavePlayerLevels() {
-        List<Clanmember> clanmembers = clanmembersService.getAllClanmembers().getSecond();
-
-        if(!CollectionUtils.isEmpty(clanmembers)) {
-            clanmembers.forEach(this::savePlayerLevelsToDatabase);
+    public void saveClanmemberLevelsToDatabase(final String clanmember, final List<CSVRecord> levels) {
+        if(!CollectionUtils.isEmpty(levels)) {
+            clanmemberLevelsRepository.save(getClanmemberLevelsEntity(clanmember, levels));
         }
-    }
-
-    private String getDateAsString(ClanmemberLevelsEntity clanmemberLevelsEntity) {
-        Date date = clanmemberLevelsEntity.getId().getDate();
-
-        SimpleDateFormat format = new SimpleDateFormat("dd-M-yyyy h:mm a z");
-        return format.format(date);
     }
 
     private void setClanmemberLevelsFromToday(final String clanmemberName, final List<Level> currentLevels) {
@@ -85,32 +68,25 @@ public class ClanmemberLevelsService {
                 .toList();
 
         if(!CollectionUtils.isEmpty(allClanmemberLevelsEntities)) {
-            ClanmemberLevelsEntity firstClanmemberLevelsEntity = allClanmemberLevelsEntities.get(0);
-
-            int count = 0;
-            for (Level currentLevel : currentLevels) {
-                Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
-                currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
-                count++;
-            }
+            setExperienceToday(allClanmemberLevelsEntities.get(0), currentLevels);
         }
     }
 
-    private void savePlayerLevelsToDatabase(final Clanmember clanmember) {
-        ClanmemberLevelsEntity entity = getClanmemberLevels(clanmember.getName());
-        if(!entity.getLevels().isEmpty()) {
-            clanmemberLevelsRepository.save(entity);
-            log.info("Saved info for " + clanmember + " at " + LocalDateTime.now());
-        } else {
-            log.info(clanmember + " was not found in Runescape API");
+    private void setExperienceToday(final ClanmemberLevelsEntity firstClanmemberLevelsEntity, final List<Level> currentLevels) {
+        int count = 0;
+
+        for (Level currentLevel : currentLevels) {
+            Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
+            currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
+            count++;
         }
     }
 
-    private ClanmemberLevelsEntity getClanmemberLevels(final String clanmember) {
+    private ClanmemberLevelsEntity getClanmemberLevelsEntity(final String clanmember, final List<CSVRecord> levels) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
-        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(hiScoresService.getLevels(clanmember)));
+        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(levels));
 
         return clanmemberLevelsEntity;
     }

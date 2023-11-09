@@ -1,5 +1,6 @@
 package com.runescape.info.service;
 
+import com.runescape.info.model.exception.RunescapeConnectionException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -17,16 +18,24 @@ import java.util.List;
 
 @Service
 public class ConnectionService {
-    public static final String WEB_SERVICE_URL = "http://secure.runescape.com";
-    public static final String PLAYER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
-    public static final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
+    private static final String WEB_SERVICE_URL = "http://secure.runescape.com";
+    private static final String CLANMEMBER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
+    private static final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
 
-    public List<CSVRecord> getInfoFromRunescapeForClan(final String clanName) throws IOException {
-        return getInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(clanName));
+    public List<CSVRecord> getInfoFromRunescapeForClan(final String clanName) {
+        try {
+            return getInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(clanName));
+        } catch (IOException e) {
+            throw new RunescapeConnectionException(e.getMessage());
+        }
     }
 
-    public List<CSVRecord> getInfoFromRunescapeForPlayer(final String playerName) throws IOException {
-        return getInfoFromRunescape(PLAYER_INFORMATION_URL + replaceEmptySpace(playerName));
+    public List<CSVRecord> getInfoFromRunescapeForClanmember(final String clanmember) {
+        try {
+            return getInfoFromRunescape(CLANMEMBER_INFORMATION_URL + replaceEmptySpace(clanmember));
+        } catch (IOException e) {
+            throw new RunescapeConnectionException(e.getMessage());
+        }
     }
 
     private List<CSVRecord> getInfoFromRunescape(final String url) throws IOException {
@@ -34,16 +43,17 @@ public class ConnectionService {
         request.addHeader("accept", "application/json");
         request.addHeader("accept", "text/csv");
 
-        CloseableHttpClient client = HttpClients.createDefault();
-        CloseableHttpResponse response = client.execute(request);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            CloseableHttpResponse response = client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 404) {
-            return new ArrayList<>();
+            if (response.getStatusLine().getStatusCode() == 404) {
+                return new ArrayList<>();
+            }
+
+            String responseEntity = EntityUtils.toString(response.getEntity());
+            CSVParser parser = CSVParser.parse(responseEntity, CSVFormat.Builder.create().setDelimiter(",").build());
+            return parser.getRecords();
         }
-
-        String responseEntity = EntityUtils.toString(response.getEntity());
-        CSVParser parser = CSVParser.parse(responseEntity, CSVFormat.Builder.create().setDelimiter(",").build());
-        return parser.getRecords();
     }
 
     private String replaceEmptySpace(String name) {

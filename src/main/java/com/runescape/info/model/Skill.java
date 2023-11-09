@@ -1,6 +1,6 @@
 package com.runescape.info.model;
 
-import java.util.List;
+import lombok.Getter;
 
 public enum Skill {
     OVERALL(0, "Overall"),
@@ -35,19 +35,12 @@ public enum Skill {
     NECROMANCY(29, "Necromancy");
 
     private final Integer number;
+    @Getter
     private final String name;
 
     Skill(final int number, final String name) {
         this.number = number;
         this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public static String getNameWithNumber(final Integer number) {
-        return List.of(values()).get(number).name;
     }
 
     public static Skill getSkillByNumber(final Integer number) {

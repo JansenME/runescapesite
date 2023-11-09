@@ -1,10 +1,10 @@
 package com.runescape.info.model;
 
+import com.runescape.info.CommonsService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,13 +17,11 @@ public class Clanmember {
     private Long kills;
 
     public String getFormattedXp() {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.totalXP);
+        return CommonsService.getFormattedNumber(this.totalXP);
     }
 
     public String getFormattedKills() {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(this.kills);
+        return CommonsService.getFormattedNumber(this.kills);
     }
 
     public static List<Clanmember> mapCsvRecordsToClanmembers(final List<CSVRecord> records) {
