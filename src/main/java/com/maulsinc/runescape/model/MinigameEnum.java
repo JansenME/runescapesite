@@ -1,5 +1,6 @@
 package com.maulsinc.runescape.model;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 public enum MinigameEnum {
@@ -35,6 +36,7 @@ public enum MinigameEnum {
     CLUE_SCROLLS_MASTER(29, "Clue Scrolls Master");
 
     private final Integer number;
+    @Getter
     private final String name;
 
     MinigameEnum(final int number, final String name) {

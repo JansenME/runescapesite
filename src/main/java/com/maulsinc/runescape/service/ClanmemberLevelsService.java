@@ -7,7 +7,6 @@ import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
 import com.maulsinc.runescape.model.Skill;
 import com.maulsinc.runescape.model.exception.CorrectLevelException;
 import com.maulsinc.runescape.repository.ClanmemberLevelsRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-@Slf4j
 public class ClanmemberLevelsService {
     private final ClanmemberLevelsRepository clanmemberLevelsRepository;
 
