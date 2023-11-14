@@ -1,13 +1,14 @@
 package com.runescape.info.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SkillTest {
 
     @Test
-    public void testGetSkillByNumber() {
+    void testGetSkillByNumberHappyFlow() {
         assertEquals(Skill.OVERALL, Skill.getSkillByNumber(0));
         assertEquals(Skill.ATTACK, Skill.getSkillByNumber(1));
         assertEquals(Skill.DEFENCE, Skill.getSkillByNumber(2));
@@ -38,5 +39,11 @@ public class SkillTest {
         assertEquals(Skill.INVENTION, Skill.getSkillByNumber(27));
         assertEquals(Skill.ARCHAEOLOGY, Skill.getSkillByNumber(28));
         assertEquals(Skill.NECROMANCY, Skill.getSkillByNumber(29));
+    }
+
+    @Test
+    void testGetSkillByNumberUnhappyFlow() {
+        assertNull(Skill.getSkillByNumber(-1));
+        assertNull(Skill.getSkillByNumber(30));
     }
 }

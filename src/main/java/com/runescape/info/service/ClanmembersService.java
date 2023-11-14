@@ -37,7 +37,7 @@ public class ClanmembersService {
 
     @Scheduled(cron = "0 0 10 * * *")
     public void saveAllClanmembersFromRunescape() {
-        ClanmembersEntity entity = clanmembersRepository.save(getClanmembersFromRunescape("Mauls Inc"));
+        ClanmembersEntity entity = clanmembersRepository.save(getClanmembersFromRunescape());
         log.info("Saved " + entity.getClanmembers().size() + " clanmembers from Mauls Inc to database.");
     }
 
@@ -56,7 +56,7 @@ public class ClanmembersService {
             return Pair.of("", new ArrayList<>());
         }
 
-        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersRepository.findFirstByOrderByIdDesc().getClanmembers());
+        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
     }
 
     private void saveEachClanmemberInformation(final Clanmember clanmember) {
@@ -71,8 +71,8 @@ public class ClanmembersService {
         }
     }
 
-    private ClanmembersEntity getClanmembersFromRunescape(final String clanName) {
-        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan(clanName);
+    private ClanmembersEntity getClanmembersFromRunescape() {
+        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
         records.remove(0);
 
         return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));

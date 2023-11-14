@@ -1,6 +1,5 @@
 package com.runescape.info.model;
 
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 public enum MinigameEnum {
@@ -36,7 +35,6 @@ public enum MinigameEnum {
     CLUE_SCROLLS_MASTER(29, "Clue Scrolls Master");
 
     private final Integer number;
-    @Getter
     private final String name;
 
     MinigameEnum(final int number, final String name) {
@@ -45,7 +43,7 @@ public enum MinigameEnum {
     }
 
     public String getNameForImage() {
-        return StringUtils.deleteWhitespace(getName().toLowerCase().replace(":", "").replace(".", ""));
+        return StringUtils.deleteWhitespace(name.toLowerCase().replace(":", "").replace(".", ""));
     }
 
     public static MinigameEnum getMinigameEnumByNumber(final Integer number) {

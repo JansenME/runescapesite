@@ -1,6 +1,7 @@
 package com.runescape.info.service;
 
 import com.runescape.info.model.exception.RunescapeConnectionException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -16,15 +17,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ConnectionService {
     private static final String WEB_SERVICE_URL = "http://secure.runescape.com";
     private static final String CLANMEMBER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
     private static final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
 
-    public List<CSVRecord> getInfoFromRunescapeForClan(final String clanName) {
+    private static final String CLAN_NAME = "Mauls Inc";
+
+    public List<CSVRecord> getInfoFromRunescapeForClan() {
         try {
-            return getInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(clanName));
+            return getInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(CLAN_NAME));
         } catch (IOException e) {
             throw new RunescapeConnectionException(e.getMessage());
         }
@@ -46,7 +50,8 @@ public class ConnectionService {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             CloseableHttpResponse response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() == 404) {
+            if (response.getStatusLine().getStatusCode() != 200) {
+                log.info(String.format("The url %s was called, but returned a %s response code", url, response.getStatusLine().getStatusCode()));
                 return new ArrayList<>();
             }
 
