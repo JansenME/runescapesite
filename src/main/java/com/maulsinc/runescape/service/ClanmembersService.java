@@ -46,8 +46,15 @@ public class ClanmembersService {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
-            clanmembers.forEach(this::saveEachClanmemberInformation);
+            clanmembers.forEach(this::checkIfSaveEachClanmemberInformation);
         }
+    }
+
+    private ClanmembersEntity getClanmembersFromRunescape() {
+        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
+        records.remove(0);
+
+        return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
     }
 
     public Pair<String, List<Clanmember>> getAllClanmembers() {
@@ -59,22 +66,26 @@ public class ClanmembersService {
         return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
     }
 
-    private void saveEachClanmemberInformation(final Clanmember clanmember) {
+    private void checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
         List<CSVRecord> records = connectionService.getInfoFromRunescapeForClanmember(clanmember.getName());
 
-        if(!CollectionUtils.isEmpty(records)) {
-            List<CSVRecord> levels = Lists.partition(records, 30).get(0);
-            List<CSVRecord> minigames = Lists.partition(records, 30).get(1);
-
-            clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levels);
-            clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), minigames);
+        if(CollectionUtils.isEmpty(records)) {
+            log.error(String.format("The list from Runescape was empty or null. Value was: %s", records));
+            return;
         }
+
+        if(records.size() != 60) {
+            log.error(String.format("The list from Runescape was not the correct size of 60, but it was %s", records.size()));
+            return;
+        }
+
+        saveEachClanmemberInformation(records, clanmember);
     }
 
-    private ClanmembersEntity getClanmembersFromRunescape() {
-        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
-        records.remove(0);
+    private void saveEachClanmemberInformation(final List<CSVRecord> records, final Clanmember clanmember) {
+        List<List<CSVRecord>> levelsAndMinigames = Lists.partition(records, 30);
 
-        return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
+        clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levelsAndMinigames.get(0));
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), levelsAndMinigames.get(1));
     }
 }
