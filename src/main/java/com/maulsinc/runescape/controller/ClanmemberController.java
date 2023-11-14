@@ -1,7 +1,10 @@
 package com.maulsinc.runescape.controller;
 
+import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.service.ClanmemberLevelsService;
 import com.maulsinc.runescape.service.ClanmemberMinigamesService;
+import com.maulsinc.runescape.service.ConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,10 +28,13 @@ public class ClanmemberController {
 
     @GetMapping("/clanmember/{name}")
     public String getClanMemberLevels(Model model, @PathVariable String name) {
+        ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevels(name);
+
         model.addAttribute("versionNumber", version);
-        model.addAttribute("clanmemberLevels", clanmemberLevelsService.getOneClanmemberLevels(name));
+        model.addAttribute("clanmemberLevels", clanmemberLevels);
         model.addAttribute("clanmemberMinigames", clanmemberMinigamesService.getOneClanmemberMinigames(name));
         model.addAttribute("clanmemberName", name);
+        model.addAttribute("usDateFormat", CommonsService.getDateAsUSString(clanmemberLevels.getDate()));
         return "clanmember";
     }
 }

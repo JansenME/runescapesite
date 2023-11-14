@@ -1,11 +1,16 @@
 package com.maulsinc.runescape.controller;
 
+import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.model.Clanmember;
 import com.maulsinc.runescape.service.ClanmembersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -21,8 +26,11 @@ public class IndexController {
 
     @GetMapping(value={"", "/", "/index"})
     public String index(Model model) {
+        Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
+
         model.addAttribute("versionNumber", version);
-        model.addAttribute("clanmembers", clanmembersService.getAllClanmembers());
+        model.addAttribute("clanmembers", clanmembers);
+        model.addAttribute("usDateFormat", CommonsService.getDateAsUSString(clanmembers.getFirst()));
         return "index";
     }
 }

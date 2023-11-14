@@ -50,13 +50,6 @@ public class ClanmembersService {
         }
     }
 
-    private ClanmembersEntity getClanmembersFromRunescape() {
-        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
-        records.remove(0);
-
-        return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
-    }
-
     public Pair<String, List<Clanmember>> getAllClanmembers() {
         ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
         if(clanmembersEntity == null) {
@@ -64,6 +57,13 @@ public class ClanmembersService {
         }
 
         return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
+    }
+
+    private ClanmembersEntity getClanmembersFromRunescape() {
+        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
+        records.remove(0);
+
+        return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
     }
 
     private void checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {

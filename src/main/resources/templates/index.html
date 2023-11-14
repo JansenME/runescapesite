@@ -29,7 +29,8 @@
 
     <div id="main">
         <article id="members">
-            <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span></i></p>
+            <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span><br />
+            American format: <span th:text="${usDateFormat}"></span></i></p>
             <h2 class="major">Members</h2>
 
             <div class="table-wrapper">
