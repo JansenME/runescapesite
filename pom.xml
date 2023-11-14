@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<packaging>war</packaging>
-	<groupId>com.runescape</groupId>
-	<artifactId>info</artifactId>
+	<groupId>com.maulsinc</groupId>
+	<artifactId>runescape</artifactId>
 	<version>1.5-SNAPSHOT</version>
 	<name>runescapesite</name>
 	<description>Runescape info site</description>
