@@ -91,7 +91,7 @@ public class ClanmemberLevelsService {
 
     private List<Level> mapCsvRecordsToLevels(final List<CSVRecord> records) {
         List<Level> levels = records.stream()
-                .map(record -> mapOneCsvRecordToLevel(records.indexOf(record), record))
+                .map(csvRecord -> mapOneCsvRecordToLevel(records.indexOf(csvRecord), csvRecord))
                 .toList();
 
         if (!levels.isEmpty()) {
@@ -101,15 +101,15 @@ public class ClanmemberLevelsService {
         return levels;
     }
 
-    private Level mapOneCsvRecordToLevel(final int index, final CSVRecord record) {
+    private Level mapOneCsvRecordToLevel(final int index, final CSVRecord csvRecord) {
         Level level = new Level();
 
         Skill skill = Skill.getSkillByNumber(index);
-        Long experience = Long.valueOf(record.get(2));
+        Long experience = Long.valueOf(csvRecord.get(2));
 
         level.setSkill(skill);
-        level.setRank(Long.valueOf(record.get(0)));
-        level.setLevel(getCorrectLevel(Long.valueOf(record.get(1)), skill, experience));
+        level.setRank(Long.valueOf(csvRecord.get(0)));
+        level.setLevel(getCorrectLevel(Long.valueOf(csvRecord.get(1)), skill, experience));
         level.setExperience(experience);
 
         return level;

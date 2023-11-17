@@ -1,5 +1,7 @@
 package com.maulsinc.runescape.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.Lists;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
@@ -22,23 +24,30 @@ public class ClanmembersService {
     private final ConnectionService connectionService;
     private final ClanmemberLevelsService clanmemberLevelsService;
     private final ClanmemberMinigamesService clanmemberMinigamesService;
+    private final ClanmemberQuestsService clanmemberQuestsService;
     private final ClanmembersRepository clanmembersRepository;
 
     @Autowired
     public ClanmembersService(final ConnectionService connectionService,
                               final ClanmemberLevelsService clanmemberLevelsService,
                               final ClanmemberMinigamesService clanmemberMinigamesService,
+                              final ClanmemberQuestsService clanmemberQuestsService,
                               final ClanmembersRepository clanmembersRepository) {
         this.connectionService = connectionService;
         this.clanmemberLevelsService = clanmemberLevelsService;
         this.clanmemberMinigamesService = clanmemberMinigamesService;
+        this.clanmemberQuestsService = clanmemberQuestsService;
         this.clanmembersRepository = clanmembersRepository;
     }
 
     @Scheduled(cron = "0 0 10 * * *")
     public void saveAllClanmembersFromRunescape() {
-        ClanmembersEntity entity = clanmembersRepository.save(getClanmembersFromRunescape());
-        log.info("Saved " + entity.getClanmembers().size() + " clanmembers from Mauls Inc to database.");
+        ClanmembersEntity clanmembersEntity = getClanmembersFromRunescape();
+
+        if(!CollectionUtils.isEmpty(clanmembersEntity.getClanmembers())) {
+            ClanmembersEntity entity = clanmembersRepository.save(clanmembersEntity);
+            log.info("Saved " + entity.getClanmembers().size() + " clanmembers from Mauls Inc to database.");
+        }
     }
 
     @Scheduled(cron = "0 */20 * * * *")
@@ -47,6 +56,15 @@ public class ClanmembersService {
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             clanmembers.forEach(this::checkIfSaveEachClanmemberInformation);
+        }
+    }
+
+    @Scheduled(cron = "0 30 */4 * * *")
+    public void getAllClanmembersAndSaveClanmemberQuests() {
+        List<Clanmember> clanmembers = getAllClanmembers().getSecond();
+
+        if(!CollectionUtils.isEmpty(clanmembers)) {
+            clanmembers.forEach(this::checkIfSaveEachClanmemberQuests);
         }
     }
 
@@ -60,14 +78,17 @@ public class ClanmembersService {
     }
 
     private ClanmembersEntity getClanmembersFromRunescape() {
-        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClan();
-        records.remove(0);
+        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClan();
+
+        if(!CollectionUtils.isEmpty(records)) {
+            records.remove(0);
+        }
 
         return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
     }
 
     private void checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
-        List<CSVRecord> records = connectionService.getInfoFromRunescapeForClanmember(clanmember.getName());
+        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmember(clanmember.getName());
 
         if(CollectionUtils.isEmpty(records)) {
             log.error(String.format("The list from Runescape was empty or null. Value was: %s", records));
@@ -87,5 +108,20 @@ public class ClanmembersService {
 
         clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levelsAndMinigames.get(0));
         clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), levelsAndMinigames.get(1));
+    }
+
+    private void checkIfSaveEachClanmemberQuests(final Clanmember clanmember) {
+        JsonNode jsonNode = connectionService.getJsonNodeFromRunescapeForClanmemberQuests(clanmember.getName());
+
+        if(jsonNode instanceof NullNode) {
+            log.info(String.format("Getting quests for %s failed, the JSON received was empty.", clanmember.getName()));
+            return;
+        }
+
+        saveEachClanmemberQuests(jsonNode.get("quests"), clanmember.getName());
+    }
+
+    private void saveEachClanmemberQuests(final JsonNode jsonNodeQuests, final String clanmember) {
+        clanmemberQuestsService.saveClanmemberQuestsToDatabase(clanmember, jsonNodeQuests);
     }
 }

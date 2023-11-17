@@ -30,13 +30,13 @@ public class Clanmember {
                 .toList();
     }
 
-    private static Clanmember mapOneCsvRecordToClanmember(final CSVRecord record) {
+    private static Clanmember mapOneCsvRecordToClanmember(final CSVRecord csvRecord) {
         Clanmember clanmember = new Clanmember();
 
-        clanmember.setName(record.get(0));
-        clanmember.setRank(Rank.getEnumWithName(record.get(1)));
-        clanmember.setTotalXP(Long.valueOf(record.get(2)));
-        clanmember.setKills(Long.valueOf(record.get(3)));
+        clanmember.setName(csvRecord.get(0));
+        clanmember.setRank(Rank.getEnumWithName(csvRecord.get(1)));
+        clanmember.setTotalXP(Long.valueOf(csvRecord.get(2)));
+        clanmember.setKills(Long.valueOf(csvRecord.get(3)));
 
         return clanmember;
     }

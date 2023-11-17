@@ -3,7 +3,7 @@ package com.maulsinc.runescape.model;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-public enum MinigameEnum {
+public enum MinigameName {
     BOUNTY_HUNTER(0, "Bounty Hunter"),
     BH_ROGUES(1, "B.H. Rogues"),
     DOMINION_TOWER(2, "Dominion Tower"),
@@ -39,7 +39,7 @@ public enum MinigameEnum {
     @Getter
     private final String name;
 
-    MinigameEnum(final int number, final String name) {
+    MinigameName(final int number, final String name) {
         this.number = number;
         this.name = name;
     }
@@ -48,10 +48,10 @@ public enum MinigameEnum {
         return StringUtils.deleteWhitespace(name.toLowerCase().replace(":", "").replace(".", ""));
     }
 
-    public static MinigameEnum getMinigameEnumByNumber(final Integer number) {
-        for(MinigameEnum minigameEnum : MinigameEnum.values()) {
-            if (minigameEnum.number.equals(number)) {
-                return minigameEnum;
+    public static MinigameName getMinigameNameByNumber(final Integer number) {
+        for(MinigameName minigameName : MinigameName.values()) {
+            if (minigameName.number.equals(number)) {
+                return minigameName;
             }
         }
         return null;

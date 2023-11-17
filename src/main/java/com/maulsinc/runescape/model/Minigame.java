@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Minigame {
-    private MinigameEnum minigameEnum;
+    private MinigameName minigameName;
     private Long rank;
     private Long score;
 

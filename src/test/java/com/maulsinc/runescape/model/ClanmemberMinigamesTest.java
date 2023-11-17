@@ -17,7 +17,7 @@ class ClanmemberMinigamesTest {
         ClanmemberMinigames clanmemberMinigames = ClanmemberMinigames.mapEntityToModel(createEntity(), date);
 
         assertEquals("name", clanmemberMinigames.getClanmember());
-        assertEquals(MinigameEnum.BA_COLLECTORS, clanmemberMinigames.getMinigames().get(0).getMinigameEnum());
+        assertEquals(MinigameName.BA_COLLECTORS, clanmemberMinigames.getMinigames().get(0).getMinigameName());
         assertEquals(50L, clanmemberMinigames.getMinigames().get(0).getRank());
         assertEquals(5000L, clanmemberMinigames.getMinigames().get(0).getScore());
         assertEquals(date, clanmemberMinigames.getDate());
@@ -27,7 +27,7 @@ class ClanmemberMinigamesTest {
         ClanmemberMinigamesEntity entity = new ClanmemberMinigamesEntity();
 
         Minigame minigame = new Minigame();
-        minigame.setMinigameEnum(MinigameEnum.BA_COLLECTORS);
+        minigame.setMinigameName(MinigameName.BA_COLLECTORS);
         minigame.setRank(50L);
         minigame.setScore(5000L);
 

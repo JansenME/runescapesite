@@ -31,7 +31,7 @@
         <article id="members">
             <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span><br />
             American format: <span th:text="${usDateFormat}"></span></i></p>
-            <h2 class="major">Members</h2>
+            <h2 class="major"><span th:text="${clanmembers.getSecond().size()}"></span> Members</h2>
 
             <div class="table-wrapper">
                 <table>
@@ -60,7 +60,7 @@
     </div>
 
     <footer id="footer">
-        <p class="copyright">&copy; 2023-2023 Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
+        <p class="copyright">&copy; 2023-<span th:text="${currentYear}"></span> Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
     </footer>
 
 </div>

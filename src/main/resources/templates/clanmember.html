@@ -27,8 +27,8 @@
                     <p>This member was not found in the database. Most likely because this clanmember has not logged in for a while.</p>
                     <p>If this is not true, please let HC_Kloeperd know about this problem.</p>
                 </span>
-                <span th:else>
-                    <h1 th:text="${clanmemberLevels.clanmember}"></h1>
+                <span th:if="${clanmemberLevels.clanmember != null}">
+                    <h1 th:text="${clanmemberName}"></h1>
                 </span>
             </div>
         </div>
@@ -38,6 +38,7 @@
                 <ul>
                     <li><a href="#levels">Levels</a></li>
                     <li><a href="#minigames">Minigames</a></li>
+                    <li><a href="#quests">Quests</a></li>
                 </ul>
             </nav>
         </span>
@@ -46,7 +47,7 @@
     <div id="main">
         <article id="levels">
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
-            American format: <span th:text="${usDateFormat}"></span></i></p>
+            American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
             <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
@@ -81,7 +82,7 @@
 
         <article id="minigames">
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
-            American format: <span th:text="${usDateFormat}"></span></i></p>
+                American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
             <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
@@ -98,12 +99,69 @@
                     <tbody>
                     <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
                         <td style="text-align:right; padding:1px;">
-                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.minigameEnum.getNameForImage().toLowerCase()})}" />
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.minigameName.getNameForImage().toLowerCase()})}" />
                         </td>
 
-                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.minigameEnum.getName()}"></td>
+                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.minigameName.getName()}"></td>
                         <td th:text="${clanmemberMinigame.getFormattedRank()}" />
                         <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article id="quests">
+            <p><i>Last updated: <span th:text="${clanmemberQuests.date}"></span><br />
+                American format: <span th:text="${usDateFormatQuests}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberQuests.clanmember}" class="major"></h2>
+            <h3><span th:text="${clanmemberQuests.getTotalQuestPoints()}"></span> quest points</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Difficulty</th>
+                        <th>Members</th>
+                        <th>Quest points</th>
+                        <th>User eligible</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberQuest : ${clanmemberQuests.getQuests()}">
+                        <td th:text="${clanmemberQuest.getTitle()}" />
+
+                        <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Completed')}">
+                            <td style="color:green;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                        </span>
+                        <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Started')}">
+                            <td style="color:yellow;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                        </span>
+                        <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Not Started')}">
+                            <td style="color:red;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                        </span>
+
+                        <td th:text="${clanmemberQuest.getDifficulty().getName()}" />
+
+                        <span th:if="${clanmemberQuest.isMembers()}">
+                            <td><img th:src="@{../images/member.png}" /></td>
+                        </span>
+                        <span th:if="${!clanmemberQuest.isMembers()}">
+                            <td><img th:src="@{../images/non-member.png}" /></td>
+                        </span>
+
+                        <td th:text="${clanmemberQuest.getQuestPoints()}" />
+
+                        <span th:if="${clanmemberQuest.isUserEligible()}">
+                            <td><img th:src="@{../images/yes.png}" /></td>
+                        </span>
+                        <span th:if="${!clanmemberQuest.isUserEligible()}">
+                            <td><img th:src="@{../images/no.png}" /></td>
+                        </span>
                     </tr>
                     </tbody>
                 </table>
@@ -112,7 +170,7 @@
     </div>
 
     <footer id="footer">
-        <p class="copyright">&copy; 2023-2023 Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
+        <p class="copyright">&copy; 2023-<span th:text="${currentYear}"></span> Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
     </footer>
 </div>
 

@@ -3,7 +3,7 @@ package com.maulsinc.runescape.service;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.model.ClanmemberMinigames;
 import com.maulsinc.runescape.model.Minigame;
-import com.maulsinc.runescape.model.MinigameEnum;
+import com.maulsinc.runescape.model.MinigameName;
 import com.maulsinc.runescape.repository.ClanmemberMinigamesRepository;
 import com.maulsinc.runescape.model.entity.ClanmemberMinigamesEntity;
 import org.apache.commons.csv.CSVRecord;
@@ -49,16 +49,16 @@ public class ClanmemberMinigamesService {
 
     private List<Minigame> mapCsvRecordsToMinigames(final List<CSVRecord> records) {
         return records.stream()
-                .map(record -> mapOneCsvRecordToMinigame(records.indexOf(record), record))
+                .map(csvRecord -> mapOneCsvRecordToMinigame(records.indexOf(csvRecord), csvRecord))
                 .toList();
     }
 
-    private Minigame mapOneCsvRecordToMinigame(final int index, final CSVRecord record) {
+    private Minigame mapOneCsvRecordToMinigame(final int index, final CSVRecord csvRecord) {
         Minigame minigame = new Minigame();
 
-        minigame.setMinigameEnum(MinigameEnum.getMinigameEnumByNumber(index));
-        minigame.setRank(Long.valueOf(record.get(0)));
-        minigame.setScore(Long.valueOf(record.get(1)));
+        minigame.setMinigameName(MinigameName.getMinigameNameByNumber(index));
+        minigame.setRank(Long.valueOf(csvRecord.get(0)));
+        minigame.setScore(Long.valueOf(csvRecord.get(1)));
 
         return minigame;
     }

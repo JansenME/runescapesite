@@ -50,7 +50,7 @@ class MinigameTest {
 
     private Minigame createMinigame(final Long rank, final Long score) {
         Minigame minigame = new Minigame();
-        minigame.setMinigameEnum(MinigameEnum.AF15_COW_TIPPING);
+        minigame.setMinigameName(MinigameName.AF15_COW_TIPPING);
         minigame.setRank(rank);
         minigame.setScore(score);
 

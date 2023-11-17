@@ -29,7 +29,7 @@ public class CommonsService {
         try {
             Date date = new SimpleDateFormat(DATE_PATTERN_ALL).parse(dateString);
             return new SimpleDateFormat(DATE_PATTERN_US).format(date);
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             return "";
         }
     }
