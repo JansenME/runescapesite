@@ -29,6 +29,7 @@ public class ConnectionService {
 
     private static final String WEB_SERVICE_RUNEMETRICS_URL = "http://apps.runescape.com/runemetrics";
     private static final String CLANMEMBER_QUESTS_URL = WEB_SERVICE_RUNEMETRICS_URL + "/quests?user=";
+    private static final String CLANMEMBER_PROFILE_URL = WEB_SERVICE_RUNEMETRICS_URL + "/profile/profile?user=";
 
     private static final String CLAN_NAME = "Mauls Inc";
 
@@ -42,6 +43,10 @@ public class ConnectionService {
 
     public JsonNode getJsonNodeFromRunescapeForClanmemberQuests(final String clanmember) {
         return getJsonNodeInfoFromRunescape(CLANMEMBER_QUESTS_URL + replaceEmptySpace(clanmember));
+    }
+
+    public JsonNode getJsonNodeFromRunescapeForClanmemberProfile(final String clanmember) {
+        return getJsonNodeInfoFromRunescape(CLANMEMBER_PROFILE_URL + replaceEmptySpace(clanmember));
     }
 
     private List<CSVRecord> getCSVInfoFromRunescape(final String url) {

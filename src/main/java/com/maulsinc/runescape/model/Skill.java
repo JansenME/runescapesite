@@ -2,6 +2,7 @@ package com.maulsinc.runescape.model;
 
 import lombok.Getter;
 
+@Getter
 public enum Skill {
     OVERALL(0, "Overall"),
     ATTACK(1, "Attack"),
@@ -35,7 +36,6 @@ public enum Skill {
     NECROMANCY(29, "Necromancy");
 
     private final Integer number;
-    @Getter
     private final String name;
 
     Skill(final int number, final String name) {

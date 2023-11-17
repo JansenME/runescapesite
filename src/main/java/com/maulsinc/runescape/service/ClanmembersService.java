@@ -50,7 +50,7 @@ public class ClanmembersService {
         }
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void getAllClanmembersAndSaveClanmemberInformation() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
@@ -88,6 +88,7 @@ public class ClanmembersService {
     }
 
     private void checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
+        JsonNode jsonNode = connectionService.getJsonNodeFromRunescapeForClanmemberProfile(clanmember.getName());
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmember(clanmember.getName());
 
         if(CollectionUtils.isEmpty(records)) {
@@ -100,14 +101,22 @@ public class ClanmembersService {
             return;
         }
 
-        saveEachClanmemberInformation(records, clanmember);
-    }
-
-    private void saveEachClanmemberInformation(final List<CSVRecord> records, final Clanmember clanmember) {
         List<List<CSVRecord>> levelsAndMinigames = Lists.partition(records, 30);
 
-        clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levelsAndMinigames.get(0));
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), levelsAndMinigames.get(1));
+        saveEachClanmemberLevels(levelsAndMinigames.get(0), jsonNode, clanmember);
+        saveEachClanmemberMinigames(levelsAndMinigames.get(1), clanmember);
+    }
+
+    private void saveEachClanmemberLevels(final List<CSVRecord> levels, final JsonNode jsonNode, final Clanmember clanmember) {
+        if(jsonNode.has("error")) {
+            clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levels);
+        } else if (jsonNode.has("skillvalues")) {
+            clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(clanmember.getName(), jsonNode);
+        }
+    }
+
+    private void saveEachClanmemberMinigames(final List<CSVRecord> minigames, final Clanmember clanmember) {
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), minigames);
     }
 
     private void checkIfSaveEachClanmemberQuests(final Clanmember clanmember) {

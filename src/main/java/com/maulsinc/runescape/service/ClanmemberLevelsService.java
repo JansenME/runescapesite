@@ -1,5 +1,6 @@
 package com.maulsinc.runescape.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.model.Level;
 import com.maulsinc.runescape.model.ClanmemberLevels;
@@ -7,8 +8,10 @@ import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
 import com.maulsinc.runescape.model.Skill;
 import com.maulsinc.runescape.model.exception.CorrectLevelException;
 import com.maulsinc.runescape.repository.ClanmemberLevelsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,11 +20,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@Slf4j
 public class ClanmemberLevelsService {
     private final ClanmemberLevelsRepository clanmemberLevelsRepository;
 
@@ -52,6 +58,14 @@ public class ClanmemberLevelsService {
         if(!CollectionUtils.isEmpty(levels)) {
             clanmemberLevelsRepository.save(getClanmemberLevelsEntity(clanmember, levels));
         }
+    }
+
+    public void saveClanmemberLevelsToDatabaseFromProfile(final String clanmember, final JsonNode jsonNode) {
+        JsonNode skillvalues = jsonNode.get("skillvalues");
+        Long totalXp = jsonNode.get("totalxp").asLong();
+        Long rank = Long.valueOf(jsonNode.get("rank").asText().replaceAll(",", ""));
+
+        clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank));
     }
 
     private void setClanmemberLevelsFromToday(final String clanmemberName, final List<Level> currentLevels) {
@@ -113,6 +127,68 @@ public class ClanmemberLevelsService {
         level.setExperience(experience);
 
         return level;
+    }
+
+    private ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank) {
+        ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
+
+        clanmemberLevelsEntity.setClanmember(clanmember);
+        clanmemberLevelsEntity.setLevels(mapJsonNodeToLevels(skillvalues, totalXp, rank));
+
+        return clanmemberLevelsEntity;
+    }
+
+    private List<Level> mapJsonNodeToLevels(final JsonNode skillvalues, final Long totalXp, final Long rank) {
+        List<Level> levels = new ArrayList<>();
+
+        List<Level> levelsFromSkillValues = new ArrayList<>();
+
+        if(skillvalues.isArray()) {
+            for(JsonNode jsonNode : skillvalues) {
+                levelsFromSkillValues.add(mapJsonNodeToLevel(jsonNode));
+            }
+        }
+
+        levelsFromSkillValues.sort(Comparator.comparingInt(Level::getNumberFromSkill));
+
+        setOverallInList(levels, totalXp, rank);
+
+        levels.addAll(levelsFromSkillValues);
+
+        levels.get(0).setLevel(setTotalLevel(levels));
+
+        return levels;
+    }
+
+    private Level mapJsonNodeToLevel(final JsonNode jsonNode) {
+        Level level = new Level();
+
+        String experienceAsString = String.valueOf(jsonNode.get("xp").asLong());
+
+        Skill skill = Skill.getSkillByNumber(jsonNode.get("id").asInt() + 1);
+
+        if(experienceAsString.length() > 1) {
+            experienceAsString = experienceAsString.substring(0, experienceAsString.length() - 1);
+        }
+
+        Long experience = Long.valueOf(experienceAsString);
+
+        level.setSkill(skill);
+        level.setRank(jsonNode.get("rank").asLong());
+        level.setLevel(getCorrectLevel(Long.valueOf(jsonNode.get("level").asInt()), skill, experience));
+        level.setExperience(experience);
+
+        return level;
+    }
+
+    private void setOverallInList(final List<Level> levels, final Long totalXp, final Long rank) {
+        Level level = new Level();
+
+        level.setSkill(Skill.OVERALL);
+        level.setRank(rank);
+        level.setExperience(totalXp);
+
+        levels.add(level);
     }
 
     private Long setTotalLevel(final List<Level> levels) {
