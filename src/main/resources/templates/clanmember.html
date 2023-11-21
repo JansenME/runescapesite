@@ -117,9 +117,10 @@
 
             <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberQuests.clanmember}" class="major"></h2>
-            <h3><span th:text="${clanmemberQuests.getTotalQuestPoints()}"></span> quest points</h3>
 
-            <div class="table-wrapper">
+            <div class="table-wrapper" th:unless="${clanmemberQuests.getQuests.isEmpty()}">
+                <h3><span th:text="${clanmemberQuests.getTotalQuestPoints()}"></span> quest points</h3>
+
                 <table>
                     <thead>
                     <tr>
@@ -166,6 +167,11 @@
                     </tbody>
                 </table>
             </div>
+
+            <span th:if="${clanmemberQuests.getQuests.isEmpty()}">
+                <p>This member has their Runemetrics profile set to private. Therefore the quest information cannot be shown.</p>
+                <p>If this page is yours and you want to see the quest information, you'll have to set your Runemetrics profile to public and wait for the next time this website collects the information (6x a day).</p>
+            </span>
         </article>
     </div>
 
