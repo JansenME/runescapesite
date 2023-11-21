@@ -44,10 +44,6 @@ public enum MinigameName {
         this.name = name;
     }
 
-    public String getNameForImage() {
-        return StringUtils.deleteWhitespace(name.toLowerCase().replace(":", "").replace(".", ""));
-    }
-
     public static MinigameName getMinigameNameByNumber(final Integer number) {
         for(MinigameName minigameName : MinigameName.values()) {
             if (minigameName.number.equals(number)) {

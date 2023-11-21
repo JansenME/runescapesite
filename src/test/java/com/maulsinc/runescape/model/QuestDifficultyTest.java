@@ -18,7 +18,7 @@ class QuestDifficultyTest {
 
     @Test
     void testGetQuestDifficultyByNumberUnhappyFlow() {
-        assertNull(QuestDifficulty.getQuestDifficultyByNumber(-1));
+        assertEquals(QuestDifficulty.SPECIAL, QuestDifficulty.getQuestDifficultyByNumber(-1));
         assertNull(QuestDifficulty.getQuestDifficultyByNumber(5));
     }
 }

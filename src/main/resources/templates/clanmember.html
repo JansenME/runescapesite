@@ -99,10 +99,10 @@
                     <tbody>
                     <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
                         <td style="text-align:right; padding:1px;">
-                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.minigameName.getNameForImage().toLowerCase()})}" />
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
                         </td>
 
-                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.minigameName.getName()}"></td>
+                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
                         <td th:text="${clanmemberMinigame.getFormattedRank()}" />
                         <td th:text="${clanmemberMinigame.getFormattedScore()}" />
                     </tr>

@@ -23,15 +23,15 @@ import java.util.List;
 @Slf4j
 @Service
 public class ConnectionService {
-    private static final String WEB_SERVICE_URL = "http://secure.runescape.com";
-    private static final String CLANMEMBER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
-    private static final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
+    private final String WEB_SERVICE_URL = "http://secure.runescape.com";
+    private final String CLANMEMBER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
+    private final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
 
-    private static final String WEB_SERVICE_RUNEMETRICS_URL = "http://apps.runescape.com/runemetrics";
-    private static final String CLANMEMBER_QUESTS_URL = WEB_SERVICE_RUNEMETRICS_URL + "/quests?user=";
-    private static final String CLANMEMBER_PROFILE_URL = WEB_SERVICE_RUNEMETRICS_URL + "/profile/profile?user=";
+    private final String WEB_SERVICE_RUNEMETRICS_URL = "http://apps.runescape.com/runemetrics";
+    private final String CLANMEMBER_QUESTS_URL = WEB_SERVICE_RUNEMETRICS_URL + "/quests?user=";
+    private final String CLANMEMBER_PROFILE_URL = WEB_SERVICE_RUNEMETRICS_URL + "/profile/profile?user=";
 
-    private static final String CLAN_NAME = "Mauls Inc";
+    private final String CLAN_NAME = "Mauls Inc";
 
     public List<CSVRecord> getCSVRecordsFromRunescapeForClan() {
         return getCSVInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(CLAN_NAME));
