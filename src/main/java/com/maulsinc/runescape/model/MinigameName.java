@@ -1,7 +1,6 @@
 package com.maulsinc.runescape.model;
 
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 public enum MinigameName {
     BOUNTY_HUNTER(0, "Bounty Hunter"),

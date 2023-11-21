@@ -1,6 +1,7 @@
 package com.maulsinc.runescape.service;
 
 import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberMinigames;
 import com.maulsinc.runescape.model.Minigame;
 import com.maulsinc.runescape.model.MinigameName;
@@ -22,6 +23,7 @@ public class ClanmemberMinigamesService {
         this.clanmemberMinigamesRepository = clanmemberMinigamesRepository;
     }
 
+    @ExecutionTimeLogger
     public ClanmemberMinigames getOneClanmemberMinigames(final String clanmemberName) {
         ClanmemberMinigamesEntity clanmemberMinigamesEntity = clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc(clanmemberName);
 

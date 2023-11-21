@@ -2,6 +2,7 @@ package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.Level;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
@@ -11,7 +12,6 @@ import com.maulsinc.runescape.repository.ClanmemberLevelsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +39,7 @@ public class ClanmemberLevelsService {
         this.clanmemberLevelsRepository = clanmemberLevelsRepository;
     }
 
+    @ExecutionTimeLogger
     public ClanmemberLevels getOneClanmemberLevels(final String clanmemberName) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsRepository.findFirstByClanmemberOrderByIdDesc(clanmemberName);
 
@@ -68,6 +69,19 @@ public class ClanmemberLevelsService {
         clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank));
     }
 
+    public Level getOverallSkill(final ClanmemberLevels clanmemberLevels) {
+        if(!CollectionUtils.isEmpty(clanmemberLevels.getLevels())) {
+            for (Level level : clanmemberLevels.getLevels()) {
+                if(Skill.OVERALL.equals(level.getSkill())) {
+                    return level;
+                }
+            }
+        }
+
+        return new Level();
+    }
+
+    @ExecutionTimeLogger
     private void setClanmemberLevelsFromToday(final String clanmemberName, final List<Level> currentLevels) {
         Date min = Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant());
 

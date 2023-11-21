@@ -11,3 +11,6 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: runescape
+logging:
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %X{process_id} --- [%t] %-40.40logger{39} : %m%n%wEx"

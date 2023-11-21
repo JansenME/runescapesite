@@ -2,6 +2,7 @@ package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberQuests;
 import com.maulsinc.runescape.model.Quest;
 import com.maulsinc.runescape.model.QuestDifficulty;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,6 +27,7 @@ public class ClanmemberQuestsService {
         this.clanmemberQuestsRepository = clanmemberQuestsRepository;
     }
 
+    @ExecutionTimeLogger
     public ClanmemberQuests getOneClanmemberQuests(final String clanmember) {
         ClanmemberQuestsEntity clanmemberQuestsEntity = clanmemberQuestsRepository.findFirstByClanmemberOrderByIdDesc(clanmember);
 
