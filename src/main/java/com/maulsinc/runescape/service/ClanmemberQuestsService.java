@@ -41,10 +41,7 @@ public class ClanmemberQuestsService {
         ClanmemberQuestsEntity clanmemberQuestsEntity = getClanmemberQuestsEntity(clanmember, jsonNodeQuests);
         clanmemberQuestsRepository.save(clanmemberQuestsEntity);
 
-        log.info(String.format("Saved %s quests for %s with %s questpoints",
-                clanmemberQuestsEntity.getQuests().size(),
-                clanmemberQuestsEntity.getClanmember(),
-                clanmemberQuestsEntity.getTotalQuestPoints()));
+        log.info("Saved {} quests for {} with {} questpoints", clanmemberQuestsEntity.getQuests().size(), clanmemberQuestsEntity.getClanmember(), clanmemberQuestsEntity.getTotalQuestPoints());
     }
 
     private ClanmemberQuestsEntity getClanmemberQuestsEntity(final String clanmember, final JsonNode jsonNodeQuests) {

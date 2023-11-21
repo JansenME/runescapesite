@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.Lists;
 import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.model.Clanmember;
@@ -41,16 +42,18 @@ public class ClanmembersService {
     }
 
     @Scheduled(cron = "0 0 10 * * *")
+    @ExecutionTimeLogger
     public void saveAllClanmembersFromRunescape() {
         ClanmembersEntity clanmembersEntity = getClanmembersFromRunescape();
 
         if(!CollectionUtils.isEmpty(clanmembersEntity.getClanmembers())) {
             ClanmembersEntity entity = clanmembersRepository.save(clanmembersEntity);
-            log.info("Saved " + entity.getClanmembers().size() + " clanmembers from Mauls Inc to database.");
+            log.info("Saved {} clanmembers from Mauls Inc to database.", entity.getClanmembers().size());
         }
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
+    @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberInformation() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
@@ -60,6 +63,7 @@ public class ClanmembersService {
     }
 
     @Scheduled(cron = "0 30 */4 * * *")
+    @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberQuests() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
@@ -92,12 +96,11 @@ public class ClanmembersService {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmember(clanmember.getName());
 
         if(CollectionUtils.isEmpty(records)) {
-            log.error(String.format("The list from Runescape was empty or null. Value was: %s", records));
             return;
         }
 
         if(records.size() != 60) {
-            log.error(String.format("The list from Runescape was not the correct size of 60, but it was %s", records.size()));
+            log.error("The list from Runescape was not the correct size of 60, but it was {}", records.size());
             return;
         }
 
@@ -123,7 +126,7 @@ public class ClanmembersService {
         JsonNode jsonNode = connectionService.getJsonNodeFromRunescapeForClanmemberQuests(clanmember.getName());
 
         if(jsonNode instanceof NullNode) {
-            log.info(String.format("Getting quests for %s failed, the JSON received was empty.", clanmember.getName()));
+            log.info("Getting quests for {} failed, the JSON received was empty.", clanmember.getName());
             return;
         }
 
