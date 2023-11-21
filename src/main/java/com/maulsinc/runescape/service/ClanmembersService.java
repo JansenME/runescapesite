@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.Lists;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
+import com.maulsinc.runescape.model.exception.ExecutionException;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.model.Clanmember;
@@ -18,6 +19,10 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -58,7 +63,7 @@ public class ClanmembersService {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
-            clanmembers.forEach(this::checkIfSaveEachClanmemberInformation);
+            handleExecutorService(clanmembers);
         }
     }
 
@@ -91,23 +96,43 @@ public class ClanmembersService {
         return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
     }
 
-    private void checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
+    private void handleExecutorService(List<Clanmember> clanmembers) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        List<Callable<String>> callables = clanmembers.stream()
+                .<Callable<String>>map(clanmember -> () -> checkIfSaveEachClanmemberInformation(clanmember))
+                .toList();
+
+        try {
+            executorService.invokeAll(callables);
+        } catch (InterruptedException e) {
+            log.error("Something went wrong with the executor service");
+            Thread.currentThread().interrupt();
+            throw new ExecutionException("The execution failed.", e);
+        }
+
+        executorService.shutdown();
+    }
+
+    private String checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
         JsonNode jsonNode = connectionService.getJsonNodeFromRunescapeForClanmemberProfile(clanmember.getName());
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmember(clanmember.getName());
 
         if(CollectionUtils.isEmpty(records)) {
-            return;
+            return "FAILED";
         }
 
         if(records.size() != 60) {
             log.error("The list from Runescape was not the correct size of 60, but it was {}", records.size());
-            return;
+            return "FAILED";
         }
 
         List<List<CSVRecord>> levelsAndMinigames = Lists.partition(records, 30);
 
         saveEachClanmemberLevels(levelsAndMinigames.get(0), jsonNode, clanmember);
         saveEachClanmemberMinigames(levelsAndMinigames.get(1), clanmember);
+
+        return "SUCCESS";
     }
 
     private void saveEachClanmemberLevels(final List<CSVRecord> levels, final JsonNode jsonNode, final Clanmember clanmember) {
