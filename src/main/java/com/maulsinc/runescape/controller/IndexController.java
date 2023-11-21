@@ -38,4 +38,9 @@ public class IndexController {
 
         return "index";
     }
+
+    @GetMapping("/alpaca")
+    public String alpaca(Model model) {
+        return "alpaca";
+    }
 }
