@@ -120,7 +120,7 @@
             <h2 th:text="${clanmemberQuests.clanmember}" class="major"></h2>
 
             <div class="table-wrapper" th:unless="${clanmemberQuests.getQuests.isEmpty()}">
-                <h3><span th:text="${clanmemberQuests.getTotalQuestPoints()}"></span> quest points</h3>
+                <h3><span th:text="${questPoints}"></span> quest points</h3>
 
                 <table>
                     <thead>

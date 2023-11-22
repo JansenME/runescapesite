@@ -19,7 +19,7 @@ public class Minigame {
     }
 
     public String getFormattedScore() {
-        if(score == -1) {
+        if(score == null || score == -1) {
             return "--";
         }
 

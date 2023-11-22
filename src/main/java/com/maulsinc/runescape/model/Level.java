@@ -12,21 +12,21 @@ public class Level {
     private Long experienceToday;
 
     public String getFormattedRank() {
-        if(experience == -1 || experience == 0) {
+        if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
         return CommonsService.getFormattedNumber(rank);
     }
 
     public String getFormattedLevel() {
-        if(experience == -1 || experience == 0) {
+        if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
         return CommonsService.getFormattedNumber(level);
     }
 
     public String getFormattedExperience() {
-        if(experience == -1 || experience == 0) {
+        if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
         return CommonsService.getFormattedNumber(experience);

@@ -2,9 +2,7 @@ package com.maulsinc.runescape.service;
 
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
-import com.maulsinc.runescape.model.ClanmemberMinigames;
-import com.maulsinc.runescape.model.Minigame;
-import com.maulsinc.runescape.model.MinigameName;
+import com.maulsinc.runescape.model.*;
 import com.maulsinc.runescape.repository.ClanmemberMinigamesRepository;
 import com.maulsinc.runescape.model.entity.ClanmemberMinigamesEntity;
 import org.apache.commons.csv.CSVRecord;
@@ -38,6 +36,18 @@ public class ClanmemberMinigamesService {
         if(!CollectionUtils.isEmpty(minigames)) {
             clanmemberMinigamesRepository.save(getClanmemberMinigamesEntity(clanmember, minigames));
         }
+    }
+
+    public Minigame getRunescoreMinigame(final ClanmemberMinigames clanmemberMinigames) {
+        if(!CollectionUtils.isEmpty(clanmemberMinigames.getMinigames())) {
+            for (Minigame minigame : clanmemberMinigames.getMinigames()) {
+                if(MinigameName.RUNESCORE.equals(minigame.getMinigameName())) {
+                    return minigame;
+                }
+            }
+        }
+
+        return new Minigame();
     }
 
     private ClanmemberMinigamesEntity getClanmemberMinigamesEntity(final String clanmember, final List<CSVRecord> minigames) {

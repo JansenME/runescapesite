@@ -15,7 +15,7 @@ public class ExecutionTimeLoggerAspect {
         try {
             long startTime = System.currentTimeMillis();
             Object proceed = joinPoint.proceed();
-            long executionTime = (System.currentTimeMillis() - startTime) / 1000;
+            long executionTime = System.currentTimeMillis() - startTime;
 
             log.info("{} method was executed in {}", joinPoint.getSignature().getName(), getTimeFormat(executionTime));
 
