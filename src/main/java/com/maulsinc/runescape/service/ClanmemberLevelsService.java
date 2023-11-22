@@ -1,6 +1,7 @@
 package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.math.LongMath;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.Level;
@@ -11,11 +12,13 @@ import com.maulsinc.runescape.model.exception.CorrectLevelException;
 import com.maulsinc.runescape.repository.ClanmemberLevelsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -79,6 +82,27 @@ public class ClanmemberLevelsService {
         }
 
         return new Level();
+    }
+
+    public String getCombatLevel(final ClanmemberLevels clanmemberLevels) {
+        try {
+            int attack = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.ATTACK.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99);
+            int strength = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.STRENGTH.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99);
+            int magic = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.MAGIC.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99) * 2;
+            int ranged = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.RANGED.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99) * 2;
+            int necromancy = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.NECROMANCY.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 120) * 2;
+            int defence = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.DEFENCE.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99);
+            int constitution = Math.min(Math.toIntExact(clanmemberLevels.getLevels().stream().filter(level -> Skill.CONSTITUTION.equals(level.getSkill())).findFirst().orElse(null).getLevel()), 99);
+            int prayer = Math.min(Math.toIntExact(LongMath.divide(clanmemberLevels.getLevels().stream().filter(level -> Skill.PRAYER.equals(level.getSkill())).findFirst().orElse(null).getLevel(), 2, RoundingMode.DOWN)), 49);
+            int summoning = Math.min(Math.toIntExact(LongMath.divide(clanmemberLevels.getLevels().stream().filter(level -> Skill.SUMMONING.equals(level.getSkill())).findFirst().orElse(null).getLevel(), 2, RoundingMode.DOWN)), 49);
+
+            int max = NumberUtils.max(attack + strength, magic, ranged, necromancy);
+
+            return String.valueOf((int) Math.floor((1.3 * max + defence + constitution + prayer + summoning) / 4));
+
+        } catch (NullPointerException e) {
+            return "--";
+        }
     }
 
     @ExecutionTimeLogger

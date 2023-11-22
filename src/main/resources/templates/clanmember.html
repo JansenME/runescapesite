@@ -30,6 +30,13 @@
                 </span>
                 <span th:if="${clanmemberLevels.clanmember != null}">
                     <h1 th:text="${clanmemberName}"></h1>
+                    <p>
+                        <img style="height:20px;" th:src="@{../images/profile/overall.png}" /> <span th:text="${totalLevel}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/xp.png}" /> <span th:text="${totalExperience}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/combat.png}" /> <span th:text="${combatLevel}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/quest.png}" /> <span th:text="${questPoints}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/runescore.png}" /> <span th:text="${runescore}"></span>
+                    </p>
                 </span>
             </div>
         </div>

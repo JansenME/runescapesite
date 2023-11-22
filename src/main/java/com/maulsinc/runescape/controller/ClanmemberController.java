@@ -14,8 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 @Controller
 public class ClanmemberController {
@@ -51,7 +50,13 @@ public class ClanmemberController {
         model.addAttribute("usDateFormatMinigames", CommonsService.getDateAsUSString(clanmemberMinigames.getDate()));
         model.addAttribute("usDateFormatQuests", CommonsService.getDateAsUSString(clanmemberQuests.getDate()));
 
-        model.addAttribute("currentYear", new SimpleDateFormat("yyyy").format(new Date()));
+        model.addAttribute("currentYear", Calendar.getInstance().get(Calendar.YEAR));
+
+        model.addAttribute("totalLevel", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedLevel());
+        model.addAttribute("totalExperience", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedExperience());
+        model.addAttribute("combatLevel", clanmemberLevelsService.getCombatLevel(clanmemberLevels));
+        model.addAttribute("questPoints", clanmemberQuests.getTotalQuestPointsAsString());
+        model.addAttribute("runescore", clanmemberMinigamesService.getRunescoreMinigame(clanmemberMinigames).getFormattedScore());
 
         return "clanmember";
     }

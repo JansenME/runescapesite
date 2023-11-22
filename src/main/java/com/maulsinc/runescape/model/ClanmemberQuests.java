@@ -18,6 +18,13 @@ public class ClanmemberQuests {
     private Integer totalQuestPoints;
     private String date;
 
+    public String getTotalQuestPointsAsString() {
+        if(totalQuestPoints == null || totalQuestPoints == -1 || totalQuestPoints == 0) {
+            return "--";
+        }
+        return String.valueOf(totalQuestPoints);
+    }
+
     public static ClanmemberQuests mapEntityToModel(final ClanmemberQuestsEntity clanmemberQuestsEntity, final String date) {
         List<Quest> questsFromEntity = clanmemberQuestsEntity.getQuests();
         questsFromEntity.sort(Comparator.comparing(Quest::getTitle));

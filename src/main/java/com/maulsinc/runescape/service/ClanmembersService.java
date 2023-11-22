@@ -18,11 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 
 @Service
 @Slf4j
@@ -63,7 +67,11 @@ public class ClanmembersService {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
-            handleExecutorService(clanmembers);
+            List<Clanmember> unique = clanmembers.stream()
+                    .collect(collectingAndThen(toCollection(() -> new TreeSet<>(Comparator.comparing(Clanmember::getName))),
+                            ArrayList::new));
+
+            handleExecutorService(unique);
         }
     }
 
