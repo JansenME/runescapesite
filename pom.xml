@@ -11,7 +11,7 @@
 	<packaging>war</packaging>
 	<groupId>com.maulsinc</groupId>
 	<artifactId>runescape</artifactId>
-	<version>1.7</version>
+	<version>1.8-SNAPSHOT</version>
 	<name>runescapesite</name>
 	<description>Runescape info site</description>
 
@@ -39,6 +39,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 		<!--OTHER DEPENDENCIES-->

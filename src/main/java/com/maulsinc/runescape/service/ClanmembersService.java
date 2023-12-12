@@ -117,9 +117,10 @@ public class ClanmembersService {
             log.error("Something went wrong with the executor service");
             Thread.currentThread().interrupt();
             throw new ExecutionException("The execution failed.", e);
+        } finally {
+            executorService.shutdown();
+            log.info("ExecutorService was successfully shutdown.");
         }
-
-        executorService.shutdown();
     }
 
     private String checkIfSaveEachClanmemberInformation(final Clanmember clanmember) {
