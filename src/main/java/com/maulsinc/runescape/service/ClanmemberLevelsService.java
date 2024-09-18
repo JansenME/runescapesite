@@ -17,6 +17,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -65,15 +66,30 @@ public class ClanmemberLevelsService {
     }
 
     public void saveClanmemberLevelsToDatabaseFromProfile(final String clanmember, final JsonNode jsonNode) {
-        JsonNode skillvalues = jsonNode.get("skillvalues");
-        Long totalXp = jsonNode.get("totalxp").asLong();
-        Long rank = Long.valueOf(jsonNode.get("rank").asText().replaceAll(",", ""));
+        if(!StringUtils.hasLength(clanmember)) {
+            return;
+        }
 
-        clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank));
+        String skillvaluesString = "skillvalues";
+        String totalxpString = "totalxp";
+        String rankString = "rank";
+
+        if(jsonNode == null || jsonNode.isNull()) {
+            log.error("The JsonNode was {}, clanmember {}", jsonNode, clanmember);
+            return;
+        }
+
+        if(jsonNode.has(skillvaluesString) && jsonNode.has(totalxpString) && jsonNode.has(rankString)) {
+            JsonNode skillvalues = jsonNode.get(skillvaluesString);
+            Long totalXp = jsonNode.get(totalxpString).asLong();
+            Long rank = Long.valueOf(jsonNode.get(rankString).asText().replaceAll(",", ""));
+
+            clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank));
+        }
     }
 
     public Level getOverallSkill(final ClanmemberLevels clanmemberLevels) {
-        if(!CollectionUtils.isEmpty(clanmemberLevels.getLevels())) {
+        if(clanmemberLevels != null && !CollectionUtils.isEmpty(clanmemberLevels.getLevels())) {
             for (Level level : clanmemberLevels.getLevels()) {
                 if(Skill.OVERALL.equals(level.getSkill())) {
                     return level;
@@ -132,7 +148,7 @@ public class ClanmemberLevelsService {
         }
     }
 
-    private ClanmemberLevelsEntity getClanmemberLevelsEntity(final String clanmember, final List<CSVRecord> levels) {
+    ClanmemberLevelsEntity getClanmemberLevelsEntity(final String clanmember, final List<CSVRecord> levels) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
@@ -143,6 +159,7 @@ public class ClanmemberLevelsService {
 
     private List<Level> mapCsvRecordsToLevels(final List<CSVRecord> records) {
         List<Level> levels = records.stream()
+                .filter(this::filterInvalidCsvRecords)
                 .map(csvRecord -> mapOneCsvRecordToLevel(records.indexOf(csvRecord), csvRecord))
                 .toList();
 
@@ -151,6 +168,18 @@ public class ClanmemberLevelsService {
         }
 
         return levels;
+    }
+
+    private boolean filterInvalidCsvRecords(final CSVRecord record) {
+        try {
+            Long.valueOf(record.get(0));
+            Long.valueOf(record.get(1));
+            Long.valueOf(record.get(2));
+        } catch (NumberFormatException exception) {
+            return false;
+        }
+
+        return true;
     }
 
     private Level mapOneCsvRecordToLevel(final int index, final CSVRecord csvRecord) {
@@ -167,7 +196,7 @@ public class ClanmemberLevelsService {
         return level;
     }
 
-    private ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank) {
+    ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
@@ -178,6 +207,10 @@ public class ClanmemberLevelsService {
 
     private List<Level> mapJsonNodeToLevels(final JsonNode skillvalues, final Long totalXp, final Long rank) {
         List<Level> levels = new ArrayList<>();
+
+        if(skillvalues == null) {
+            return levels;
+        }
 
         List<Level> levelsFromSkillValues = new ArrayList<>();
 
@@ -242,7 +275,11 @@ public class ClanmemberLevelsService {
     }
 
     private Long getCorrectLevel(final Long level, final Skill skill, final Long experience) {
-        if(Skill.INVENTION.equals(skill)) {
+        if(skill == null) {
+            return level;
+        }
+
+        if(skill.isEliteSkill()) {
             return getCorrectLevelForEliteSkill(level, experience);
         }
 
@@ -283,7 +320,7 @@ public class ClanmemberLevelsService {
         else if(experience > 92012904) return 124L;
         else if(experience > 89066630) return 123L;
         else if(experience > 86186124) return 122L;
-        else if(experience > 83370445) return 121L;
+        else if(experience >= 83370445) return 121L;
 
         throw new CorrectLevelException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
     }
@@ -313,7 +350,7 @@ public class ClanmemberLevelsService {
         else if(experience > 19368992) return 103L;
         else if(experience > 17542976) return 102L;
         else if(experience > 15889109) return 101L;
-        else if(experience > 14391160) return 100L;
+        else if(experience >= 14391160) return 100L;
 
         throw new CorrectLevelException("Something weird going on. Level is " + level + " and experience is " + experience + ".");
     }

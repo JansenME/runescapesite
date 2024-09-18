@@ -12,6 +12,7 @@ import com.maulsinc.runescape.repository.ClanmemberQuestsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,10 @@ public class ClanmemberQuestsService {
 
     public void saveClanmemberQuestsToDatabase(final String clanmember, final JsonNode jsonNodeQuests) {
         ClanmemberQuestsEntity clanmemberQuestsEntity = getClanmemberQuestsEntity(clanmember, jsonNodeQuests);
-        clanmemberQuestsRepository.save(clanmemberQuestsEntity);
+
+        if(!CollectionUtils.isEmpty(clanmemberQuestsEntity.getQuests())) {
+            clanmemberQuestsRepository.save(clanmemberQuestsEntity);
+        }
 
         log.info("Saved {} quests for {} with {} questpoints", clanmemberQuestsEntity.getQuests().size(), clanmemberQuestsEntity.getClanmember(), clanmemberQuestsEntity.getTotalQuestPoints());
     }
@@ -60,7 +64,7 @@ public class ClanmemberQuestsService {
     private List<Quest> getWholeQuestList(final JsonNode jsonNodeQuests) {
         List<Quest> quests = new ArrayList<>();
 
-        if(jsonNodeQuests.isArray()) {
+        if(jsonNodeQuests != null && jsonNodeQuests.isArray()) {
             for(JsonNode jsonNode : jsonNodeQuests) {
                 quests.add(mapJsonNodeToQuest(jsonNode));
             }
