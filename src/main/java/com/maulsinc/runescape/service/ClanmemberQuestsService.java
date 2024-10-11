@@ -45,11 +45,9 @@ public class ClanmemberQuestsService {
         if(!CollectionUtils.isEmpty(clanmemberQuestsEntity.getQuests())) {
             clanmemberQuestsRepository.save(clanmemberQuestsEntity);
         }
-
-        log.info("Saved {} quests for {} with {} questpoints", clanmemberQuestsEntity.getQuests().size(), clanmemberQuestsEntity.getClanmember(), clanmemberQuestsEntity.getTotalQuestPoints());
     }
 
-    private ClanmemberQuestsEntity getClanmemberQuestsEntity(final String clanmember, final JsonNode jsonNodeQuests) {
+    ClanmemberQuestsEntity getClanmemberQuestsEntity(final String clanmember, final JsonNode jsonNodeQuests) {
         ClanmemberQuestsEntity clanmemberQuestsEntity = new ClanmemberQuestsEntity();
 
         List<Quest> quests = getWholeQuestList(jsonNodeQuests);

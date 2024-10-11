@@ -5,18 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClanmemberQuests {
     private String clanmember;
     private List<Quest> quests;
     private Integer totalQuestPoints;
     private String date;
+
+    public ClanmemberQuests() {
+        this.quests = new ArrayList<>();
+    }
 
     public String getTotalQuestPointsAsString() {
         if(totalQuestPoints == null || totalQuestPoints == -1 || totalQuestPoints == 0) {

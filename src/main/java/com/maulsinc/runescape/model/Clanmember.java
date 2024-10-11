@@ -4,7 +4,9 @@ import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +27,9 @@ public class Clanmember {
     }
 
     public static List<Clanmember> mapCsvRecordsToClanmembers(final List<CSVRecord> records) {
+        if (CollectionUtils.isEmpty(records)) {
+            return new ArrayList<>();
+        }
         return records.stream()
                 .map(Clanmember::mapOneCsvRecordToClanmember)
                 .toList();

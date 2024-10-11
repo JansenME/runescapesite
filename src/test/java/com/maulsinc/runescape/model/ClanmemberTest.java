@@ -60,6 +60,20 @@ class ClanmemberTest {
         assertEquals(4L, clanmembers.get(1).getKills());
     }
 
+    @Test
+    void testMapCsvRecordsToClanmembersNullValue() {
+        List<Clanmember> clanmembers = Clanmember.mapCsvRecordsToClanmembers(null);
+
+        assertEquals(0, clanmembers.size());
+    }
+
+    @Test
+    void testMapCsvRecordsToClanmembersEmptyList() {
+        List<Clanmember> clanmembers = Clanmember.mapCsvRecordsToClanmembers(new ArrayList<>());
+
+        assertEquals(0, clanmembers.size());
+    }
+
     private List<CSVRecord> getCsvRecords() {
         CSVRecord csvRecord = Mockito.mock(CSVRecord.class);
         when(csvRecord.get(0)).thenReturn("Name");

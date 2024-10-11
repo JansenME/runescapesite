@@ -57,7 +57,14 @@ public class ClanmembersService {
 
         if(!CollectionUtils.isEmpty(clanmembersEntity.getClanmembers())) {
             ClanmembersEntity entity = clanmembersRepository.save(clanmembersEntity);
-            log.info("Saved {} clanmembers from Mauls Inc to database.", entity.getClanmembers().size());
+
+            String amount = "unknown amount of";
+
+            if(entity != null) {
+                amount = String.valueOf(entity.getClanmembers().size());
+            }
+
+            log.info("Saved {} clanmembers from Mauls Inc to database.", amount);
         }
     }
 

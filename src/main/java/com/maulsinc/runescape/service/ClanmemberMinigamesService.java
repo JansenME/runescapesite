@@ -33,13 +33,13 @@ public class ClanmemberMinigamesService {
     }
 
     public void saveClanmemberMinigamesToDatabase(final String clanmember, final List<CSVRecord> minigames) {
-        if(!CollectionUtils.isEmpty(minigames)) {
+        if(clanmember != null && !CollectionUtils.isEmpty(minigames)) {
             clanmemberMinigamesRepository.save(getClanmemberMinigamesEntity(clanmember, minigames));
         }
     }
 
     public Minigame getRunescoreMinigame(final ClanmemberMinigames clanmemberMinigames) {
-        if(!CollectionUtils.isEmpty(clanmemberMinigames.getMinigames())) {
+        if(clanmemberMinigames != null && !CollectionUtils.isEmpty(clanmemberMinigames.getMinigames())) {
             for (Minigame minigame : clanmemberMinigames.getMinigames()) {
                 if(MinigameName.RUNESCORE.equals(minigame.getMinigameName())) {
                     return minigame;
@@ -50,7 +50,7 @@ public class ClanmemberMinigamesService {
         return new Minigame();
     }
 
-    private ClanmemberMinigamesEntity getClanmemberMinigamesEntity(final String clanmember, final List<CSVRecord> minigames) {
+    ClanmemberMinigamesEntity getClanmemberMinigamesEntity(final String clanmember, final List<CSVRecord> minigames) {
         ClanmemberMinigamesEntity clanmemberMinigamesEntity = new ClanmemberMinigamesEntity();
 
         clanmemberMinigamesEntity.setClanmember(clanmember);

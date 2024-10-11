@@ -1,10 +1,13 @@
 package com.maulsinc.runescape;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 public class CommonsService {
     private static final String DATE_PATTERN_ALL = "dd-M-yyyy h:mm a z";
     private static final String DATE_PATTERN_US = "M-dd-yyyy h:mm a z";
@@ -22,7 +25,11 @@ public class CommonsService {
     }
 
     public static String getDateAsString(Date date) {
-        return new SimpleDateFormat(DATE_PATTERN_ALL).format(date);
+        try {
+            return new SimpleDateFormat(DATE_PATTERN_ALL).format(date);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public static String getDateAsUSString(String dateString) {
@@ -30,6 +37,7 @@ public class CommonsService {
             Date date = new SimpleDateFormat(DATE_PATTERN_ALL).parse(dateString);
             return new SimpleDateFormat(DATE_PATTERN_US).format(date);
         } catch (ParseException | NullPointerException e) {
+            log.error(String.format("Parsing date failed, date to parse was %s", dateString), e);
             return "";
         }
     }
