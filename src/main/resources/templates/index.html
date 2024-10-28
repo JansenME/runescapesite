@@ -48,6 +48,12 @@
                         <tr th:each="clanmember : ${clanmembers.getSecond()}">
                             <td>
                                 <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
+                                <span th:if="${clanmember.hardcoreIronman}" >
+                                    <img style="height:20px;" th:src="@{../images/hcim.png}" />
+                                </span>
+                                <span th:if="${clanmember.ironman and !clanmember.hardcoreIronman}" >
+                                    <img style="height:20px;" th:src="@{../images/im.png}" />
+                                </span>
                             </td>
 
                             <td th:text="${clanmember.rank.getName()}" />

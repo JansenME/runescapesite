@@ -50,7 +50,7 @@ public class ClanmembersService {
         this.clanmembersRepository = clanmembersRepository;
     }
 
-    @Scheduled(cron = "0 0 10 * * *")
+    //@Scheduled(cron = "0 0 10 * * *")
     @ExecutionTimeLogger
     public void saveAllClanmembersFromRunescape() {
         ClanmembersEntity clanmembersEntity = getClanmembersFromRunescape();
@@ -68,7 +68,7 @@ public class ClanmembersService {
         }
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
+    //@Scheduled(cron = "0 */20 * * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberInformation() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
@@ -82,7 +82,7 @@ public class ClanmembersService {
         }
     }
 
-    @Scheduled(cron = "0 30 */4 * * *")
+    //@Scheduled(cron = "0 30 */4 * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberQuests() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
@@ -108,10 +108,39 @@ public class ClanmembersService {
             records.remove(0);
         }
 
-        return new ClanmembersEntity(Clanmember.mapCsvRecordsToClanmembers(records));
+        List<Clanmember> clanmembers = Clanmember.mapCsvRecordsToClanmembers(records);
+
+        setIronmanBooleans(clanmembers);
+
+        return new ClanmembersEntity(clanmembers);
     }
 
-    private void handleExecutorService(List<Clanmember> clanmembers) {
+    private void setIronmanBooleans(final List<Clanmember> clanmembers) {
+        clanmembers.forEach(this::setCorrectBooleans);
+    }
+
+    private void setCorrectBooleans(Clanmember clanmember) {
+        setCorrectValueForIronman(clanmember);
+        setCorrectValueForHardcoreIronman(clanmember);
+    }
+
+    private void setCorrectValueForIronman(Clanmember clanmember) {
+        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
+
+        if(!records.isEmpty()) {
+            clanmember.setIronman(true);
+        }
+    }
+
+    private void setCorrectValueForHardcoreIronman(Clanmember clanmember) {
+        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
+
+        if(!records.isEmpty()) {
+            clanmember.setHardcoreIronman(true);
+        }
+    }
+
+    private void handleExecutorService(final List<Clanmember> clanmembers) {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         List<Callable<String>> callables = clanmembers.stream()
