@@ -7,6 +7,8 @@ import lombok.Data;
 public class Level {
     private Skill skill;
     private Long rank;
+    private Long rankIronman;
+    private Long rankHardcoreIronman;
     private Long level;
     private Long experience;
     private Long experienceToday;
@@ -16,6 +18,20 @@ public class Level {
             return "--";
         }
         return CommonsService.getFormattedNumber(rank);
+    }
+
+    public String getFormattedRankIronman() {
+        if(rankIronman == null || rankIronman == 0) {
+            return "--";
+        }
+        return CommonsService.getFormattedNumber(rankIronman);
+    }
+
+    public String getFormattedRankHardcoreIronman() {
+        if(rankHardcoreIronman == null || rankHardcoreIronman == 0) {
+            return "--";
+        }
+        return CommonsService.getFormattedNumber(rankHardcoreIronman);
     }
 
     public String getFormattedLevel() {

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.thymeleaf.util.DateUtils;
 
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -60,13 +59,13 @@ public class ClanmemberLevelsService {
         return clanmemberLevels;
     }
 
-    public void saveClanmemberLevelsToDatabase(final String clanmember, final List<CSVRecord> levels) {
+    public void saveClanmemberLevelsToDatabase(final String clanmember, final List<CSVRecord> levels, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         if(!CollectionUtils.isEmpty(levels)) {
-            clanmemberLevelsRepository.save(getClanmemberLevelsEntity(clanmember, levels));
+            clanmemberLevelsRepository.save(getClanmemberLevelsEntity(clanmember, levels, levelsIronman, levelsHardcoreIronman));
         }
     }
 
-    public void saveClanmemberLevelsToDatabaseFromProfile(final String clanmember, final JsonNode jsonNode) {
+    public void saveClanmemberLevelsToDatabaseFromProfile(final String clanmember, final JsonNode jsonNode, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         if(!StringUtils.hasLength(clanmember)) {
             return;
         }
@@ -85,7 +84,7 @@ public class ClanmemberLevelsService {
             Long totalXp = jsonNode.get(totalxpString).asLong();
             Long rank = Long.valueOf(jsonNode.get(rankString).asText().replaceAll(",", ""));
 
-            clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank));
+            clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank, levelsIronman, levelsHardcoreIronman));
         }
     }
 
@@ -149,19 +148,19 @@ public class ClanmemberLevelsService {
         }
     }
 
-    ClanmemberLevelsEntity getClanmemberLevelsEntity(final String clanmember, final List<CSVRecord> levels) {
+    ClanmemberLevelsEntity getClanmemberLevelsEntity(final String clanmember, final List<CSVRecord> levels, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
-        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(levels));
+        clanmemberLevelsEntity.setLevels(mapCsvRecordsToLevels(levels, levelsIronman, levelsHardcoreIronman));
 
         return clanmemberLevelsEntity;
     }
 
-    private List<Level> mapCsvRecordsToLevels(final List<CSVRecord> records) {
+    private List<Level> mapCsvRecordsToLevels(final List<CSVRecord> records, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         List<Level> levels = records.stream()
                 .filter(this::filterInvalidCsvRecords)
-                .map(csvRecord -> mapOneCsvRecordToLevel(records.indexOf(csvRecord), csvRecord))
+                .map(csvRecord -> mapOneCsvRecordToLevel(records.indexOf(csvRecord), levelsIronman, levelsHardcoreIronman, csvRecord))
                 .toList();
 
         if (!levels.isEmpty()) {
@@ -171,11 +170,11 @@ public class ClanmemberLevelsService {
         return levels;
     }
 
-    private boolean filterInvalidCsvRecords(final CSVRecord record) {
+    private boolean filterInvalidCsvRecords(final CSVRecord level) {
         try {
-            Long.valueOf(record.get(0));
-            Long.valueOf(record.get(1));
-            Long.valueOf(record.get(2));
+            Long.valueOf(level.get(0));
+            Long.valueOf(level.get(1));
+            Long.valueOf(level.get(2));
         } catch (NumberFormatException exception) {
             return false;
         }
@@ -183,7 +182,7 @@ public class ClanmemberLevelsService {
         return true;
     }
 
-    private Level mapOneCsvRecordToLevel(final int index, final CSVRecord csvRecord) {
+    private Level mapOneCsvRecordToLevel(final int index, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman, final CSVRecord csvRecord) {
         Level level = new Level();
 
         Skill skill = Skill.getSkillByNumber(index);
@@ -191,22 +190,24 @@ public class ClanmemberLevelsService {
 
         level.setSkill(skill);
         level.setRank(Long.valueOf(csvRecord.get(0)));
+        level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
+        level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
         level.setLevel(getCorrectLevel(Long.valueOf(csvRecord.get(1)), skill, experience));
         level.setExperience(experience);
 
         return level;
     }
 
-    ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank) {
+    ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
-        clanmemberLevelsEntity.setLevels(mapJsonNodeToLevels(skillvalues, totalXp, rank));
+        clanmemberLevelsEntity.setLevels(mapJsonNodeToLevels(skillvalues, totalXp, rank, levelsIronman, levelsHardcoreIronman));
 
         return clanmemberLevelsEntity;
     }
 
-    private List<Level> mapJsonNodeToLevels(final JsonNode skillvalues, final Long totalXp, final Long rank) {
+    private List<Level> mapJsonNodeToLevels(final JsonNode skillvalues, final Long totalXp, final Long rank, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         List<Level> levels = new ArrayList<>();
 
         if(skillvalues == null) {
@@ -217,13 +218,13 @@ public class ClanmemberLevelsService {
 
         if(skillvalues.isArray()) {
             for(JsonNode jsonNode : skillvalues) {
-                levelsFromSkillValues.add(mapJsonNodeToLevel(jsonNode));
+                levelsFromSkillValues.add(mapJsonNodeToLevel(jsonNode, levelsIronman, levelsHardcoreIronman));
             }
         }
 
         levelsFromSkillValues.sort(Comparator.comparingInt(Level::getNumberFromSkill));
 
-        setOverallInList(levels, totalXp, rank);
+        setOverallInList(levels, totalXp, rank, levelsIronman, levelsHardcoreIronman);
 
         levels.addAll(levelsFromSkillValues);
 
@@ -232,12 +233,14 @@ public class ClanmemberLevelsService {
         return levels;
     }
 
-    private Level mapJsonNodeToLevel(final JsonNode jsonNode) {
+    private Level mapJsonNodeToLevel(final JsonNode jsonNode, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
+        int index = jsonNode.get("id").asInt() + 1;
+
         Level level = new Level();
 
         String experienceAsString = String.valueOf(jsonNode.get("xp").asLong());
 
-        Skill skill = Skill.getSkillByNumber(jsonNode.get("id").asInt() + 1);
+        Skill skill = Skill.getSkillByNumber(index);
 
         if(experienceAsString.length() > 1) {
             experienceAsString = experienceAsString.substring(0, experienceAsString.length() - 1);
@@ -247,18 +250,26 @@ public class ClanmemberLevelsService {
 
         level.setSkill(skill);
         level.setRank(jsonNode.get("rank").asLong());
+        level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
+        level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
         level.setLevel(getCorrectLevel(Long.valueOf(jsonNode.get("level").asInt()), skill, experience));
         level.setExperience(experience);
 
         return level;
     }
 
-    private void setOverallInList(final List<Level> levels, final Long totalXp, final Long rank) {
+    private void setOverallInList(final List<Level> levels, final Long totalXp, final Long rank, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
         Level level = new Level();
 
         level.setSkill(Skill.OVERALL);
         level.setRank(rank);
         level.setExperience(totalXp);
+
+        try {
+            level.setRankIronman(Long.valueOf(levelsIronman.get(0).get(0)));
+            level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(0).get(0)));
+        } catch (IndexOutOfBoundsException ignored) {
+        }
 
         levels.add(level);
     }

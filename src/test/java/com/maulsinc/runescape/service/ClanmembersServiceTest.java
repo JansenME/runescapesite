@@ -98,8 +98,8 @@ class ClanmembersServiceTest {
 
         clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
 
-        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any());
-        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any());
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
     }
 
     @Test
@@ -116,8 +116,8 @@ class ClanmembersServiceTest {
 
         clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
 
-        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any());
-        verify(clanmemberMinigamesService, times(0)).saveClanmemberMinigamesToDatabase(any(), any());
+        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(0)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
     }
 
     @Test
@@ -131,8 +131,8 @@ class ClanmembersServiceTest {
 
         clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
 
-        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any());
-        verify(clanmemberMinigamesService, times(0)).saveClanmemberMinigamesToDatabase(any(), any());
+        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(0)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
     }
 
     @Test
@@ -148,7 +148,7 @@ class ClanmembersServiceTest {
 
         clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
 
-        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any());
+        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(),any());
     }
 
     @Test
@@ -164,7 +164,7 @@ class ClanmembersServiceTest {
 
         clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
 
-        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any());
+        verify(clanmemberLevelsService, times(0)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
     }
 
     @Test
@@ -191,6 +191,17 @@ class ClanmembersServiceTest {
         when(connectionService.getJsonNodeFromRunescapeForClanmemberQuests(any())).thenReturn(NullNode.getInstance());
 
         clanmembersService.getAllClanmembersAndSaveClanmemberQuests();
+    }
+
+    @Test
+    void testGetOneNewestClanmemberHappyFlow() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        Clanmember clanmember = clanmembersService.getOneNewestClanmember("Clanmember 1");
+
+        assertEquals(Rank.OVERSEER, clanmember.getRank());
     }
 
     @Test

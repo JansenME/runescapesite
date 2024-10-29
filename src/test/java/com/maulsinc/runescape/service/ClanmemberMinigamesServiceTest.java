@@ -68,8 +68,10 @@ class ClanmemberMinigamesServiceTest {
     @Test
     void testSaveClanmemberMinigamesToDatabaseHappyFlow() {
         List<CSVRecord> minigames = List.of(createMockCsvRecord("5456", "54564"));
+        List<CSVRecord> minigamesIronman = List.of(createMockCsvRecord("5456", "54564"));
+        List<CSVRecord> minigamesHardcoreIronman = List.of(createMockCsvRecord("5456", "54564"));
 
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, minigames);
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, minigames, minigamesIronman, minigamesHardcoreIronman);
 
         verify(clanmemberMinigamesRepository, times(1)).save(any());
     }
@@ -78,21 +80,21 @@ class ClanmemberMinigamesServiceTest {
     void testSaveClanmemberMinigamesToDatabaseClanmemberNull() {
         List<CSVRecord> minigames = List.of(createMockCsvRecord("5456", "54564"));
 
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(null, minigames);
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(null, minigames, new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberMinigamesRepository, times(0)).save(any());
     }
 
     @Test
     void testSaveClanmemberMinigamesToDatabaseMinigamesNull() {
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, null);
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, null, new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberMinigamesRepository, times(0)).save(any());
     }
 
     @Test
     void testSaveClanmemberMinigamesToDatabaseMinigamesEmptyList() {
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, new ArrayList<>());
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberMinigamesRepository, times(0)).save(any());
     }
@@ -181,7 +183,25 @@ class ClanmemberMinigamesServiceTest {
                 createMockCsvRecord("1234", "957676")
         );
 
-        ClanmemberMinigamesEntity clanmemberMinigamesEntity = clanmemberMinigamesService.getClanmemberMinigamesEntity(NAME, minigames);
+        List<CSVRecord> minigamesIronman = List.of(
+                createMockCsvRecord("5498", "56247542"),
+                createMockCsvRecord("4756", "625438652"),
+                createMockCsvRecord("485769", "426457"),
+                createMockCsvRecord("5647", "24567452"),
+                createMockCsvRecord("3456", "8256856"),
+                createMockCsvRecord("2345", "48465"),
+                createMockCsvRecord("1234", "957676"));
+
+        List<CSVRecord> minigamesHardcoreIronman = List.of(
+                createMockCsvRecord("5498", "56247542"),
+                createMockCsvRecord("4756", "625438652"),
+                createMockCsvRecord("485769", "426457"),
+                createMockCsvRecord("5647", "24567452"),
+                createMockCsvRecord("3456", "8256856"),
+                createMockCsvRecord("2345", "48465"),
+                createMockCsvRecord("1234", "957676"));
+
+        ClanmemberMinigamesEntity clanmemberMinigamesEntity = clanmemberMinigamesService.getClanmemberMinigamesEntity(NAME, minigames, minigamesIronman, minigamesHardcoreIronman);
 
         assertEquals(7, clanmemberMinigamesEntity.getMinigames().size());
 

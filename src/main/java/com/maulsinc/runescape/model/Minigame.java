@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 public class Minigame {
     private MinigameName minigameName;
     private Long rank;
+    private Long rankIronman;
+    private Long rankHardcoreIronman;
     private Long score;
 
     public String getFormattedRank() {
@@ -16,6 +18,20 @@ public class Minigame {
         }
 
         return CommonsService.getFormattedNumber(rank);
+    }
+
+    public String getFormattedRankIronman() {
+        if(rankIronman == null || rankIronman == 0) {
+            return "--";
+        }
+        return CommonsService.getFormattedNumber(rankIronman);
+    }
+
+    public String getFormattedRankHardcoreIronman() {
+        if(rankHardcoreIronman == null || rankHardcoreIronman == 0) {
+            return "--";
+        }
+        return CommonsService.getFormattedNumber(rankHardcoreIronman);
     }
 
     public String getFormattedScore() {

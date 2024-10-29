@@ -24,6 +24,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -50,7 +51,7 @@ public class ClanmembersService {
         this.clanmembersRepository = clanmembersRepository;
     }
 
-    //@Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 0 10 * * *")
     @ExecutionTimeLogger
     public void saveAllClanmembersFromRunescape() {
         ClanmembersEntity clanmembersEntity = getClanmembersFromRunescape();
@@ -68,7 +69,7 @@ public class ClanmembersService {
         }
     }
 
-    //@Scheduled(cron = "0 */20 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberInformation() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
@@ -82,7 +83,7 @@ public class ClanmembersService {
         }
     }
 
-    //@Scheduled(cron = "0 30 */4 * * *")
+    @Scheduled(cron = "0 30 */4 * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberQuests() {
         List<Clanmember> clanmembers = getAllClanmembers().getSecond();
@@ -90,6 +91,14 @@ public class ClanmembersService {
         if(!CollectionUtils.isEmpty(clanmembers)) {
             clanmembers.forEach(this::checkIfSaveEachClanmemberQuests);
         }
+    }
+
+    public Clanmember getOneNewestClanmember(final String name) {
+        List<Clanmember> allClanmembers = getAllClanmembers().getSecond();
+
+        return allClanmembers.stream()
+                .filter(clanmember -> clanmember.getName().equalsIgnoreCase(name))
+                .toList().get(0);
     }
 
     public Pair<String, List<Clanmember>> getAllClanmembers() {
@@ -172,24 +181,43 @@ public class ClanmembersService {
             return "FAILED";
         }
 
+        List<CSVRecord> levelsIronman = new ArrayList<>();
+        List<CSVRecord> minigamesIronman = new ArrayList<>();
+        List<CSVRecord> levelsHardcoreIronman = new ArrayList<>();
+        List<CSVRecord> minigamesHardcoreIronman = new ArrayList<>();
+
+        if(clanmember.isIronman()) {
+            List<CSVRecord> recordsIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
+            List<List<CSVRecord>> levelsAndMinigamesIronman = Lists.partition(recordsIronman, 30);
+            levelsIronman = levelsAndMinigamesIronman.get(0);
+            minigamesIronman = levelsAndMinigamesIronman.get(1);
+        }
+
+        if(clanmember.isHardcoreIronman()) {
+            List<CSVRecord> recordsHardcoreIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
+            List<List<CSVRecord>> levelsAndMinigamesHardcoreIronman = Lists.partition(recordsHardcoreIronman, 30);
+            levelsHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(0);
+            minigamesHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(1);
+        }
+
         List<List<CSVRecord>> levelsAndMinigames = Lists.partition(records, 30);
 
-        saveEachClanmemberLevels(levelsAndMinigames.get(0), jsonNode, clanmember);
-        saveEachClanmemberMinigames(levelsAndMinigames.get(1), clanmember);
+        saveEachClanmemberLevels(levelsAndMinigames.get(0), levelsIronman, levelsHardcoreIronman, jsonNode, clanmember);
+        saveEachClanmemberMinigames(levelsAndMinigames.get(1), minigamesIronman, minigamesHardcoreIronman, clanmember);
 
         return "SUCCESS";
     }
 
-    private void saveEachClanmemberLevels(final List<CSVRecord> levels, final JsonNode jsonNode, final Clanmember clanmember) {
+    private void saveEachClanmemberLevels(final List<CSVRecord> levels, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman, final JsonNode jsonNode, final Clanmember clanmember) {
         if(jsonNode.has("error")) {
-            clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levels);
+            clanmemberLevelsService.saveClanmemberLevelsToDatabase(clanmember.getName(), levels, levelsIronman, levelsHardcoreIronman);
         } else if (jsonNode.has("skillvalues")) {
-            clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(clanmember.getName(), jsonNode);
+            clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(clanmember.getName(), jsonNode, levelsIronman, levelsHardcoreIronman);
         }
     }
 
-    private void saveEachClanmemberMinigames(final List<CSVRecord> minigames, final Clanmember clanmember) {
-        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), minigames);
+    private void saveEachClanmemberMinigames(final List<CSVRecord> minigames, final List<CSVRecord> minigamesIronman, final List<CSVRecord> minigamesHardcoreIronman, final Clanmember clanmember) {
+        clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), minigames, minigamesIronman, minigamesHardcoreIronman);
     }
 
     private void checkIfSaveEachClanmemberQuests(final Clanmember clanmember) {
