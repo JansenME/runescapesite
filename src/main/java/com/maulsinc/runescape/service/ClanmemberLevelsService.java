@@ -190,10 +190,14 @@ public class ClanmemberLevelsService {
 
         level.setSkill(skill);
         level.setRank(Long.valueOf(csvRecord.get(0)));
-        level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
-        level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
         level.setLevel(getCorrectLevel(Long.valueOf(csvRecord.get(1)), skill, experience));
         level.setExperience(experience);
+
+        try {
+            level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
+            level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
+        } catch (IndexOutOfBoundsException ignored) {
+        }
 
         return level;
     }
@@ -250,10 +254,14 @@ public class ClanmemberLevelsService {
 
         level.setSkill(skill);
         level.setRank(jsonNode.get("rank").asLong());
-        level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
-        level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
         level.setLevel(getCorrectLevel(Long.valueOf(jsonNode.get("level").asInt()), skill, experience));
         level.setExperience(experience);
+
+        try {
+            level.setRankIronman(Long.valueOf(levelsIronman.get(index).get(0)));
+            level.setRankHardcoreIronman(Long.valueOf(levelsHardcoreIronman.get(index).get(0)));
+        } catch (IndexOutOfBoundsException ignored) {
+        }
 
         return level;
     }

@@ -79,7 +79,7 @@ public class ClanmembersService {
                     .collect(collectingAndThen(toCollection(() -> new TreeSet<>(Comparator.comparing(Clanmember::getName))),
                             ArrayList::new));
 
-            handleExecutorService(unique);
+             handleExecutorService(unique);
         }
     }
 
@@ -110,7 +110,7 @@ public class ClanmembersService {
         return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
     }
 
-    private ClanmembersEntity getClanmembersFromRunescape() {
+    ClanmembersEntity getClanmembersFromRunescape() {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClan();
 
         if(!CollectionUtils.isEmpty(records)) {
@@ -186,18 +186,24 @@ public class ClanmembersService {
         List<CSVRecord> levelsHardcoreIronman = new ArrayList<>();
         List<CSVRecord> minigamesHardcoreIronman = new ArrayList<>();
 
-        if(clanmember.isIronman()) {
-            List<CSVRecord> recordsIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
-            List<List<CSVRecord>> levelsAndMinigamesIronman = Lists.partition(recordsIronman, 30);
-            levelsIronman = levelsAndMinigamesIronman.get(0);
-            minigamesIronman = levelsAndMinigamesIronman.get(1);
+        try {
+            if (clanmember.isIronman()) {
+                List<CSVRecord> recordsIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
+                List<List<CSVRecord>> levelsAndMinigamesIronman = Lists.partition(recordsIronman, 30);
+                levelsIronman = levelsAndMinigamesIronman.get(0);
+                minigamesIronman = levelsAndMinigamesIronman.get(1);
+            }
+        } catch (IndexOutOfBoundsException | NullPointerException ignored) {
         }
 
-        if(clanmember.isHardcoreIronman()) {
-            List<CSVRecord> recordsHardcoreIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
-            List<List<CSVRecord>> levelsAndMinigamesHardcoreIronman = Lists.partition(recordsHardcoreIronman, 30);
-            levelsHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(0);
-            minigamesHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(1);
+        try {
+            if (clanmember.isHardcoreIronman()) {
+                List<CSVRecord> recordsHardcoreIronman = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
+                List<List<CSVRecord>> levelsAndMinigamesHardcoreIronman = Lists.partition(recordsHardcoreIronman, 30);
+                levelsHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(0);
+                minigamesHardcoreIronman = levelsAndMinigamesHardcoreIronman.get(1);
+            }
+        } catch (IndexOutOfBoundsException | NullPointerException ignored) {
         }
 
         List<List<CSVRecord>> levelsAndMinigames = Lists.partition(records, 30);

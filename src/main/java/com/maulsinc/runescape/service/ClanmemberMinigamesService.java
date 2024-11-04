@@ -71,9 +71,13 @@ public class ClanmemberMinigamesService {
 
         minigame.setMinigameName(MinigameName.getMinigameNameByNumber(index));
         minigame.setRank(Long.valueOf(csvRecord.get(0)));
-        minigame.setRankIronman(Long.valueOf(minigamesIronman.get(index).get(0)));
-        minigame.setRankHardcoreIronman(Long.valueOf(minigamesHardcoreIronman.get(index).get(0)));
         minigame.setScore(Long.valueOf(csvRecord.get(1)));
+
+        try {
+            minigame.setRankIronman(Long.valueOf(minigamesIronman.get(index).get(0)));
+            minigame.setRankHardcoreIronman(Long.valueOf(minigamesHardcoreIronman.get(index).get(0)));
+        } catch (IndexOutOfBoundsException ignored) {
+        }
 
         return minigame;
     }

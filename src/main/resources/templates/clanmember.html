@@ -10,6 +10,7 @@
 </head>
 <body class="is-preload">
 <div id="wrapper">
+    <!-- HEADER -->
     <header id="header">
         <nav>
             <ul>
@@ -43,9 +44,21 @@
 
         <span th:if="${clanmemberLevels.clanmember != null}">
             <nav>
-                <ul>
+                <ul th:if="${!ironmanIndicator AND !hardcoreIronmanIndicator}">
                     <li><a href="#levels">Levels</a></li>
                     <li><a href="#minigames">Minigames</a></li>
+                    <li><a href="#quests">Quests</a></li>
+                </ul>
+
+                <ul th:if="${ironmanIndicator AND !hardcoreIronmanIndicator}">
+                    <li><a href="#levels-ironman">Levels</a></li>
+                    <li><a href="#minigames-ironman">Minigames</a></li>
+                    <li><a href="#quests">Quests</a></li>
+                </ul>
+
+                <ul th:if="${ironmanIndicator AND hardcoreIronmanIndicator}">
+                    <li><a href="#levels-hardcore-ironman">Levels</a></li>
+                    <li><a href="#minigames-hardcore-ironman">Minigames</a></li>
                     <li><a href="#quests">Quests</a></li>
                 </ul>
             </nav>
@@ -53,12 +66,18 @@
     </header>
 
     <div id="main">
+        <!-- LEVELS -->
         <article id="levels">
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
             American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
             <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <b><a href="#levels">Normal ranks</a></b>
+                <a href="#levels-ironman"> | Ironman ranks</a>
+                <a href="#levels-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | Hardcore ironman ranks</a>
+            </p>
 
             <div class="table-wrapper">
                 <table>
@@ -88,12 +107,98 @@
             </div>
         </article>
 
+        <article id="levels-ironman">
+            <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
+                American format: <span th:text="${usDateFormatLevels}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <a href="#levels">Normal ranks</a>
+                <a href="#levels-ironman"> | <b>Ironman ranks</b></a>
+                <a href="#levels-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | Hardcore ironman ranks</a>
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2"1>Skill</th>
+                        <th>Level</th>
+                        <th>Rank</th>
+                        <th>Experience</th>
+                        <th>Experience today</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
+                        <td style="text-align:right; padding:4px;">
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                        </td>
+
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
+                        <td th:text="${clanmemberLevel.getFormattedRankIronman()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article id="levels-hardcore-ironman">
+            <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
+                American format: <span th:text="${usDateFormatLevels}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <a href="#levels">Normal ranks</a>
+                <a href="#levels-ironman"> | Ironman ranks</a>
+                <a href="#levels-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | <b>Hardcore ironman ranks</b></a>
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2"1>Skill</th>
+                        <th>Level</th>
+                        <th>Rank</th>
+                        <th>Experience</th>
+                        <th>Experience today</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
+                        <td style="text-align:right; padding:4px;">
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                        </td>
+
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
+                        <td th:text="${clanmemberLevel.getFormattedRankHardcoreIronman()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <!-- MINIGAMES -->
         <article id="minigames">
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
             <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
             <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <b><a href="#minigames">Normal ranks</a></b>
+                <a href="#minigames-ironman"> | Ironman ranks</a>
+                <a href="#minigames-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | Hardcore ironman ranks</a>
+            </p>
 
             <div class="table-wrapper">
                 <table>
@@ -119,6 +224,79 @@
             </div>
         </article>
 
+        <article id="minigames-ironman">
+            <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
+                American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <a href="#minigames">Normal ranks</a>
+                <a href="#minigames-ironman"> | <b>Ironman ranks</b></a>
+                <a href="#minigames-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | Hardcore ironman ranks</a>
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2">Minigame</th>
+                        <th>Rank</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
+                        <td style="text-align:right; padding:1px;">
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
+                        </td>
+
+                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedRankIronman()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article id="minigames-hardcore-ironman">
+            <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
+                American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
+                <a href="#minigames">Normal ranks</a>
+                <a href="#minigames-ironman"> | Ironman ranks</a>
+                <a href="#minigames-hardcore-ironman" th:if="${hardcoreIronmanIndicator}"> | <b>Hardcore ironman ranks</b></a>
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th colspan="2">Minigame</th>
+                        <th>Rank</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
+                        <td style="text-align:right; padding:1px;">
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
+                        </td>
+
+                        <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedRankHardcoreIronman()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <!-- QUESTS -->
         <article id="quests">
             <p><i>Last updated: <span th:text="${clanmemberQuests.date}"></span><br />
                 American format: <span th:text="${usDateFormatQuests}"></span></i></p>
@@ -183,6 +361,7 @@
         </article>
     </div>
 
+    <!-- FOOTER -->
     <footer id="footer">
         <p class="copyright">&copy; 2023-<span th:text="${currentYear}"></span> Martijn Jansen. Version <span th:text="${versionNumber}"></span></p>
     </footer>

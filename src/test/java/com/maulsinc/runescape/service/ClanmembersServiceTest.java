@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.maulsinc.runescape.model.Clanmember;
-import com.maulsinc.runescape.model.ClanmemberQuests;
 import com.maulsinc.runescape.model.Rank;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
@@ -21,11 +20,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,6 +70,67 @@ class ClanmembersServiceTest {
     }
 
     @Test
+    void testSaveAllClanmembersFromRunescapeRegularIronman() {
+        List<CSVRecord> records = new ArrayList<>();
+        records.add(createMockCsvRecordClanmember("Clanmate", "Clan Rank", "Total XP", "Kills"));
+        records.add(createMockCsvRecordClanmember("Clanmate 1", "General", "85548852", "4"));
+        records.add(createMockCsvRecordClanmember("Clanmate 2", "Overseer", "123554855", "2"));
+
+        List<CSVRecord> levels = List.of(
+                createMockCsvRecord("38", "75", "45343"),
+                createMockCsvRecord("7356", "24", "520055")
+        );
+
+        when(connectionService.getCSVRecordsFromRunescapeForClan()).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(levels);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(Collections.emptyList());
+
+        ClanmembersEntity clanmembersEntity = clanmembersService.getClanmembersFromRunescape();
+
+        assertTrue(clanmembersEntity.getClanmembers().get(0).isIronman());
+        assertFalse(clanmembersEntity.getClanmembers().get(0).isHardcoreIronman());
+    }
+
+    @Test
+    void testSaveAllClanmembersFromRunescapeHardcoreIronman() {
+        List<CSVRecord> records = new ArrayList<>();
+        records.add(createMockCsvRecordClanmember("Clanmate", "Clan Rank", "Total XP", "Kills"));
+        records.add(createMockCsvRecordClanmember("Clanmate 1", "General", "85548852", "4"));
+        records.add(createMockCsvRecordClanmember("Clanmate 2", "Overseer", "123554855", "2"));
+
+        List<CSVRecord> levels = List.of(
+                createMockCsvRecord("38", "75", "45343"),
+                createMockCsvRecord("7356", "24", "520055")
+        );
+
+        when(connectionService.getCSVRecordsFromRunescapeForClan()).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(levels);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(levels);
+
+        ClanmembersEntity clanmembersEntity = clanmembersService.getClanmembersFromRunescape();
+
+        assertTrue(clanmembersEntity.getClanmembers().get(0).isIronman());
+        assertTrue(clanmembersEntity.getClanmembers().get(0).isHardcoreIronman());
+    }
+
+    @Test
+    void testSaveAllClanmembersFromRunescapeRegularAccount() {
+        List<CSVRecord> records = new ArrayList<>();
+        records.add(createMockCsvRecordClanmember("Clanmate", "Clan Rank", "Total XP", "Kills"));
+        records.add(createMockCsvRecordClanmember("Clanmate 1", "General", "85548852", "4"));
+        records.add(createMockCsvRecordClanmember("Clanmate 2", "Overseer", "123554855", "2"));
+
+        when(connectionService.getCSVRecordsFromRunescapeForClan()).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(Collections.emptyList());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(Collections.emptyList());
+
+        ClanmembersEntity clanmembersEntity = clanmembersService.getClanmembersFromRunescape();
+
+        assertFalse(clanmembersEntity.getClanmembers().get(0).isIronman());
+        assertFalse(clanmembersEntity.getClanmembers().get(0).isHardcoreIronman());
+    }
+
+    @Test
     void testSaveAllClanmembersFromRunescapeClanmembersEntityNullList() {
         when(connectionService.getCSVRecordsFromRunescapeForClan()).thenReturn(null);
 
@@ -87,7 +150,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberInformationHappyFlow() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -100,11 +163,187 @@ class ClanmembersServiceTest {
 
         verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
         verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationIronmanHappyFlow() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, false));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(records);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationHardcoreIronmanHappyFlow() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, true));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(records);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationIronmanNoSize60List() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, false));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        List<CSVRecord> recordsIronman = new ArrayList<>();
+        recordsIronman.add(createMockCsvRecordLevel("500", "81", "15658855"));
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(recordsIronman);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationHardcoreIronmanNoSize60List() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, true));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        List<CSVRecord> recordsIronman = new ArrayList<>();
+        recordsIronman.add(createMockCsvRecordLevel("500", "81", "15658855"));
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(recordsIronman);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(recordsIronman);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationIronmanEmptyList() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, false));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        List<CSVRecord> recordsIronman = Collections.emptyList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(recordsIronman);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationHardcoreIronmanEmptyList() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, true));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        List<CSVRecord> recordsIronman = Collections.emptyList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(recordsIronman);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(recordsIronman);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationIronmanNullList() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, false));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(null);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(0)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
+    }
+
+    @Test
+    void testGetAllClanmembersAndSaveClanmemberInformationHardcoreIronmanNullList() {
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(true, true));
+        clanmembersEntity.setId(ObjectId.get());
+        when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
+
+        List<CSVRecord> records = createValidClanmemberInformationList();
+
+        when(connectionService.getJsonNodeFromRunescapeForClanmemberProfile(any())).thenReturn(createValidJsonNode());
+        when(connectionService.getCSVRecordsFromRunescapeForClanmember(any())).thenReturn(records);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(any())).thenReturn(null);
+        when(connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any())).thenReturn(null);
+
+        clanmembersService.getAllClanmembersAndSaveClanmemberInformation();
+
+        verify(clanmemberLevelsService, times(4)).saveClanmemberLevelsToDatabaseFromProfile(any(), any(), any(), any());
+        verify(clanmemberMinigamesService, times(4)).saveClanmemberMinigamesToDatabase(any(), any(), any(), any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberIronman(any());
+        verify(connectionService, times(4)).getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(any());
     }
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberInformationRecordsNot60Size() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -122,7 +361,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberInformationRecordsEmptyList() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -137,7 +376,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberInformationJsonNodeEmpty() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -153,7 +392,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberInformationJsonNodeHasError() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -169,7 +408,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberQuestsHappyFlow() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -184,7 +423,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersAndSaveClanmemberQuestsJsonNodeNullNode() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -195,7 +434,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetOneNewestClanmemberHappyFlow() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -206,7 +445,7 @@ class ClanmembersServiceTest {
 
     @Test
     void testGetAllClanmembersHappyFlow() {
-        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList());
+        ClanmembersEntity clanmembersEntity = new ClanmembersEntity(createClanmemberList(false, false));
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
@@ -251,9 +490,7 @@ class ClanmembersServiceTest {
     }
 
     private JsonNode createEmptyJsonNode() {
-        ObjectNode objectNode = mapper.createObjectNode();
-
-        return objectNode;
+        return mapper.createObjectNode();
     }
 
     private JsonNode createErrorJsonNode() {
@@ -299,20 +536,22 @@ class ClanmembersServiceTest {
         return record;
     }
 
-    private List<Clanmember> createClanmemberList() {
+    private List<Clanmember> createClanmemberList(final boolean ironman, final boolean hardcoreIronman) {
         List<Clanmember> clanmembers = new ArrayList<>();
-        clanmembers.add(createClanmember("Clanmember 1", Rank.OVERSEER, 500542L, 1L));
-        clanmembers.add(createClanmember("Clanmember 2", Rank.CAPTAIN, 2155455L, 5L));
-        clanmembers.add(createClanmember("Clanmember 3", Rank.GENERAL, 5044885L, 21L));
-        clanmembers.add(createClanmember("Clanmember 4", Rank.OWNER, 4564642L, 10L));
+        clanmembers.add(createClanmember("Clanmember 1", Rank.OVERSEER, 500542L, 1L, ironman, hardcoreIronman));
+        clanmembers.add(createClanmember("Clanmember 2", Rank.CAPTAIN, 2155455L, 5L, ironman, hardcoreIronman));
+        clanmembers.add(createClanmember("Clanmember 3", Rank.GENERAL, 5044885L, 21L, ironman, hardcoreIronman));
+        clanmembers.add(createClanmember("Clanmember 4", Rank.OWNER, 4564642L, 10L, ironman, hardcoreIronman));
 
         return clanmembers;
     }
 
-    private Clanmember createClanmember(final String name, final Rank rank, final Long totalXP, final Long kills) {
+    private Clanmember createClanmember(final String name, final Rank rank, final Long totalXP, final Long kills, final boolean ironman, final boolean hardcoreIronman) {
         Clanmember clanmember = new Clanmember();
         clanmember.setName(name);
         clanmember.setRank(rank);
+        clanmember.setIronman(ironman);
+        clanmember.setHardcoreIronman(hardcoreIronman);
         clanmember.setTotalXP(totalXP);
         clanmember.setKills(kills);
 
@@ -325,6 +564,15 @@ class ClanmembersServiceTest {
         Mockito.lenient().when(record.get(1)).thenReturn(clanRank);
         Mockito.lenient().when(record.get(2)).thenReturn(totalXp);
         Mockito.lenient().when(record.get(3)).thenReturn(kills);
+
+        return record;
+    }
+
+    private CSVRecord createMockCsvRecord(final String rank, final String level, final String experience) {
+        CSVRecord record = mock(CSVRecord.class);
+        Mockito.lenient().when(record.get(0)).thenReturn(rank);
+        Mockito.lenient().when(record.get(1)).thenReturn(level);
+        Mockito.lenient().when(record.get(2)).thenReturn(experience);
 
         return record;
     }

@@ -21,14 +21,14 @@ public class Minigame {
     }
 
     public String getFormattedRankIronman() {
-        if(rankIronman == null || rankIronman == 0) {
+        if(rankIronman == null || rankIronman == -1 || rankIronman == 0) {
             return "--";
         }
         return CommonsService.getFormattedNumber(rankIronman);
     }
 
     public String getFormattedRankHardcoreIronman() {
-        if(rankHardcoreIronman == null || rankHardcoreIronman == 0) {
+        if(rankHardcoreIronman == null || rankHardcoreIronman == -1 || rankHardcoreIronman == 0) {
             return "--";
         }
         return CommonsService.getFormattedNumber(rankHardcoreIronman);
