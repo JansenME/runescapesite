@@ -7,6 +7,7 @@ import com.maulsinc.runescape.model.ClanmemberQuests;
 import com.maulsinc.runescape.service.ClanmemberLevelsService;
 import com.maulsinc.runescape.service.ClanmemberMinigamesService;
 import com.maulsinc.runescape.service.ClanmemberQuestsService;
+import com.maulsinc.runescape.service.ClanmembersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,14 +22,17 @@ public class ClanmemberController {
     @Value("${app.version:unknown}")
     String version;
 
+    private final ClanmembersService clanmembersService;
     private final ClanmemberLevelsService clanmemberLevelsService;
     private final ClanmemberMinigamesService clanmemberMinigamesService;
     private final ClanmemberQuestsService clanmemberQuestsService;
 
     @Autowired
-    public ClanmemberController(final ClanmemberLevelsService clanmemberLevelsService,
+    public ClanmemberController(final ClanmembersService clanmembersService,
+                                final ClanmemberLevelsService clanmemberLevelsService,
                                 final ClanmemberMinigamesService clanmemberMinigamesService,
                                 final ClanmemberQuestsService clanmemberQuestsService) {
+        this.clanmembersService = clanmembersService;
         this.clanmemberLevelsService = clanmemberLevelsService;
         this.clanmemberMinigamesService = clanmemberMinigamesService;
         this.clanmemberQuestsService = clanmemberQuestsService;
@@ -39,12 +43,17 @@ public class ClanmemberController {
         ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevels(name);
         ClanmemberMinigames clanmemberMinigames = clanmemberMinigamesService.getOneClanmemberMinigames(name);
         ClanmemberQuests clanmemberQuests = clanmemberQuestsService.getOneClanmemberQuests(name);
+        boolean ironmanIndicator = clanmembersService.getOneNewestClanmember(name).isIronman();
+        boolean hardcoreIronmanIndicator = clanmembersService.getOneNewestClanmember(name).isHardcoreIronman();
 
         model.addAttribute("versionNumber", version);
         model.addAttribute("clanmemberLevels", clanmemberLevels);
         model.addAttribute("clanmemberMinigames", clanmemberMinigames);
         model.addAttribute("clanmemberQuests", clanmemberQuests);
         model.addAttribute("clanmemberName", name);
+
+        model.addAttribute("ironmanIndicator", ironmanIndicator);
+        model.addAttribute("hardcoreIronmanIndicator", hardcoreIronmanIndicator);
 
         model.addAttribute("usDateFormatLevels", CommonsService.getDateAsUSString(clanmemberLevels.getDate()));
         model.addAttribute("usDateFormatMinigames", CommonsService.getDateAsUSString(clanmemberMinigames.getDate()));

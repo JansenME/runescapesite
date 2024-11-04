@@ -25,6 +25,8 @@ import java.util.List;
 public class ConnectionService {
     private static final String WEB_SERVICE_URL = "http://secure.runescape.com";
     private static final String CLANMEMBER_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore/index_lite.ws?player=";
+    private static final String CLANMEMBER_IRONMAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore_ironman/index_lite.ws?player=";
+    private static final String CLANMEMBER_HARDCORE_IRONMAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=hiscore_hardcore_ironman/index_lite.ws?player=";
     private static final String CLAN_INFORMATION_URL = WEB_SERVICE_URL + "/m=clan-hiscores/members_lite.ws?clanName=";
 
     private static final String WEB_SERVICE_RUNEMETRICS_URL = "http://apps.runescape.com/runemetrics";
@@ -39,6 +41,14 @@ public class ConnectionService {
 
     public List<CSVRecord> getCSVRecordsFromRunescapeForClanmember(final String clanmember) {
         return getCSVInfoFromRunescape(CLANMEMBER_INFORMATION_URL + replaceEmptySpace(clanmember));
+    }
+
+    public List<CSVRecord> getCSVRecordsFromRunescapeForClanmemberIronman(final String clanmember) {
+        return getCSVInfoFromRunescape(CLANMEMBER_IRONMAN_INFORMATION_URL + replaceEmptySpace(clanmember));
+    }
+
+    public List<CSVRecord> getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(final String clanmember) {
+        return getCSVInfoFromRunescape(CLANMEMBER_HARDCORE_IRONMAN_INFORMATION_URL + replaceEmptySpace(clanmember));
     }
 
     public JsonNode getJsonNodeFromRunescapeForClanmemberQuests(final String clanmember) {

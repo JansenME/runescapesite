@@ -11,6 +11,7 @@ import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
 import com.maulsinc.runescape.repository.ClanmemberLevelsRepository;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +54,41 @@ class ClanmemberLevelsServiceTest {
     void testGetClanmemberLevelsEntityFromProfileHappyFlow() throws JsonProcessingException {
         JsonNode jsonNode = mapper.readTree("[{\"level\":120,\"xp\":1043888436,\"rank\":82731,\"id\":27},{\"level\":115,\"xp\":645700924,\"rank\":100328,\"id\":15},{\"level\":99,\"xp\":584599483,\"rank\":73750,\"id\":1},{\"level\":99,\"xp\":411957403,\"rank\":44484,\"id\":11},{\"level\":100,\"xp\":386337342,\"rank\":174601,\"id\":26},{\"level\":99,\"xp\":376249520,\"rank\":48595,\"id\":16},{\"level\":99,\"xp\":349063413,\"rank\":146402,\"id\":3},{\"level\":102,\"xp\":189060871,\"rank\":161626,\"id\":18},{\"level\":99,\"xp\":188751486,\"rank\":70961,\"id\":25},{\"level\":99,\"xp\":187922988,\"rank\":154236,\"id\":6},{\"level\":102,\"xp\":176985509,\"rank\":130822,\"id\":14},{\"level\":99,\"xp\":161109526,\"rank\":102702,\"id\":12},{\"level\":99,\"xp\":154734807,\"rank\":107295,\"id\":7},{\"level\":99,\"xp\":152945716,\"rank\":169872,\"id\":2},{\"level\":99,\"xp\":150859886,\"rank\":120349,\"id\":5},{\"level\":100,\"xp\":147289290,\"rank\":140898,\"id\":13},{\"level\":99,\"xp\":145759497,\"rank\":166852,\"id\":10},{\"level\":100,\"xp\":145451346,\"rank\":167795,\"id\":19},{\"level\":99,\"xp\":144682196,\"rank\":180672,\"id\":0},{\"level\":99,\"xp\":138816738,\"rank\":130737,\"id\":23},{\"level\":99,\"xp\":138029706,\"rank\":143886,\"id\":21},{\"level\":99,\"xp\":137729209,\"rank\":154658,\"id\":17},{\"level\":99,\"xp\":135521354,\"rank\":181026,\"id\":24},{\"level\":99,\"xp\":135209499,\"rank\":158993,\"id\":9},{\"level\":99,\"xp\":135136814,\"rank\":162656,\"id\":22},{\"level\":99,\"xp\":134427035,\"rank\":195847,\"id\":8},{\"level\":99,\"xp\":132842566,\"rank\":150555,\"id\":20},{\"level\":99,\"xp\":132260350,\"rank\":241364,\"id\":4},{\"level\":1,\"xp\":0,\"rank\":0,\"id\":28}]");
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, jsonNode, 50758225L, 4585L);
+        List<CSVRecord> levels = List.of(
+                createMockCsvRecord("38", "75", "45343"),
+                createMockCsvRecord("7356", "24", "520055"),
+                createMockCsvRecord("54667", "24", "520055"),
+                createMockCsvRecord("32656", "24", "520055"),
+                createMockCsvRecord("456", "24", "520055"),
+                createMockCsvRecord("356", "24", "520055"),
+                createMockCsvRecord("7856", "24", "520055"),
+                createMockCsvRecord("789", "24", "520055"),
+                createMockCsvRecord("321", "24", "520055"),
+                createMockCsvRecord("432", "24", "520055"),
+                createMockCsvRecord("5452", "24", "520055"),
+                createMockCsvRecord("564773", "24", "520055"),
+                createMockCsvRecord("8766", "24", "520055"),
+                createMockCsvRecord("897", "24", "520055"),
+                createMockCsvRecord("3211", "24", "520055"),
+                createMockCsvRecord("456445", "24", "520055"),
+                createMockCsvRecord("231354", "24", "520055"),
+                createMockCsvRecord("789656", "24", "520055"),
+                createMockCsvRecord("54654", "24", "520055"),
+                createMockCsvRecord("735", "24", "520055"),
+                createMockCsvRecord("4563", "24", "520055"),
+                createMockCsvRecord("7864", "24", "520055"),
+                createMockCsvRecord("6854", "24", "520055"),
+                createMockCsvRecord("5767", "24", "520055"),
+                createMockCsvRecord("9785", "24", "520055"),
+                createMockCsvRecord("79852", "24", "520055"),
+                createMockCsvRecord("3217", "24", "520055"),
+                createMockCsvRecord("4567", "24", "520055"),
+                createMockCsvRecord("648", "24", "520055"),
+                createMockCsvRecord("2357", "24", "520055"),
+                createMockCsvRecord("582", "76", "50045")
+        );
+
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, jsonNode, 50758225L, 4585L, levels, levels);
 
         List<Level> levelList = clanmemberLevelsEntity.getLevels();
 
@@ -116,7 +151,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         assertEquals(2, clanmemberLevelsEntity.getLevels().size());
     }
@@ -129,7 +164,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         assertEquals(2, clanmemberLevelsEntity.getLevels().size());
     }
@@ -142,7 +177,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         assertEquals(2, clanmemberLevelsEntity.getLevels().size());
     }
@@ -183,7 +218,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         Level lastLevel = clanmemberLevelsEntity.getLevels().get(clanmemberLevelsEntity.getLevels().size() - 1);
 
@@ -192,7 +227,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullSkillvalues() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, null, 5000L, 50L);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, null, 5000L, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
         assertEquals(0, clanmemberLevelsEntity.getLevels().size());
@@ -200,7 +235,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullTotalxp() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), null, 50L);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), null, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(Skill.OVERALL, clanmemberLevelsEntity.getLevels().get(0).getSkill());
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
@@ -210,7 +245,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullRank() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), 5000L, null);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), 5000L, null, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(Skill.OVERALL, clanmemberLevelsEntity.getLevels().get(0).getSkill());
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
@@ -220,7 +255,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullClanmember() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(null, mapper.createObjectNode(), 5000L, 50L);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(null, mapper.createObjectNode(), 5000L, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertNull(clanmemberLevelsEntity.getClanmember());
     }
@@ -234,7 +269,7 @@ class ClanmemberLevelsServiceTest {
                 .put("totalxp", "50000")
                 .put("rank", "5,525");
 
-        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(null, objectNode);
+        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(null, objectNode, new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(0)).save(any());
     }
@@ -248,28 +283,28 @@ class ClanmemberLevelsServiceTest {
                 .put("totalxp", "50000")
                 .put("rank", "5,525");
 
-        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, objectNode);
+        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, objectNode, new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(1)).save(any());
     }
 
     @Test
     void testSaveClanmemberLevelsToDatabaseFromProfileNullJsonNode() {
-        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, null);
+        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, null, new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(0)).save(any());
     }
 
     @Test
     void testSaveClanMemberLevelsToDatabaseFromProfileEmptyJsonNode() {
-        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, mapper.createObjectNode());
+        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, mapper.createObjectNode(), new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(0)).save(any());
     }
 
     @Test
     void testSaveClanMemberLevelsToDatabaseFromProfileNullNode() {
-        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, mapper.nullNode());
+        clanmemberLevelsService.saveClanmemberLevelsToDatabaseFromProfile(NAME, mapper.nullNode(), new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(0)).save(any());
     }
@@ -371,7 +406,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testSaveClanmemberLevelsToDatabaseUnhappyFlow() {
-        clanmemberLevelsService.saveClanmemberLevelsToDatabase("", new ArrayList<>());
+        clanmemberLevelsService.saveClanmemberLevelsToDatabase("", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberLevelsRepository, times(0)).save(any());
     }
@@ -380,7 +415,7 @@ class ClanmemberLevelsServiceTest {
     void testSaveClanmemberLevelsToDatabaseHappyFlow() {
         List<CSVRecord> levels = List.of(createMockCsvRecord("1", "1", "1"));
 
-        clanmemberLevelsService.saveClanmemberLevelsToDatabase(NAME, levels);
+        clanmemberLevelsService.saveClanmemberLevelsToDatabase(NAME, levels, levels, levels);
 
         verify(clanmemberLevelsRepository, times(1)).save(any());
     }
@@ -393,7 +428,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         Level levelOverall = clanmemberLevelsEntity.getLevels().stream()
                 .filter(level -> Skill.OVERALL.equals(level.getSkill()))
@@ -437,7 +472,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "520055")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         Level levelInvention = clanmemberLevelsEntity.getLevels().stream()
                 .filter(level -> Skill.INVENTION.equals(level.getSkill()))
@@ -481,7 +516,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "520055")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntity(NAME, levels, levels, levels);
 
         Level levelOverall = clanmemberLevelsEntity.getLevels().stream()
                 .filter(level -> Skill.OVERALL.equals(level.getSkill()))

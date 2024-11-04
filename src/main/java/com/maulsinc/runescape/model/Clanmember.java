@@ -17,6 +17,8 @@ public class Clanmember {
     private Rank rank;
     private Long totalXP;
     private Long kills;
+    private boolean ironman;
+    private boolean hardcoreIronman;
 
     public String getFormattedXp() {
         return CommonsService.getFormattedNumber(this.totalXP);
