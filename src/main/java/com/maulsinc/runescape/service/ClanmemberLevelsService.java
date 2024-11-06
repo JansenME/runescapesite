@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.math.LongMath;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
+import com.maulsinc.runescape.model.Clanmember;
 import com.maulsinc.runescape.model.Level;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
@@ -41,6 +42,21 @@ public class ClanmemberLevelsService {
     @Autowired
     public ClanmemberLevelsService(final ClanmemberLevelsRepository clanmemberLevelsRepository) {
         this.clanmemberLevelsRepository = clanmemberLevelsRepository;
+    }
+
+    public List<ClanmemberLevels> getTop5ExperienceToday(final List<Clanmember> clanmembers) {
+        List<ClanmemberLevels> clanmemberLevels = new ArrayList<>(clanmembers.stream()
+                .map(clanmemberLevel -> getOneClanmemberLevels(clanmemberLevel.getName()))
+                .toList());
+
+        fixNullValues(clanmemberLevels);
+
+        clanmemberLevels.sort((level1, level2) -> Math.toIntExact(level2.getLevels().get(0).getExperienceToday() - level1.getLevels().get(0).getExperienceToday()));
+
+        return clanmemberLevels.stream()
+                .limit(5)
+                .filter(clanmemberLevel -> clanmemberLevel.getLevels().get(0).getExperienceToday() > 0)
+                .toList();
     }
 
     @ExecutionTimeLogger
@@ -119,6 +135,22 @@ public class ClanmemberLevelsService {
         } catch (NullPointerException e) {
             return "--";
         }
+    }
+
+    private void fixNullValues(List<ClanmemberLevels> clanmemberLevels) {
+        clanmemberLevels.forEach(clanmemberLevel -> {
+            if (clanmemberLevel.getLevels() == null) {
+                Level level = new Level();
+
+                level.setExperienceToday(0L);
+
+                clanmemberLevel.setLevels(List.of(level));
+            }
+
+            if (clanmemberLevel.getLevels().get(0).getExperienceToday() == null) {
+                clanmemberLevel.getLevels().get(0).setExperienceToday(0L);
+            }
+        });
     }
 
     @ExecutionTimeLogger

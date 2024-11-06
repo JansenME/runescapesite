@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.Lists;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
+import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.exception.ExecutionException;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
@@ -24,7 +25,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -99,6 +99,10 @@ public class ClanmembersService {
         return allClanmembers.stream()
                 .filter(clanmember -> clanmember.getName().equalsIgnoreCase(name))
                 .toList().get(0);
+    }
+
+    public List<ClanmemberLevels> getTop5ExperienceToday() {
+        return clanmemberLevelsService.getTop5ExperienceToday(getAllClanmembers().getSecond());
     }
 
     public Pair<String, List<Clanmember>> getAllClanmembers() {
