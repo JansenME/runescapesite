@@ -86,7 +86,7 @@ public class ConnectionService {
         try (CloseableHttpClient client = HttpClients.createDefault();
              CloseableHttpResponse response = client.execute(request)) {
             if (response.getStatusLine().getStatusCode() != 200) {
-                log.info(String.format("The url %s was called, but returned a %s response code", url, response.getStatusLine().getStatusCode()));
+                log.debug(String.format("The url %s was called, but returned a %s response code", url, response.getStatusLine().getStatusCode()));
                 return "";
             }
 

@@ -11,21 +11,50 @@
 <body class="is-preload">
 <div id="wrapper">
     <header id="header">
+        <nav>
+            <ul>
+                <li><a href="#members">Members</a></li>
+            </ul>
+        </nav>
         <div class="logo">
             <span class="icon fa-gem"></span>
         </div>
         <div class="content">
             <div class="inner">
                 <h1>Mauls Inc.</h1>
-                <p>This is an awesome website!</p>
-                <p>And if you don't like it, you can leave! :D</p>
+                <p>This is an awesome website!<br />
+                    And if you don't like it, you can leave! :D</p>
+                <h3>Top 5 experience today</h3>
+                <table th:if="${!top5ExperienceToday.isEmpty()}">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; width:10%;"></th>
+                            <th style="text-align:left">Name</th>
+                            <th style="text-align:left">Experience today</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
+                            <td style="text-align:left" th:text="${iStat.count}" />
+
+                            <td style="text-align:left">
+                                <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}" />
+                            </td>
+
+                            <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}" />
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table th:unless="${!top5ExperienceToday.isEmpty()}">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">This clan is slacking, no one got anything!</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#members">Members</a></li>
-            </ul>
-        </nav>
     </header>
 
     <div id="main">
