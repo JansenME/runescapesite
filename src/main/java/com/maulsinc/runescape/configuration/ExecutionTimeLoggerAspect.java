@@ -17,7 +17,7 @@ public class ExecutionTimeLoggerAspect {
             Object proceed = joinPoint.proceed();
             long executionTime = System.currentTimeMillis() - startTime;
 
-            log.info("{} method was executed in {}", joinPoint.getSignature().getName(), getTimeFormat(executionTime));
+            log.info("{}:{} method was executed in {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), getTimeFormat(executionTime));
 
             return proceed;
         } catch (Throwable e) {
@@ -31,6 +31,6 @@ public class ExecutionTimeLoggerAspect {
         long second = (totalMilliseconds / 1000) % 60;
         long minute = (totalMilliseconds / (1000 * 60)) % 60;
 
-        return String.format("%s:%s.%s", minute, second, milliseconds);
+        return String.format("%s:%02d:%03d", minute, second, milliseconds);
     }
 }
