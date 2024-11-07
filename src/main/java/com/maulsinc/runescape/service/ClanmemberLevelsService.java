@@ -44,21 +44,6 @@ public class ClanmemberLevelsService {
         this.clanmemberLevelsRepository = clanmemberLevelsRepository;
     }
 
-    public List<ClanmemberLevels> getTop5ExperienceToday(final List<Clanmember> clanmembers) {
-        List<ClanmemberLevels> clanmemberLevels = new ArrayList<>(clanmembers.stream()
-                .map(clanmemberLevel -> getOneClanmemberLevels(clanmemberLevel.getName()))
-                .toList());
-
-        fixNullValues(clanmemberLevels);
-
-        clanmemberLevels.sort((level1, level2) -> Math.toIntExact(level2.getLevels().get(0).getExperienceToday() - level1.getLevels().get(0).getExperienceToday()));
-
-        return clanmemberLevels.stream()
-                .limit(5)
-                .filter(clanmemberLevel -> clanmemberLevel.getLevels().get(0).getExperienceToday() > 0)
-                .toList();
-    }
-
     @ExecutionTimeLogger
     public ClanmemberLevels getOneClanmemberLevels(final String clanmemberName) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsRepository.findFirstByClanmemberOrderByIdDesc(clanmemberName);
@@ -135,22 +120,6 @@ public class ClanmemberLevelsService {
         } catch (NullPointerException e) {
             return "--";
         }
-    }
-
-    private void fixNullValues(List<ClanmemberLevels> clanmemberLevels) {
-        clanmemberLevels.forEach(clanmemberLevel -> {
-            if (clanmemberLevel.getLevels() == null) {
-                Level level = new Level();
-
-                level.setExperienceToday(0L);
-
-                clanmemberLevel.setLevels(List.of(level));
-            }
-
-            if (clanmemberLevel.getLevels().get(0).getExperienceToday() == null) {
-                clanmemberLevel.getLevels().get(0).setExperienceToday(0L);
-            }
-        });
     }
 
     @ExecutionTimeLogger

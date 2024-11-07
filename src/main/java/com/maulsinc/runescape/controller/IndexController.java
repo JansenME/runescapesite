@@ -33,7 +33,7 @@ public class IndexController {
         model.addAttribute("versionNumber", version);
         model.addAttribute("clanmembers", clanmembers);
         model.addAttribute("usDateFormat", CommonsService.getDateAsUSString(clanmembers.getFirst()));
-        model.addAttribute("top5ExperienceToday", clanmembersService.getTop5ExperienceToday());
+        model.addAttribute("top5ExperienceToday", clanmembersService.getClanmembersTop5Experience());
 
         model.addAttribute("currentYear", new SimpleDateFormat("yyyy").format(new Date()));
 

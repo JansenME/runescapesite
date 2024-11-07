@@ -36,6 +36,7 @@ public class ClanmembersService {
     private final ClanmemberLevelsService clanmemberLevelsService;
     private final ClanmemberMinigamesService clanmemberMinigamesService;
     private final ClanmemberQuestsService clanmemberQuestsService;
+    private final ClanmembersTop5ExperienceService clanmembersTop5ExperienceService;
     private final ClanmembersRepository clanmembersRepository;
 
     @Autowired
@@ -43,11 +44,13 @@ public class ClanmembersService {
                               final ClanmemberLevelsService clanmemberLevelsService,
                               final ClanmemberMinigamesService clanmemberMinigamesService,
                               final ClanmemberQuestsService clanmemberQuestsService,
+                              final ClanmembersTop5ExperienceService clanmembersTop5ExperienceService,
                               final ClanmembersRepository clanmembersRepository) {
         this.connectionService = connectionService;
         this.clanmemberLevelsService = clanmemberLevelsService;
         this.clanmemberMinigamesService = clanmemberMinigamesService;
         this.clanmemberQuestsService = clanmemberQuestsService;
+        this.clanmembersTop5ExperienceService = clanmembersTop5ExperienceService;
         this.clanmembersRepository = clanmembersRepository;
     }
 
@@ -81,6 +84,8 @@ public class ClanmembersService {
 
              handleExecutorService(unique);
         }
+
+        saveClanmembersTop5Experience();
     }
 
     @Scheduled(cron = "0 30 */4 * * *")
@@ -101,8 +106,12 @@ public class ClanmembersService {
                 .toList().get(0);
     }
 
-    public List<ClanmemberLevels> getTop5ExperienceToday() {
-        return clanmemberLevelsService.getTop5ExperienceToday(getAllClanmembers().getSecond());
+    public void saveClanmembersTop5Experience() {
+        clanmembersTop5ExperienceService.saveClanmembersTop5Experience(getAllClanmembers().getSecond());
+    }
+
+    public List<ClanmemberLevels> getClanmembersTop5Experience() {
+        return clanmembersTop5ExperienceService.getClanmembersTop5Experience();
     }
 
     public Pair<String, List<Clanmember>> getAllClanmembers() {
