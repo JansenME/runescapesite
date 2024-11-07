@@ -43,6 +43,7 @@ class ClanmembersServiceTest {
     @Mock ConnectionService connectionService;
     @Mock ClanmemberLevelsService clanmemberLevelsService;
     @Mock ClanmemberMinigamesService clanmemberMinigamesService;
+    @Mock ClanmembersTop5ExperienceService clanmembersTop5ExperienceService;
     @Mock ClanmemberQuestsService clanmemberQuestsService;
     @Mock ClanmembersRepository clanmembersRepository;
 
