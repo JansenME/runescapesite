@@ -98,6 +98,7 @@ public class ClanmembersService {
         }
     }
 
+    @ExecutionTimeLogger
     public Clanmember getOneNewestClanmember(final String name) {
         List<Clanmember> allClanmembers = getAllClanmembers().getSecond();
 

@@ -1,6 +1,7 @@
 package com.maulsinc.runescape.controller;
 
 import com.maulsinc.runescape.CommonsService;
+import com.maulsinc.runescape.model.Clanmember;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.ClanmemberMinigames;
 import com.maulsinc.runescape.model.ClanmemberQuests;
@@ -40,11 +41,14 @@ public class ClanmemberController {
 
     @GetMapping("/clanmember/{name}")
     public String getClanMemberLevels(Model model, @PathVariable String name) {
-        ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevels(name);
+        ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevelsForController(name);
         ClanmemberMinigames clanmemberMinigames = clanmemberMinigamesService.getOneClanmemberMinigames(name);
         ClanmemberQuests clanmemberQuests = clanmemberQuestsService.getOneClanmemberQuests(name);
-        boolean ironmanIndicator = clanmembersService.getOneNewestClanmember(name).isIronman();
-        boolean hardcoreIronmanIndicator = clanmembersService.getOneNewestClanmember(name).isHardcoreIronman();
+
+        Clanmember clanmember = clanmembersService.getOneNewestClanmember(name);
+
+        boolean ironmanIndicator = clanmember.isIronman();
+        boolean hardcoreIronmanIndicator = clanmember.isHardcoreIronman();
 
         model.addAttribute("versionNumber", version);
         model.addAttribute("clanmemberLevels", clanmemberLevels);
