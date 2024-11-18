@@ -85,9 +85,7 @@ public class ConnectionService {
     }
 
     private String getHttpEntityAsString(final String url) {
-        HttpUriRequest request = new HttpGet(url);
-        request.addHeader("accept", "application/json");
-        request.addHeader("accept", "text/csv");
+        HttpUriRequest request = createRequest(url);
 
         try (CloseableHttpClient client = createClient();
              CloseableHttpResponse response = client.execute(request)) {
@@ -100,6 +98,14 @@ public class ConnectionService {
         } catch (IOException e) {
             throw new RunescapeConnectionException(e.getMessage());
         }
+    }
+
+    private HttpUriRequest createRequest(final String url) {
+        HttpUriRequest request = new HttpGet(url);
+        request.addHeader("accept", "application/json");
+        request.addHeader("accept", "text/csv");
+
+        return request;
     }
 
     private CloseableHttpClient createClient() {
