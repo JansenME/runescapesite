@@ -2,6 +2,9 @@ package com.maulsinc.runescape;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.util.StringUtils;
 
 import java.util.Calendar;
@@ -55,24 +58,10 @@ class CommonsServiceTest {
         assertEquals("10-11-2024 8:00 a.m. CEST", dateAsString);
     }
 
-    @Test
-    void testGetDateAsUSStringNullDate() {
-        String dateAsString = CommonsService.getDateAsUSString(null);
-
-        assertFalse(StringUtils.hasText(dateAsString));
-    }
-
-    @Test
-    void testGetDateAsUSStringInvalidDate() {
-        String dateAsString = CommonsService.getDateAsUSString("Blub, ik ben een vis");
-
-        assertFalse(StringUtils.hasText(dateAsString));
-    }
-
-    @Test
-    void testGetDateAsUSStringWrongPatternDate() {
-        String dateAsString = CommonsService.getDateAsUSString("2024-10-11 10:00 AM UTC");
-
-        assertFalse(StringUtils.hasText(dateAsString));
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {" ", "", "Blub, ik ben een vis", "2024-10-11 10:00 AM UTC"})
+    void testGetDateAsUSStringInvalidValues(String value) {
+        assertFalse(StringUtils.hasText(CommonsService.getDateAsUSString(value)));
     }
 }

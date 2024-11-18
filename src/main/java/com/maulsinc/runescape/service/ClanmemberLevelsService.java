@@ -45,6 +45,10 @@ public class ClanmemberLevelsService {
     }
 
     @ExecutionTimeLogger
+    public ClanmemberLevels getOneClanmemberLevelsForController(final String clanmemberName) {
+        return getOneClanmemberLevels(clanmemberName);
+    }
+
     public ClanmemberLevels getOneClanmemberLevels(final String clanmemberName) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsRepository.findFirstByClanmemberOrderByIdDesc(clanmemberName);
 
