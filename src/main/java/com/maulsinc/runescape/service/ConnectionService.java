@@ -8,11 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,9 @@ public class ConnectionService {
     private static final String CLANMEMBER_PROFILE_URL = WEB_SERVICE_RUNEMETRICS_URL + "/profile/profile?user=";
 
     private static final String CLAN_NAME = "Mauls Inc";
+
+    private static final int MAX_RETRIES = 5;
+    private static final List<Integer> RETRYABLE_ERROR_CODES = List.of(500, 501, 502, 503, 504);
 
     public List<CSVRecord> getCSVRecordsFromRunescapeForClan() {
         return getCSVInfoFromRunescape(CLAN_INFORMATION_URL + replaceEmptySpace(CLAN_NAME));
@@ -83,7 +89,7 @@ public class ConnectionService {
         request.addHeader("accept", "application/json");
         request.addHeader("accept", "text/csv");
 
-        try (CloseableHttpClient client = HttpClients.createDefault();
+        try (CloseableHttpClient client = createClient();
              CloseableHttpResponse response = client.execute(request)) {
             if (response.getStatusLine().getStatusCode() != 200) {
                 log.debug(String.format("The url %s was called, but returned a %s response code", url, response.getStatusLine().getStatusCode()));
@@ -94,6 +100,30 @@ public class ConnectionService {
         } catch (IOException e) {
             throw new RunescapeConnectionException(e.getMessage());
         }
+    }
+
+    private CloseableHttpClient createClient() {
+        return HttpClientBuilder.create()
+                .setServiceUnavailableRetryStrategy(createServiceUnavailableRetryStrategy())
+                .build();
+    }
+
+    private ServiceUnavailableRetryStrategy createServiceUnavailableRetryStrategy() {
+        return new ServiceUnavailableRetryStrategy() {
+            @Override
+            public boolean retryRequest(HttpResponse httpResponse, int i, HttpContext httpContext) {
+                if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && i >= MAX_RETRIES) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public long getRetryInterval() {
+                return 1000;
+            }
+        };
     }
 
     private String replaceEmptySpace(String name) {
