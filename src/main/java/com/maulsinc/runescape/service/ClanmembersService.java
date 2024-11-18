@@ -143,15 +143,10 @@ public class ClanmembersService {
     }
 
     private void setCorrectBooleans(Clanmember clanmember) {
-        setCorrectValueForIronman(clanmember);
         setCorrectValueForHardcoreIronman(clanmember);
-    }
 
-    private void setCorrectValueForIronman(Clanmember clanmember) {
-        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
-
-        if(!records.isEmpty()) {
-            clanmember.setIronman(true);
+        if(!clanmember.isIronman()) {
+            setCorrectValueForIronman(clanmember);
         }
     }
 
@@ -160,6 +155,15 @@ public class ClanmembersService {
 
         if(!records.isEmpty()) {
             clanmember.setHardcoreIronman(true);
+            clanmember.setIronman(true);
+        }
+    }
+
+    private void setCorrectValueForIronman(Clanmember clanmember) {
+        List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
+
+        if(!records.isEmpty()) {
+            clanmember.setIronman(true);
         }
     }
 
