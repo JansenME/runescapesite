@@ -124,6 +124,10 @@ public class ClanmembersService {
         return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
     }
 
+/*    public Map<Clanmember, Boolean> getClanmembersWithOnlineIndicator(final List<Clanmember> clanmembers) {
+
+    }*/
+
     ClanmembersEntity getClanmembersFromRunescape() {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClan();
 
@@ -142,7 +146,7 @@ public class ClanmembersService {
         clanmembers.forEach(this::setCorrectBooleans);
     }
 
-    private void setCorrectBooleans(Clanmember clanmember) {
+    private void setCorrectBooleans(final Clanmember clanmember) {
         setCorrectValueForHardcoreIronman(clanmember);
 
         if(!clanmember.isIronman()) {
@@ -150,7 +154,7 @@ public class ClanmembersService {
         }
     }
 
-    private void setCorrectValueForHardcoreIronman(Clanmember clanmember) {
+    private void setCorrectValueForHardcoreIronman(final Clanmember clanmember) {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
 
         if(!records.isEmpty()) {
@@ -159,7 +163,7 @@ public class ClanmembersService {
         }
     }
 
-    private void setCorrectValueForIronman(Clanmember clanmember) {
+    private void setCorrectValueForIronman(final Clanmember clanmember) {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
 
         if(!records.isEmpty()) {

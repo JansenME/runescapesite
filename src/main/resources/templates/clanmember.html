@@ -30,6 +30,9 @@
                     <p>If this is not true, please let HC_Kloeperd know about this problem.</p>
                 </span>
                 <span th:if="${clanmemberLevels.clanmember != null}">
+                    <img width="150px" th:if="${isLoggedIn}" th:src="@{../images/online-big.png}" />
+                    <img width="150px" th:if="${!isLoggedIn}" th:src="@{../images/offline-big.png}" />
+
                     <h1 th:text="${clanmemberName}"></h1>
                     <p>
                         <img style="height:20px;" th:src="@{../images/profile/overall.png}" /> <span th:text="${totalLevel}"></span>
@@ -71,8 +74,13 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
             American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <b><a href="#levels">Normal ranks</a></b>
                 <a href="#levels-ironman"> | Ironman ranks</a>
@@ -111,8 +119,13 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
                 American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#levels">Normal ranks</a>
                 <a href="#levels-ironman"> | <b>Ironman ranks</b></a>
@@ -151,8 +164,13 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
                 American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#levels">Normal ranks</a>
                 <a href="#levels-ironman"> | Ironman ranks</a>
@@ -192,8 +210,13 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <b><a href="#minigames">Normal ranks</a></b>
                 <a href="#minigames-ironman"> | Ironman ranks</a>
@@ -228,8 +251,13 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#minigames">Normal ranks</a>
                 <a href="#minigames-ironman"> | <b>Ironman ranks</b></a>
@@ -264,8 +292,13 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberMinigames.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#minigames">Normal ranks</a>
                 <a href="#minigames-ironman"> | Ironman ranks</a>
@@ -301,8 +334,13 @@
             <p><i>Last updated: <span th:text="${clanmemberQuests.date}"></span><br />
                 American format: <span th:text="${usDateFormatQuests}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
-            <h2 th:text="${clanmemberQuests.clanmember}" class="major"></h2>
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" /> <br />
+
+            <h2 class="major">
+                <img width="40px" th:if="${isLoggedIn}" th:src="@{../images/online-small.png}" />
+                <img width="40px" th:if="${!isLoggedIn}" th:src="@{../images/offline-small.png}" />
+                <small th:text="${clanmemberLevels.clanmember}"></small>
+            </h2>
 
             <div class="table-wrapper" th:unless="${clanmemberQuests.getQuests.isEmpty()}">
                 <h3><span th:text="${questPoints}"></span> quest points</h3>

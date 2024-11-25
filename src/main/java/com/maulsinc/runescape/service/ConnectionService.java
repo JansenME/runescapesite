@@ -39,7 +39,7 @@ public class ConnectionService {
 
     private static final String CLAN_NAME = "Mauls Inc";
 
-    private static final int MAX_RETRIES = 5;
+    private static final int MAX_RETRIES = 10;
     private static final List<Integer> RETRYABLE_ERROR_CODES = List.of(500, 501, 502, 503, 504);
 
     public List<CSVRecord> getCSVRecordsFromRunescapeForClan() {
@@ -129,7 +129,7 @@ public class ConnectionService {
 
             @Override
             public long getRetryInterval() {
-                return 1000;
+                return 250;
             }
         };
     }
