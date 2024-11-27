@@ -9,8 +9,10 @@ import com.maulsinc.runescape.repository.ClanmembersTop5ExperienceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,32 +33,39 @@ public class ClanmembersTop5ExperienceService {
                 .map(clanmemberLevel -> clanmemberLevelsService.getOneClanmemberLevels(clanmemberLevel.getName()))
                 .toList());
 
-        fixNullValues(clanmemberLevels);
-
-        clanmemberLevels.sort((level1, level2) -> Math.toIntExact(level2.getLevels().get(0).getExperienceToday() - level1.getLevels().get(0).getExperienceToday()));
-
-        List<ClanmemberLevels> listToSave = clanmemberLevels.stream()
-                .limit(5)
-                .filter(clanmemberLevel -> clanmemberLevel.getLevels().get(0).getExperienceToday() > 0)
-                .toList();
-
-        clanmembersTop5ExperienceRepository.save(getClanmembersTop5ExperienceEntity(listToSave));
+        clanmembersTop5ExperienceRepository.save(getClanmembersTop5ExperienceEntity(clanmemberLevels));
     }
 
     @ExecutionTimeLogger
     public List<ClanmemberLevels> getClanmembersTop5Experience() {
         ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceRepository.findFirstByOrderByIdDesc();
 
-        if (clanmembersTop5ExperienceEntity != null) {
-            return clanmembersTop5ExperienceRepository.findFirstByOrderByIdDesc().getClanmemberLevels();
+        if (clanmembersTop5ExperienceEntity == null || clanmembersTop5ExperienceEntity.getClanmemberLevels() == null) {
+            return new ArrayList<>();
         }
 
-        return new ArrayList<>();
+        return clanmembersTop5ExperienceEntity.getClanmemberLevels();
+    }
+
+    ClanmembersTop5ExperienceEntity getClanmembersTop5ExperienceEntity(final List<ClanmemberLevels> clanmemberLevels) {
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = new ClanmembersTop5ExperienceEntity();
+
+        if(CollectionUtils.isEmpty(clanmemberLevels)) {
+            clanmembersTop5ExperienceEntity.setClanmemberLevels(new ArrayList<>());
+
+            return clanmembersTop5ExperienceEntity;
+        }
+
+        fixNullValues(clanmemberLevels);
+
+        clanmembersTop5ExperienceEntity.setClanmemberLevels(sortAndLimitList(clanmemberLevels));
+
+        return clanmembersTop5ExperienceEntity;
     }
 
     private void fixNullValues(final List<ClanmemberLevels> clanmemberLevels) {
         clanmemberLevels.forEach(clanmemberLevel -> {
-            if (clanmemberLevel.getLevels() == null) {
+            if (clanmemberLevel.getLevels().isEmpty()) {
                 Level level = new Level();
 
                 level.setExperienceToday(0L);
@@ -70,11 +79,12 @@ public class ClanmembersTop5ExperienceService {
         });
     }
 
-    private ClanmembersTop5ExperienceEntity getClanmembersTop5ExperienceEntity(final List<ClanmemberLevels> listToSave) {
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = new ClanmembersTop5ExperienceEntity();
+    private List<ClanmemberLevels> sortAndLimitList(final List<ClanmemberLevels> clanmemberLevels) {
+        clanmemberLevels.sort((level1, level2) -> Math.toIntExact(level2.getLevels().get(0).getExperienceToday() - level1.getLevels().get(0).getExperienceToday()));
 
-        clanmembersTop5ExperienceEntity.setClanmemberLevels(listToSave);
-
-        return clanmembersTop5ExperienceEntity;
+        return clanmemberLevels.stream()
+                .limit(5)
+                .filter(clanmemberLevel -> clanmemberLevel.getLevels().get(0).getExperienceToday() > 0)
+                .toList();
     }
 }
