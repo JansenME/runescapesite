@@ -12,10 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 public class ClanmemberLevels {
     private String clanmember;
+    private boolean loggedIn;
     private List<Level> levels;
     private String date;
 
     public static ClanmemberLevels mapEntityToModel(final ClanmemberLevelsEntity clanmemberLevelsEntity, final String date) {
-        return new ClanmemberLevels(clanmemberLevelsEntity.getClanmember(), clanmemberLevelsEntity.getLevels(), date);
+        return new ClanmemberLevels(clanmemberLevelsEntity.getClanmember(), clanmemberLevelsEntity.isLoggedIn(), clanmemberLevelsEntity.getLevels(), date);
     }
 }

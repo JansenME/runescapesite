@@ -59,9 +59,9 @@
 
     <div id="main">
         <article id="members">
-            <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span><br />
+            <p><i>Last updated: <span th:text="${normalDateFormat}"></span><br />
             American format: <span th:text="${usDateFormat}"></span></i></p>
-            <h2 class="major"><span th:text="${clanmembers.getSecond().size()}"></span> Members</h2>
+            <h2 class="major"><span th:text="${clanmembers.size()}"></span> Members - <span th:text="${amountOnline}"></span> online</h2>
 
             <div class="table-wrapper">
                 <table>
@@ -74,20 +74,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="clanmember : ${clanmembers.getSecond()}">
+                        <tr th:each="clanmember : ${clanmembers}">
                             <td>
-                                <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
-                                <span th:if="${clanmember.hardcoreIronman}" >
+                                <img width="15px" th:if="${clanmember.value}" th:src="@{../images/online-small.png}" />
+                                <img width="15px" th:if="${!clanmember.value}" th:src="@{../images/offline-small.png}" />
+
+                                <a th:href="@{/clanmember/{name}(name=${clanmember.key.name})}" th:text="${clanmember.key.name}" />
+                                <span th:if="${clanmember.key.hardcoreIronman}" >
                                     <img style="height:20px;" th:src="@{../images/hcim.png}" />
                                 </span>
-                                <span th:if="${clanmember.ironman AND !clanmember.hardcoreIronman}" >
+                                <span th:if="${clanmember.key.ironman AND !clanmember.key.hardcoreIronman}" >
                                     <img style="height:20px;" th:src="@{../images/im.png}" />
                                 </span>
                             </td>
 
-                            <td th:text="${clanmember.rank.getName()}" />
-                            <td th:text="${clanmember.getFormattedXp()}" />
-                            <td th:text="${clanmember.getFormattedKills()}" />
+                            <td th:text="${clanmember.key.rank.getName()}" />
+                            <td th:text="${clanmember.key.getFormattedXp()}" />
+                            <td th:text="${clanmember.key.getFormattedKills()}" />
                         </tr>
                     </tbody>
                 </table>

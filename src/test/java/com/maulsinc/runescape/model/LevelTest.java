@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LevelTest {
-
     @Test
     void testGetFormattedRank() {
         String result = createLevelWithCorrectValues().getFormattedRank();
@@ -16,6 +15,34 @@ class LevelTest {
     @Test
     void testGetFormattedRankMinusOneValue() {
         String result = createLevelWithExperienceMinusOne().getFormattedRank();
+
+        assertEquals("--", result);
+    }
+
+    @Test
+    void testGetFormattedRankIronman() {
+        String result = createLevelWithCorrectValues().getFormattedRankIronman();
+
+        assertEquals("45.000", result);
+    }
+
+    @Test
+    void testGetFormattedRankIronmanMinusOneValue() {
+        String result = createLevelWithExperienceMinusOne().getFormattedRankIronman();
+
+        assertEquals("--", result);
+    }
+
+    @Test
+    void testGetFormattedRankHardcoreIronman() {
+        String result = createLevelWithCorrectValues().getFormattedRankHardcoreIronman();
+
+        assertEquals("46.000", result);
+    }
+
+    @Test
+    void testGetFormattedRankHardcoreIronmanMinusOneValue() {
+        String result = createLevelWithExperienceMinusOne().getFormattedRankHardcoreIronman();
 
         assertEquals("--", result);
     }
@@ -89,6 +116,8 @@ class LevelTest {
         Level level = new Level();
         level.setSkill(Skill.AGILITY);
         level.setRank(5000L);
+        level.setRankIronman(45000L);
+        level.setRankHardcoreIronman(46000L);
         level.setLevel(150L);
         level.setExperience(2500000L);
         level.setExperienceToday(250000L);

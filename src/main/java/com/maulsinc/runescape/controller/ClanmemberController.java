@@ -58,6 +58,7 @@ public class ClanmemberController {
 
         model.addAttribute("ironmanIndicator", ironmanIndicator);
         model.addAttribute("hardcoreIronmanIndicator", hardcoreIronmanIndicator);
+        model.addAttribute("isLoggedIn", clanmemberLevels.isLoggedIn());
 
         model.addAttribute("usDateFormatLevels", CommonsService.getDateAsUSString(clanmemberLevels.getDate()));
         model.addAttribute("usDateFormatMinigames", CommonsService.getDateAsUSString(clanmemberMinigames.getDate()));

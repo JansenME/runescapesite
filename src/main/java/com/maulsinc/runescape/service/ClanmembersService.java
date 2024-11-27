@@ -19,8 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -75,7 +80,7 @@ public class ClanmembersService {
     @Scheduled(cron = "0 */20 * * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberInformation() {
-        List<Clanmember> clanmembers = getAllClanmembers().getSecond();
+        List<Clanmember> clanmembers = new ArrayList<>(getAllClanmembers().getSecond().keySet());
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             List<Clanmember> unique = clanmembers.stream()
@@ -91,7 +96,7 @@ public class ClanmembersService {
     @Scheduled(cron = "0 30 */4 * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberQuests() {
-        List<Clanmember> clanmembers = getAllClanmembers().getSecond();
+        List<Clanmember> clanmembers = new ArrayList<>(getAllClanmembers().getSecond().keySet());
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             clanmembers.forEach(this::checkIfSaveEachClanmemberQuests);
@@ -100,7 +105,7 @@ public class ClanmembersService {
 
     @ExecutionTimeLogger
     public Clanmember getOneNewestClanmember(final String name) {
-        List<Clanmember> allClanmembers = getAllClanmembers().getSecond();
+        List<Clanmember> allClanmembers = getAllClanmembers().getSecond().keySet().stream().toList();
 
         return allClanmembers.stream()
                 .filter(clanmember -> clanmember.getName().equalsIgnoreCase(name))
@@ -108,20 +113,36 @@ public class ClanmembersService {
     }
 
     public void saveClanmembersTop5Experience() {
-        clanmembersTop5ExperienceService.saveClanmembersTop5Experience(getAllClanmembers().getSecond());
+        clanmembersTop5ExperienceService.saveClanmembersTop5Experience(new ArrayList<>(getAllClanmembers().getSecond().keySet()));
     }
 
     public List<ClanmemberLevels> getClanmembersTop5Experience() {
         return clanmembersTop5ExperienceService.getClanmembersTop5Experience();
     }
 
-    public Pair<String, List<Clanmember>> getAllClanmembers() {
+    public Pair<String, Map<Clanmember, Boolean>> getAllClanmembers() {
         ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
         if(clanmembersEntity == null) {
-            return Pair.of("", new ArrayList<>());
+            return Pair.of("", new HashMap<>());
         }
 
-        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
+        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), getClanmembersWithOnlineIndicator(clanmembersEntity.getClanmembers()));
+    }
+
+    public Map<Clanmember, Boolean> getClanmembersWithOnlineIndicator(final List<Clanmember> clanmembers) {
+        Map<Clanmember, Boolean> out = new LinkedHashMap<>();
+
+        clanmembers.forEach(clanmember -> {
+                    ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevels(clanmember.getName());
+
+                    out.put(clanmember, clanmemberLevels.isLoggedIn());
+                });
+
+        return out;
+    }
+
+    public int getOnlineAmount(Map<Clanmember, Boolean> clanmembers) {
+        return Collections.frequency(clanmembers.values(), true);
     }
 
     ClanmembersEntity getClanmembersFromRunescape() {
@@ -142,7 +163,7 @@ public class ClanmembersService {
         clanmembers.forEach(this::setCorrectBooleans);
     }
 
-    private void setCorrectBooleans(Clanmember clanmember) {
+    private void setCorrectBooleans(final Clanmember clanmember) {
         setCorrectValueForHardcoreIronman(clanmember);
 
         if(!clanmember.isIronman()) {
@@ -150,7 +171,7 @@ public class ClanmembersService {
         }
     }
 
-    private void setCorrectValueForHardcoreIronman(Clanmember clanmember) {
+    private void setCorrectValueForHardcoreIronman(final Clanmember clanmember) {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberHardcoreIronman(clanmember.getName());
 
         if(!records.isEmpty()) {
@@ -159,7 +180,7 @@ public class ClanmembersService {
         }
     }
 
-    private void setCorrectValueForIronman(Clanmember clanmember) {
+    private void setCorrectValueForIronman(final Clanmember clanmember) {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClanmemberIronman(clanmember.getName());
 
         if(!records.isEmpty()) {

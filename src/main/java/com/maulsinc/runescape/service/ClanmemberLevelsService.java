@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.math.LongMath;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
-import com.maulsinc.runescape.model.Clanmember;
 import com.maulsinc.runescape.model.Level;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.entity.ClanmemberLevelsEntity;
@@ -78,6 +77,7 @@ public class ClanmemberLevelsService {
         String skillvaluesString = "skillvalues";
         String totalxpString = "totalxp";
         String rankString = "rank";
+        String loggedInString = "loggedIn";
 
         if(jsonNode == null || jsonNode.isNull()) {
             log.error("The JsonNode was {}, clanmember {}", jsonNode, clanmember);
@@ -85,11 +85,17 @@ public class ClanmemberLevelsService {
         }
 
         if(jsonNode.has(skillvaluesString) && jsonNode.has(totalxpString) && jsonNode.has(rankString)) {
+            boolean loggedIn = false;
+
+            if(jsonNode.has(loggedInString)) {
+                loggedIn = jsonNode.get(loggedInString).asBoolean();
+            }
+
             JsonNode skillvalues = jsonNode.get(skillvaluesString);
             Long totalXp = jsonNode.get(totalxpString).asLong();
             Long rank = Long.valueOf(jsonNode.get(rankString).asText().replaceAll(",", ""));
 
-            clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank, levelsIronman, levelsHardcoreIronman));
+            clanmemberLevelsRepository.save(getClanmemberLevelsEntityFromProfile(clanmember, skillvalues, totalXp, rank, levelsIronman, levelsHardcoreIronman, loggedIn));
         }
     }
 
@@ -207,10 +213,11 @@ public class ClanmemberLevelsService {
         return level;
     }
 
-    ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman) {
+    ClanmemberLevelsEntity getClanmemberLevelsEntityFromProfile(final String clanmember, final JsonNode skillvalues, final Long totalXp, final Long rank, final List<CSVRecord> levelsIronman, final List<CSVRecord> levelsHardcoreIronman, final boolean loggedIn) {
         ClanmemberLevelsEntity clanmemberLevelsEntity = new ClanmemberLevelsEntity();
 
         clanmemberLevelsEntity.setClanmember(clanmember);
+        clanmemberLevelsEntity.setLoggedIn(loggedIn);
         clanmemberLevelsEntity.setLevels(mapJsonNodeToLevels(skillvalues, totalXp, rank, levelsIronman, levelsHardcoreIronman));
 
         return clanmemberLevelsEntity;

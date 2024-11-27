@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-public class Clanmember {
+public class Clanmember implements Comparable<Clanmember> {
     private String name;
     private Rank rank;
     private Long totalXP;
@@ -59,5 +59,10 @@ public class Clanmember {
     @Override
     public int hashCode() {
         return Objects.hash(name, rank, totalXP, kills);
+    }
+
+    @Override
+    public int compareTo(Clanmember o) {
+        return rank.getOrder() - o.rank.getOrder();
     }
 }

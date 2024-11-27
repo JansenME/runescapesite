@@ -16,7 +16,6 @@ public class Minigame {
         if(rank == -1) {
             return "--";
         }
-
         return CommonsService.getFormattedNumber(rank);
     }
 

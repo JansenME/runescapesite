@@ -13,6 +13,7 @@ import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
@@ -38,7 +39,7 @@ public class ConnectionService {
 
     private static final String CLAN_NAME = "Mauls Inc";
 
-    private static final int MAX_RETRIES = 5;
+    private static final int MAX_RETRIES = 10;
     private static final List<Integer> RETRYABLE_ERROR_CODES = List.of(500, 501, 502, 503, 504);
 
     public List<CSVRecord> getCSVRecordsFromRunescapeForClan() {
@@ -117,8 +118,9 @@ public class ConnectionService {
     private ServiceUnavailableRetryStrategy createServiceUnavailableRetryStrategy() {
         return new ServiceUnavailableRetryStrategy() {
             @Override
-            public boolean retryRequest(HttpResponse httpResponse, int i, HttpContext httpContext) {
-                if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && i >= MAX_RETRIES) {
+            public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
+                if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && executionCount >= MAX_RETRIES) {
+                    log.debug(String.format("This is try number %s. The url %s came back with a %s response", executionCount, ((HttpClientContext) httpContext).getRequest().getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode()));
                     return true;
                 }
 
@@ -127,7 +129,7 @@ public class ConnectionService {
 
             @Override
             public long getRetryInterval() {
-                return 1000;
+                return 250;
             }
         };
     }
