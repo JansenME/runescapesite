@@ -120,6 +120,7 @@ public class ClanmembersService {
         return clanmembersTop5ExperienceService.getClanmembersTop5Experience();
     }
 
+    @ExecutionTimeLogger
     public Pair<String, Map<Clanmember, Boolean>> getAllClanmembers() {
         ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
         if(clanmembersEntity == null) {
@@ -129,6 +130,7 @@ public class ClanmembersService {
         return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), getClanmembersWithOnlineIndicator(clanmembersEntity.getClanmembers()));
     }
 
+    @ExecutionTimeLogger
     public Map<Clanmember, Boolean> getClanmembersWithOnlineIndicator(final List<Clanmember> clanmembers) {
         Map<Clanmember, Boolean> out = new LinkedHashMap<>();
 
@@ -141,6 +143,7 @@ public class ClanmembersService {
         return out;
     }
 
+    @ExecutionTimeLogger
     public int getOnlineAmount(Map<Clanmember, Boolean> clanmembers) {
         return Collections.frequency(clanmembers.values(), true);
     }

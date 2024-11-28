@@ -120,7 +120,7 @@ public class ConnectionService {
             @Override
             public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
                 if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && executionCount >= MAX_RETRIES) {
-                    log.debug(String.format("This is try number %s. The url %s came back with a %s response", executionCount, ((HttpClientContext) httpContext).getRequest().getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode()));
+                    log.info(String.format("This is try number %s. The url %s came back with a %s response", executionCount, ((HttpClientContext) httpContext).getRequest().getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode()));
                     return true;
                 }
 
