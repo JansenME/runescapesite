@@ -65,7 +65,7 @@ public class ClanmembersTop5ExperienceService {
 
     private void fixNullValues(final List<ClanmemberLevels> clanmemberLevels) {
         clanmemberLevels.forEach(clanmemberLevel -> {
-            if (clanmemberLevel.getLevels().isEmpty()) {
+            if (CollectionUtils.isEmpty(clanmemberLevel.getLevels())) {
                 Level level = new Level();
 
                 level.setExperienceToday(0L);
