@@ -5,7 +5,6 @@ import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.Level;
 import com.maulsinc.runescape.model.entity.ClanmembersTop5ExperienceEntity;
 import com.maulsinc.runescape.repository.ClanmembersTop5ExperienceRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -90,7 +89,7 @@ class ClanmembersTop5ExperienceServiceTest {
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, 6999965L));
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
 
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.getClanmembersTop5ExperienceEntity(clanmemberLevels);
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
         assertEquals(5, clanmembersTop5ExperienceEntity.getClanmemberLevels().size());
 
@@ -124,7 +123,7 @@ class ClanmembersTop5ExperienceServiceTest {
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, 6999965L));
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
 
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.getClanmembersTop5ExperienceEntity(clanmemberLevels);
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
         assertEquals(3, clanmembersTop5ExperienceEntity.getClanmemberLevels().size());
 
@@ -152,7 +151,7 @@ class ClanmembersTop5ExperienceServiceTest {
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, null));
         clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
 
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.getClanmembersTop5ExperienceEntity(clanmemberLevels);
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
         assertEquals(2, clanmembersTop5ExperienceEntity.getClanmemberLevels().size());
 
@@ -167,14 +166,14 @@ class ClanmembersTop5ExperienceServiceTest {
     void testGetClanmembersTop5ExperienceEntityEmptyList() {
         List<ClanmemberLevels> clanmemberLevels = new ArrayList<>();
 
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.getClanmembersTop5ExperienceEntity(clanmemberLevels);
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
         assertEquals(0, clanmembersTop5ExperienceEntity.getClanmemberLevels().size());
     }
 
     @Test
     void testGetClanmembersTop5ExperienceEntityNullList() {
-        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.getClanmembersTop5ExperienceEntity(null);
+        ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(null);
 
         assertEquals(0, clanmembersTop5ExperienceEntity.getClanmemberLevels().size());
     }
@@ -249,7 +248,6 @@ class ClanmembersTop5ExperienceServiceTest {
         ClanmemberLevels clanmemberLevels = new ClanmemberLevels();
 
         clanmemberLevels.setClanmember(name);
-        clanmemberLevels.setLoggedIn(loggedIn);
         clanmemberLevels.setLevels(createLevelList(totalExperienceToday));
 
         return clanmemberLevels;
@@ -272,7 +270,6 @@ class ClanmembersTop5ExperienceServiceTest {
         ClanmemberLevels clanmemberLevels = new ClanmemberLevels();
 
         clanmemberLevels.setClanmember(name);
-        clanmemberLevels.setLoggedIn(false);
         clanmemberLevels.setLevels(Collections.emptyList());
 
         return clanmemberLevels;

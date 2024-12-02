@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class IndexController {
@@ -29,14 +28,11 @@ public class IndexController {
 
     @GetMapping(value={"", "/", "/index"})
     public String index(Model model) {
-        Pair<String, Map<Clanmember, Boolean>> clanmembersWithDate = clanmembersService.getAllClanmembers();
-        Map<Clanmember, Boolean> clanmembers = clanmembersWithDate.getSecond();
+        Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
 
         model.addAttribute("versionNumber", version);
         model.addAttribute("clanmembers", clanmembers);
-        model.addAttribute("amountOnline", clanmembersService.getOnlineAmount(clanmembers));
-        model.addAttribute("normalDateFormat", clanmembersWithDate.getFirst());
-        model.addAttribute("usDateFormat", CommonsService.getDateAsUSString(clanmembersWithDate.getFirst()));
+        model.addAttribute("usDateFormat", CommonsService.getDateAsUSString(clanmembers.getFirst()));
         model.addAttribute("top5ExperienceToday", clanmembersService.getClanmembersTop5Experience());
 
         model.addAttribute("currentYear", new SimpleDateFormat("yyyy").format(new Date()));

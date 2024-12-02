@@ -27,30 +27,30 @@
                 <h3>Top 5 experience today</h3>
                 <table th:if="${!top5ExperienceToday.isEmpty()}">
                     <thead>
-                        <tr>
-                            <th style="text-align:left; width:10%;"></th>
-                            <th style="text-align:left">Name</th>
-                            <th style="text-align:left">Experience today</th>
-                        </tr>
+                    <tr>
+                        <th style="text-align:left; width:10%;"></th>
+                        <th style="text-align:left">Name</th>
+                        <th style="text-align:left">Experience today</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
-                            <td style="text-align:left" th:text="${iStat.count}" />
+                    <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
+                        <td style="text-align:left" th:text="${iStat.count}" />
 
-                            <td style="text-align:left">
-                                <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}" />
-                            </td>
+                        <td style="text-align:left">
+                            <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}" />
+                        </td>
 
-                            <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}" />
-                        </tr>
+                        <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}" />
+                    </tr>
                     </tbody>
                 </table>
 
                 <table th:unless="${!top5ExperienceToday.isEmpty()}">
                     <thead>
-                        <tr>
-                            <th style="text-align:center">This clan is slacking, no one got anything!</th>
-                        </tr>
+                    <tr>
+                        <th style="text-align:center">This clan is slacking, no one got anything!</th>
+                    </tr>
                     </thead>
                 </table>
             </div>
@@ -59,39 +59,36 @@
 
     <div id="main">
         <article id="members">
-            <p><i>Last updated: <span th:text="${normalDateFormat}"></span><br />
-            American format: <span th:text="${usDateFormat}"></span></i></p>
-            <h2 class="major"><span th:text="${clanmembers.size()}"></span> Members - <span th:text="${amountOnline}"></span> online</h2>
+            <p><i>Last updated: <span th:text="${clanmembers.getFirst()}"></span><br />
+                American format: <span th:text="${usDateFormat}"></span></i></p>
+            <h2 class="major"><span th:text="${clanmembers.getSecond().size()}"></span> Members</h2>
 
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Rank</th>
-                            <th>Experience in clan</th>
-                            <th>Kills</th>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Rank</th>
+                        <th>Experience in clan</th>
+                        <th>Kills</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="clanmember : ${clanmembers}">
-                            <td>
-                                <img width="15px" th:if="${clanmember.value}" th:src="@{../images/online-small.png}" />
-                                <img width="15px" th:if="${!clanmember.value}" th:src="@{../images/offline-small.png}" />
-
-                                <a th:href="@{/clanmember/{name}(name=${clanmember.key.name})}" th:text="${clanmember.key.name}" />
-                                <span th:if="${clanmember.key.hardcoreIronman}" >
+                    <tr th:each="clanmember : ${clanmembers.getSecond()}">
+                        <td>
+                            <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
+                            <span th:if="${clanmember.hardcoreIronman}" >
                                     <img style="height:20px;" th:src="@{../images/hcim.png}" />
                                 </span>
-                                <span th:if="${clanmember.key.ironman AND !clanmember.key.hardcoreIronman}" >
+                            <span th:if="${clanmember.ironman AND !clanmember.hardcoreIronman}" >
                                     <img style="height:20px;" th:src="@{../images/im.png}" />
                                 </span>
-                            </td>
+                        </td>
 
-                            <td th:text="${clanmember.key.rank.getName()}" />
-                            <td th:text="${clanmember.key.getFormattedXp()}" />
-                            <td th:text="${clanmember.key.getFormattedKills()}" />
-                        </tr>
+                        <td th:text="${clanmember.rank.getName()}" />
+                        <td th:text="${clanmember.getFormattedXp()}" />
+                        <td th:text="${clanmember.getFormattedKills()}" />
+                    </tr>
                     </tbody>
                 </table>
             </div>

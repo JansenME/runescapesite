@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,7 +32,7 @@ public class ClanmembersTop5ExperienceService {
                 .map(clanmemberLevel -> clanmemberLevelsService.getOneClanmemberLevels(clanmemberLevel.getName()))
                 .toList());
 
-        clanmembersTop5ExperienceRepository.save(getClanmembersTop5ExperienceEntity(clanmemberLevels));
+        clanmembersTop5ExperienceRepository.save(createClanmembersTop5ExperienceEntity(clanmemberLevels));
     }
 
     @ExecutionTimeLogger
@@ -47,7 +46,7 @@ public class ClanmembersTop5ExperienceService {
         return clanmembersTop5ExperienceEntity.getClanmemberLevels();
     }
 
-    ClanmembersTop5ExperienceEntity getClanmembersTop5ExperienceEntity(final List<ClanmemberLevels> clanmemberLevels) {
+    ClanmembersTop5ExperienceEntity createClanmembersTop5ExperienceEntity(final List<ClanmemberLevels> clanmemberLevels) {
         ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = new ClanmembersTop5ExperienceEntity();
 
         if(CollectionUtils.isEmpty(clanmemberLevels)) {

@@ -2,10 +2,7 @@ package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberLevels;
@@ -15,7 +12,6 @@ import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.model.Clanmember;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,18 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -85,7 +75,7 @@ public class ClanmembersService {
     @Scheduled(cron = "0 */20 * * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberInformation() {
-        List<Clanmember> clanmembers = new ArrayList<>(getAllClanmembers().getSecond().keySet());
+        List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             List<Clanmember> unique = clanmembers.stream()
@@ -101,7 +91,7 @@ public class ClanmembersService {
     @Scheduled(cron = "0 30 */4 * * *")
     @ExecutionTimeLogger
     public void getAllClanmembersAndSaveClanmemberQuests() {
-        List<Clanmember> clanmembers = new ArrayList<>(getAllClanmembers().getSecond().keySet());
+        List<Clanmember> clanmembers = getAllClanmembers().getSecond();
 
         if(!CollectionUtils.isEmpty(clanmembers)) {
             clanmembers.forEach(this::checkIfSaveEachClanmemberQuests);
@@ -110,7 +100,7 @@ public class ClanmembersService {
 
     @ExecutionTimeLogger
     public Clanmember getOneNewestClanmember(final String name) {
-        List<Clanmember> allClanmembers = getAllClanmembers().getSecond().keySet().stream().toList();
+        List<Clanmember> allClanmembers = getAllClanmembers().getSecond();
 
         return allClanmembers.stream()
                 .filter(clanmember -> clanmember.getName().equalsIgnoreCase(name))
@@ -118,7 +108,7 @@ public class ClanmembersService {
     }
 
     public void saveClanmembersTop5Experience() {
-        clanmembersTop5ExperienceService.saveClanmembersTop5Experience(new ArrayList<>(getAllClanmembers().getSecond().keySet()));
+        clanmembersTop5ExperienceService.saveClanmembersTop5Experience(getAllClanmembers().getSecond());
     }
 
     public List<ClanmemberLevels> getClanmembersTop5Experience() {
@@ -126,51 +116,13 @@ public class ClanmembersService {
     }
 
     @ExecutionTimeLogger
-    public Pair<String, Map<Clanmember, Boolean>> getAllClanmembers() {
+    public Pair<String, List<Clanmember>> getAllClanmembers() {
         ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
         if(clanmembersEntity == null) {
-            return Pair.of("", new HashMap<>());
+            return Pair.of("", new ArrayList<>());
         }
 
-        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), getClanmembersWithOnlineIndicator(clanmembersEntity.getClanmembers()));
-    }
-
-    @ExecutionTimeLogger
-    public Map<Clanmember, Boolean> getClanmembersWithOnlineIndicator(final List<Clanmember> clanmembers) {
-        Map<Clanmember, Boolean> out = new HashMap<>();
-
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
-
-        List<Callable<String>> callables = new ArrayList<>();
-
-        clanmembers.forEach(clanmember -> {
-            Callable<String> callable = () -> {
-                ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevels(clanmember.getName());
-
-                out.put(clanmember, clanmemberLevels.isLoggedIn());
-                return "Task execution";
-            };
-
-            callables.add(callable);
-        });
-
-        try {
-            executorService.invokeAll(callables);
-        } catch (InterruptedException e) {
-            log.error("Something went wrong with the executor service");
-            Thread.currentThread().interrupt();
-            throw new ExecutionException("The execution failed.", e);
-        } finally {
-            executorService.shutdown();
-            log.info("ExecutorService was successfully shutdown.");
-        }
-
-        return sortMap(out);
-    }
-
-    @ExecutionTimeLogger
-    public int getOnlineAmount(Map<Clanmember, Boolean> clanmembers) {
-        return Collections.frequency(clanmembers.values(), true);
+        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
     }
 
     ClanmembersEntity getClanmembersFromRunescape() {
@@ -185,17 +137,6 @@ public class ClanmembersService {
         setIronmanBooleans(clanmembers);
 
         return new ClanmembersEntity(clanmembers);
-    }
-
-    private Map<Clanmember, Boolean> sortMap(final Map<Clanmember, Boolean> clanmembers) {
-        return clanmembers.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new
-                ));
     }
 
     private void setIronmanBooleans(final List<Clanmember> clanmembers) {

@@ -473,22 +473,22 @@ class ClanmembersServiceTest {
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
         when(clanmemberLevelsService.getOneClanmemberLevels(any())).thenReturn(new ClanmemberLevels());
 
-        Pair<String, Map<Clanmember, Boolean>> clanmembers = clanmembersService.getAllClanmembers();
+        Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
 
         assertEquals(4, clanmembers.getSecond().size());
 
-        assertEquals(Rank.CAPTAIN, clanmembers.getSecond().keySet().stream().toList().get(1).getRank());
-        assertEquals(2155455L, clanmembers.getSecond().keySet().stream().toList().get(1).getTotalXP());
+        assertEquals(Rank.CAPTAIN, clanmembers.getSecond().stream().toList().get(1).getRank());
+        assertEquals(2155455L, clanmembers.getSecond().stream().toList().get(1).getTotalXP());
 
-        assertEquals(Rank.OWNER, clanmembers.getSecond().keySet().stream().toList().get(3).getRank());
-        assertEquals(10L, clanmembers.getSecond().keySet().stream().toList().get(3).getKills());
+        assertEquals(Rank.OWNER, clanmembers.getSecond().stream().toList().get(3).getRank());
+        assertEquals(10L, clanmembers.getSecond().stream().toList().get(3).getKills());
     }
 
     @Test
     void testGetAllClanmembersClanmembersNull() {
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(null);
 
-        Pair<String, Map<Clanmember, Boolean>> clanmembers = clanmembersService.getAllClanmembers();
+        Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
 
         assertEquals("", clanmembers.getFirst());
         assertEquals(0, clanmembers.getSecond().size());
@@ -500,28 +500,9 @@ class ClanmembersServiceTest {
         clanmembersEntity.setId(ObjectId.get());
         when(clanmembersRepository.findFirstByOrderByIdDesc()).thenReturn(clanmembersEntity);
 
-        Pair<String, Map<Clanmember, Boolean>> clanmembers = clanmembersService.getAllClanmembers();
+        Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
 
         assertEquals(0, clanmembers.getSecond().size());
-    }
-
-    @Test
-    void testGetOnlineAmount() {
-        Map<Clanmember, Boolean> clanmembers = new HashMap<>();
-
-        clanmembers.put(createClanmember("Clanmember 1", Rank.GENERAL, 45585L, 5L, true, false), false);
-        clanmembers.put(createClanmember("Clanmember 2", Rank.RECRUIT, 588L, 4L, true, true), true);
-        clanmembers.put(createClanmember("Clanmember 3", Rank.RECRUIT, 554385L, 123L, true, false), true);
-        clanmembers.put(createClanmember("Clanmember 4", Rank.LIEUTENANT, 97888L, 0L, true, true), true);
-        clanmembers.put(createClanmember("Clanmember 5", Rank.OWNER, 135531L, 0L, false, false), false);
-        clanmembers.put(createClanmember("Clanmember 6", Rank.CAPTAIN, 23454163L, 0L, true, true), true);
-        clanmembers.put(createClanmember("Clanmember 7", Rank.OVERSEER, 46423145L, 0L, false, false), false);
-        clanmembers.put(createClanmember("Clanmember 8", Rank.ADMIN, 54655L, 88L, true, true), true);
-        clanmembers.put(createClanmember("Clanmember 9", Rank.OVERSEER, 44658L, 16L, false, false), false);
-        clanmembers.put(createClanmember("Clanmember 10", Rank.DEPUTY_OWNER, 558486L, 0L, false, false), false);
-
-        assertEquals(5, clanmembersService.getOnlineAmount(clanmembers));
-
     }
 
     private JsonNode createValidJsonNode() {
