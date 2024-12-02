@@ -32,14 +32,14 @@ class ClanmembersTop5ExperienceServiceTest {
     void testSaveClanmembersTop5ExperienceHappyFlow() {
         List<Clanmember> clanmembers = createValidClanmemberList();
 
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(0).getName())).thenReturn(createClanmemberLevels(clanmembers.get(0).getName(), true, 501325L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(1).getName())).thenReturn(createClanmemberLevels(clanmembers.get(1).getName(), false, 45885L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(2).getName())).thenReturn(createClanmemberLevels(clanmembers.get(2).getName(), false, 31255L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(3).getName())).thenReturn(createClanmemberLevels(clanmembers.get(3).getName(), false, 123588L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(4).getName())).thenReturn(createClanmemberLevels(clanmembers.get(4).getName(), true, 789635L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(5).getName())).thenReturn(createClanmemberLevels(clanmembers.get(5).getName(), false, 81444553L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(6).getName())).thenReturn(createClanmemberLevels(clanmembers.get(6).getName(), true, 6999965L));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(7).getName())).thenReturn(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(0).getName())).thenReturn(createClanmemberLevels(clanmembers.get(0).getName(), 501325L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(1).getName())).thenReturn(createClanmemberLevels(clanmembers.get(1).getName(), 45885L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(2).getName())).thenReturn(createClanmemberLevels(clanmembers.get(2).getName(), 31255L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(3).getName())).thenReturn(createClanmemberLevels(clanmembers.get(3).getName(), 123588L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(4).getName())).thenReturn(createClanmemberLevels(clanmembers.get(4).getName(), 789635L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(5).getName())).thenReturn(createClanmemberLevels(clanmembers.get(5).getName(), 81444553L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(6).getName())).thenReturn(createClanmemberLevels(clanmembers.get(6).getName(), 6999965L));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(7).getName())).thenReturn(createClanmemberLevels(clanmembers.get(7).getName(), 254585465L));
 
         clanmembersTop5ExperienceService.saveClanmembersTop5Experience(clanmembers);
 
@@ -61,14 +61,14 @@ class ClanmembersTop5ExperienceServiceTest {
     void testSaveClanmembersTop5ExperienceNullExperienceTodayInClanmemberLevels() {
         List<Clanmember> clanmembers = createValidClanmemberList();
 
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(0).getName())).thenReturn(createClanmemberLevels(clanmembers.get(0).getName(), true, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(1).getName())).thenReturn(createClanmemberLevels(clanmembers.get(1).getName(), false, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(2).getName())).thenReturn(createClanmemberLevels(clanmembers.get(2).getName(), false, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(3).getName())).thenReturn(createClanmemberLevels(clanmembers.get(3).getName(), false, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(4).getName())).thenReturn(createClanmemberLevels(clanmembers.get(4).getName(), true, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(5).getName())).thenReturn(createClanmemberLevels(clanmembers.get(5).getName(), false, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(6).getName())).thenReturn(createClanmemberLevels(clanmembers.get(6).getName(), true, null));
-        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(7).getName())).thenReturn(createClanmemberLevels(clanmembers.get(7).getName(), false, null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(0).getName())).thenReturn(createClanmemberLevels(clanmembers.get(0).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(1).getName())).thenReturn(createClanmemberLevels(clanmembers.get(1).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(2).getName())).thenReturn(createClanmemberLevels(clanmembers.get(2).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(3).getName())).thenReturn(createClanmemberLevels(clanmembers.get(3).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(4).getName())).thenReturn(createClanmemberLevels(clanmembers.get(4).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(5).getName())).thenReturn(createClanmemberLevels(clanmembers.get(5).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(6).getName())).thenReturn(createClanmemberLevels(clanmembers.get(6).getName(), null));
+        when(clanmemberLevelsService.getOneClanmemberLevels(clanmembers.get(7).getName())).thenReturn(createClanmemberLevels(clanmembers.get(7).getName(), null));
 
         clanmembersTop5ExperienceService.saveClanmembersTop5Experience(clanmembers);
 
@@ -80,14 +80,14 @@ class ClanmembersTop5ExperienceServiceTest {
         List<Clanmember> clanmembers = createValidClanmemberList();
 
         List<ClanmemberLevels> clanmemberLevels = new ArrayList<>();
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), true, 501325L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), false, 45885L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), false, 31255L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), false, 123588L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), true, 789635L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), false, 81444553L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, 6999965L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), 501325L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), 45885L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), 31255L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), 123588L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), 789635L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), 81444553L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), 6999965L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), 254585465L));
 
         ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
@@ -114,14 +114,14 @@ class ClanmembersTop5ExperienceServiceTest {
         List<Clanmember> clanmembers = createValidClanmemberList();
 
         List<ClanmemberLevels> clanmemberLevels = new ArrayList<>();
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), true, 0L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), false, 0L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), false, 0L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), false, 0L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), true, 0L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), false, 81444553L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, 6999965L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), 0L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), 0L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), 0L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), 0L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), 0L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), 81444553L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), 6999965L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), 254585465L));
 
         ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
@@ -142,14 +142,14 @@ class ClanmembersTop5ExperienceServiceTest {
         List<Clanmember> clanmembers = createValidClanmemberList();
 
         List<ClanmemberLevels> clanmemberLevels = new ArrayList<>();
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), true, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), false, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), false, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), false, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), true, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), false, 81444553L));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), true, null));
-        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), false, 254585465L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(0).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(1).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(2).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(3).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(4).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(5).getName(), 81444553L));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(6).getName(), null));
+        clanmemberLevels.add(createClanmemberLevels(clanmembers.get(7).getName(), 254585465L));
 
         ClanmembersTop5ExperienceEntity clanmembersTop5ExperienceEntity = clanmembersTop5ExperienceService.createClanmembersTop5ExperienceEntity(clanmemberLevels);
 
@@ -244,7 +244,7 @@ class ClanmembersTop5ExperienceServiceTest {
         return clanmember;
     }
 
-    private ClanmemberLevels createClanmemberLevels(final String name, final boolean loggedIn, final Long totalExperienceToday) {
+    private ClanmemberLevels createClanmemberLevels(final String name, final Long totalExperienceToday) {
         ClanmemberLevels clanmemberLevels = new ClanmemberLevels();
 
         clanmemberLevels.setClanmember(name);
@@ -280,7 +280,7 @@ class ClanmembersTop5ExperienceServiceTest {
 
         List<ClanmemberLevels> clanmemberLevels = new ArrayList<>();
 
-        clanmemberLevels.add(createClanmemberLevels("Clanmember 1", false, 50554468L));
+        clanmemberLevels.add(createClanmemberLevels("Clanmember 1", 50554468L));
 
         clanmembersTop5ExperienceEntity.setClanmemberLevels(clanmemberLevels);
 
