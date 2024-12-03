@@ -266,7 +266,7 @@ public class ClanmemberLevelsService {
 
         level.setSkill(skill);
         level.setRank(jsonNode.get("rank").asLong());
-        level.setLevel(getCorrectLevel(Long.valueOf(jsonNode.get("level").asInt()), skill, experience));
+        level.setLevel(getCorrectLevel(jsonNode.get("level").asLong(), skill, experience));
         level.setExperience(experience);
 
         try {

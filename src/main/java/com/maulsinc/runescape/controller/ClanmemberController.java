@@ -9,12 +9,16 @@ import com.maulsinc.runescape.service.ClanmemberLevelsService;
 import com.maulsinc.runescape.service.ClanmemberMinigamesService;
 import com.maulsinc.runescape.service.ClanmemberQuestsService;
 import com.maulsinc.runescape.service.ClanmembersService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Calendar;
 
@@ -72,5 +76,15 @@ public class ClanmemberController {
         model.addAttribute("runescore", clanmemberMinigamesService.getRunescoreMinigame(clanmemberMinigames).getFormattedScore());
 
         return "clanmember";
+    }
+
+    @GetMapping("/setCookie/{name}")
+    public RedirectView setCookie(RedirectAttributes attributes, HttpServletResponse response, @PathVariable String name) {
+        Cookie cookie = new Cookie("ownName", name);
+        cookie.setMaxAge(60*60*24*365);
+
+        response.addCookie(cookie);
+
+        return new RedirectView("/clanmember/" + name);
     }
 }

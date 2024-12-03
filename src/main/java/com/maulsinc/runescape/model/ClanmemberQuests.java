@@ -3,10 +3,8 @@ package com.maulsinc.runescape.model;
 import com.maulsinc.runescape.model.entity.ClanmemberQuestsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

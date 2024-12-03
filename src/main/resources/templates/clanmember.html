@@ -38,6 +38,7 @@
                         <img style="height:20px;" th:src="@{../images/profile/quest.png}" /> <span th:text="${questPoints}"></span>
                         <img style="height:20px;" th:src="@{../images/profile/runescore.png}" /> <span th:text="${runescore}"></span>
                     </p>
+                    <button type="button" th:onclick="'window.location.href= \'' + @{/setCookie/{name}(name=${clanmemberName})}+ '\''">This is me!</button>
                 </span>
             </div>
         </div>

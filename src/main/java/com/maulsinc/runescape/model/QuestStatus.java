@@ -2,13 +2,13 @@ package com.maulsinc.runescape.model;
 
 import lombok.Getter;
 
+@Getter
 public enum QuestStatus {
     UNKNOWN("Unknown"),
     NOT_STARTED("Not started"),
     STARTED("Started"),
     COMPLETED("Completed");
 
-    @Getter
     private final String name;
 
     QuestStatus(final String name) {
