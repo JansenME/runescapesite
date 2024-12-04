@@ -1,7 +1,6 @@
 package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberQuests;
 import com.maulsinc.runescape.model.Quest;

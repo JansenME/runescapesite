@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.service;
 
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.*;
 import com.maulsinc.runescape.repository.ClanmemberMinigamesRepository;
