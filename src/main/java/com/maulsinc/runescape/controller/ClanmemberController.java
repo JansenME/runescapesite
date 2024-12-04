@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -51,9 +53,40 @@ public class ClanmemberController {
         this.clanmemberQuestsService = clanmemberQuestsService;
     }
 
+    @GetMapping("/clanmember")
+    public String getPersonalClanmemberLevels(HttpServletRequest request, HttpServletResponse response, Model model) {
+        String name = clanmembersService.getCookieValue(request.getCookies());
+
+        if(!StringUtils.hasLength(name)) {
+            return "setthecookie";
+        }
+
+        fillModel(model, replacePlusToSpace(name));
+
+        return "clanmember";
+    }
+
     @GetMapping("/clanmember/{name}")
     public String getClanMemberLevels(HttpServletRequest request, Model model, @PathVariable String name) {
-        name = replacePlusToSpace(name);
+        fillModel(model, replacePlusToSpace(name));
+
+        return "clanmember";
+    }
+
+    @GetMapping("/setCookie/{name}")
+    public RedirectView setCookie(RedirectAttributes attributes, HttpServletResponse response, HttpServletRequest request, @PathVariable String name) {
+        Cookie cookie = new Cookie(COOKIE_NAME, name);
+        cookie.setMaxAge(60*60*24*365);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        log.info("IP {} added cookie for {}", request.getRemoteAddr(), name);
+
+        return new RedirectView("/clanmember/" + replaceEmptySpace(name));
+    }
+
+    private void fillModel(Model model, final String name) {
         ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevelsForController(name);
         ClanmemberMinigames clanmemberMinigames = clanmemberMinigamesService.getOneClanmemberMinigames(name);
         ClanmemberQuests clanmemberQuests = clanmemberQuestsService.getOneClanmemberQuests(name);
@@ -83,22 +116,5 @@ public class ClanmemberController {
         model.addAttribute("combatLevel", clanmemberLevelsService.getCombatLevel(clanmemberLevels));
         model.addAttribute("questPoints", clanmemberQuests.getTotalQuestPointsAsString());
         model.addAttribute("runescore", clanmemberMinigamesService.getRunescoreMinigame(clanmemberMinigames).getFormattedScore());
-
-        log.info("Cookie value is {}", clanmembersService.getCookieValue(request.getCookies()));
-
-        return "clanmember";
-    }
-
-    @GetMapping("/setCookie/{name}")
-    public RedirectView setCookie(RedirectAttributes attributes, HttpServletResponse response, HttpServletRequest request, @PathVariable String name) {
-        Cookie cookie = new Cookie(COOKIE_NAME, name);
-        cookie.setMaxAge(60*60*24*365);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-
-        log.info("IP {} added cookie for {}", request.getRemoteAddr(), name);
-
-        return new RedirectView("/clanmember/" + replaceEmptySpace(name));
     }
 }
