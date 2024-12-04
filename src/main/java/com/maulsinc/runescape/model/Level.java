@@ -3,6 +3,8 @@ package com.maulsinc.runescape.model;
 import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 
+import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
+
 @Data
 public class Level {
     private Skill skill;
@@ -17,42 +19,42 @@ public class Level {
         if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rank);
+        return getFormattedNumber(rank);
     }
 
     public String getFormattedRankIronman() {
         if(rankIronman == null || rankIronman == -1 || rankIronman == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rankIronman);
+        return getFormattedNumber(rankIronman);
     }
 
     public String getFormattedRankHardcoreIronman() {
         if(rankHardcoreIronman == null || rankHardcoreIronman == -1 || rankHardcoreIronman == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rankHardcoreIronman);
+        return getFormattedNumber(rankHardcoreIronman);
     }
 
     public String getFormattedLevel() {
         if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(level);
+        return getFormattedNumber(level);
     }
 
     public String getFormattedExperience() {
         if(experience == null || experience == -1 || experience == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(experience);
+        return getFormattedNumber(experience);
     }
 
     public String getFormattedExperienceToday() {
         if(experienceToday == null || experienceToday == -1 || experienceToday == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(experienceToday);
+        return getFormattedNumber(experienceToday);
     }
 
     public static int getNumberFromSkill(Level level) {

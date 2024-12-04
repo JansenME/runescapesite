@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DecimalFormat;
 
+import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
+
 @RestController
 public class MemoryController {
     @GetMapping("memory-status")
@@ -14,10 +16,5 @@ public class MemoryController {
                 getFormattedNumber(Runtime.getRuntime().totalMemory()),
                 getFormattedNumber(Runtime.getRuntime().maxMemory()),
                 getFormattedNumber(Runtime.getRuntime().freeMemory()));
-    }
-
-    public static String getFormattedNumber(long number) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        return decimalFormat.format(number);
     }
 }

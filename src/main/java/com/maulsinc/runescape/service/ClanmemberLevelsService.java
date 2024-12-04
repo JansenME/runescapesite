@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
+
 @Service
 @Slf4j
 public class ClanmemberLevelsService {
@@ -56,7 +58,7 @@ public class ClanmemberLevelsService {
         }
 
         ClanmemberLevels clanmemberLevels =
-                ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, CommonsService.getDateAsString(clanmemberLevelsEntity.getId().getDate()));
+                ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, getDateAsString(clanmemberLevelsEntity.getId().getDate()));
 
         setClanmemberLevelsFromToday(clanmemberName, clanmemberLevels.getLevels());
 

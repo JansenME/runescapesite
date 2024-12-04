@@ -9,6 +9,8 @@ import java.util.Date;
 
 @Slf4j
 public class CommonsService {
+    public static final String COOKIE_NAME = "ownName";
+
     private static final String DATE_PATTERN_ALL = "dd-M-yyyy h:mm a z";
     private static final String DATE_PATTERN_US = "M-dd-yyyy h:mm a z";
 
@@ -40,5 +42,15 @@ public class CommonsService {
             log.error(String.format("Parsing date failed, date to parse was %s", dateString), e);
             return "";
         }
+    }
+
+    public static String replaceEmptySpace(String name) {
+        name = name.replace(" ", "+");
+        name = name.replace(" ", "+");
+        return name;
+    }
+
+    public static String replacePlusToSpace(String name) {
+        return name.replace("+", " ");
     }
 }

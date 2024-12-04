@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
+import static com.maulsinc.runescape.CommonsService.getDateAsUSString;
+import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,35 +28,35 @@ class CommonsServiceTest {
 
     @Test
     void testGetFormattedNumberHappyFlow() {
-        String formattedNumber = CommonsService.getFormattedNumber(5000000L);
+        String formattedNumber = getFormattedNumber(5000000L);
 
         assertEquals("5.000.000", formattedNumber);
     }
 
     @Test
     void testGetFormattedNumberNumberNull() {
-        String formattedNumber = CommonsService.getFormattedNumber(null);
+        String formattedNumber = getFormattedNumber(null);
 
         assertEquals("--", formattedNumber);
     }
 
     @Test
     void testGetDateAsStringHappyFlow() {
-        String dateAsString = CommonsService.getDateAsString(date);
+        String dateAsString = getDateAsString(date);
 
         assertTrue(dateAsString.contains("11-10-2024"));
     }
 
     @Test
     void testGetDateAsStringNullDate() {
-        String dateAsString = CommonsService.getDateAsString(null);
+        String dateAsString = getDateAsString(null);
 
         assertFalse(StringUtils.hasText(dateAsString));
     }
 
     @Test
     void testGetDateAsUSStringHappyFlow() {
-        String dateAsString = CommonsService.getDateAsUSString("11-10-2024 8:00 a.m. CEST");
+        String dateAsString = getDateAsUSString("11-10-2024 8:00 a.m. CEST");
 
         assertEquals("10-11-2024 8:00 a.m. CEST", dateAsString);
     }
@@ -62,6 +65,6 @@ class CommonsServiceTest {
     @NullSource
     @ValueSource(strings = {" ", "", "Blub, ik ben een vis", "2024-10-11 10:00 AM UTC"})
     void testGetDateAsUSStringInvalidValues(String value) {
-        assertFalse(StringUtils.hasText(CommonsService.getDateAsUSString(value)));
+        assertFalse(StringUtils.hasText(getDateAsUSString(value)));
     }
 }
