@@ -87,7 +87,7 @@ class ClanmemberLevelsServiceTest {
                 createMockCsvRecord("582", "76", "50045")
         );
 
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, jsonNode, 50758225L, 4585L, levels, levels, false);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, jsonNode, 50758225L, 4585L, levels, levels);
 
         List<Level> levelList = clanmemberLevelsEntity.getLevels();
 
@@ -226,7 +226,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullSkillvalues() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, null, 5000L, 50L, new ArrayList<>(), new ArrayList<>(), false);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, null, 5000L, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
         assertEquals(0, clanmemberLevelsEntity.getLevels().size());
@@ -234,7 +234,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullTotalxp() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), null, 50L, new ArrayList<>(), new ArrayList<>(), false);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), null, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(Skill.OVERALL, clanmemberLevelsEntity.getLevels().get(0).getSkill());
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
@@ -244,7 +244,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullRank() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), 5000L, null, new ArrayList<>(), new ArrayList<>(), false);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(NAME, mapper.createObjectNode(), 5000L, null, new ArrayList<>(), new ArrayList<>());
 
         assertEquals(Skill.OVERALL, clanmemberLevelsEntity.getLevels().get(0).getSkill());
         assertEquals(NAME, clanmemberLevelsEntity.getClanmember());
@@ -254,7 +254,7 @@ class ClanmemberLevelsServiceTest {
 
     @Test
     void testGetClanmemberLevelsEntityFromProfileNullClanmember() {
-        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(null, mapper.createObjectNode(), 5000L, 50L, new ArrayList<>(), new ArrayList<>(), false);
+        ClanmemberLevelsEntity clanmemberLevelsEntity = clanmemberLevelsService.getClanmemberLevelsEntityFromProfile(null, mapper.createObjectNode(), 5000L, 50L, new ArrayList<>(), new ArrayList<>());
 
         assertNull(clanmemberLevelsEntity.getClanmember());
     }
