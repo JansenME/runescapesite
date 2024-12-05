@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.model;
 
-import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
@@ -9,6 +8,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
 
 @Data
 @NoArgsConstructor
@@ -21,11 +22,11 @@ public class Clanmember implements Comparable<Clanmember> {
     private boolean hardcoreIronman;
 
     public String getFormattedXp() {
-        return CommonsService.getFormattedNumber(this.totalXP);
+        return getFormattedNumber(this.totalXP);
     }
 
     public String getFormattedKills() {
-        return CommonsService.getFormattedNumber(this.kills);
+        return getFormattedNumber(this.kills);
     }
 
     public static List<Clanmember> mapCsvRecordsToClanmembers(final List<CSVRecord> records) {

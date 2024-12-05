@@ -1,7 +1,6 @@
 package com.maulsinc.runescape.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberQuests;
 import com.maulsinc.runescape.model.Quest;
@@ -17,6 +16,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
 
 @Service
 @Slf4j
@@ -36,7 +37,7 @@ public class ClanmemberQuestsService {
             return new ClanmemberQuests();
         }
 
-        return ClanmemberQuests.mapEntityToModel(clanmemberQuestsEntity, CommonsService.getDateAsString(clanmemberQuestsEntity.getId().getDate()));
+        return ClanmemberQuests.mapEntityToModel(clanmemberQuestsEntity, getDateAsString(clanmemberQuestsEntity.getId().getDate()));
     }
 
     public void saveClanmemberQuestsToDatabase(final String clanmember, final JsonNode jsonNodeQuests) {

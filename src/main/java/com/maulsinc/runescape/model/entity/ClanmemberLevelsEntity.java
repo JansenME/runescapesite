@@ -13,6 +13,5 @@ public class ClanmemberLevelsEntity {
     private ObjectId id;
 
     private String clanmember;
-    private boolean loggedIn;
     private List<Level> levels;
 }

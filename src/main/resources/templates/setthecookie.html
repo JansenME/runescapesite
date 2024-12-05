@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mauls Inc.</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{styles/css/main.css}" />
+    <link rel="icon" type="image/x-icon" th:href="@{../images/favicon.ico}" />
+    <noscript><link rel="stylesheet" th:href="@{styles/css/noscript.css}" /></noscript>
+</head>
+<body class="is-preload">
+<div id="wrapper">
+    <header id="header">
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/#members">Members</a></li>
+                <li><a href="/clanmember">Own page</a></li>
+            </ul>
+        </nav>
+
+        <div class="logo">
+            <span class="icon fa-gem"></span>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <h1>No Cookie</h1>
+                <p>Ow no, you have to fill your cookie jar first!</p>
+                <p>You can do this by going to your page via de members button above and click on the "This is me!" button.</p>
+            </div>
+        </div>
+    </header>
+
+    <div id="main">
+    </div>
+
+    <footer id="footer">
+    </footer>
+
+</div>
+
+<div id="bg"></div>
+
+<script type="text/javascript" th:src="@{styles/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/browser.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/breakpoints.min.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/util.js}"></script>
+<script type="text/javascript" th:src="@{styles/js/main.js}"></script>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.Rank;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
+import jakarta.servlet.http.Cookie;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,14 +25,14 @@ import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static com.maulsinc.runescape.CommonsService.COOKIE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -503,6 +504,34 @@ class ClanmembersServiceTest {
         Pair<String, List<Clanmember>> clanmembers = clanmembersService.getAllClanmembers();
 
         assertEquals(0, clanmembers.getSecond().size());
+    }
+
+    @Test
+    void testGetCookieValueHappyFlow() {
+        String name = "Clanmember 1";
+        Cookie[] cookies = {new Cookie(COOKIE_NAME, name)};
+
+        assertEquals(name, clanmembersService.getCookieValue(cookies));
+    }
+
+    @Test
+    void testGetCookieValueEmptyArray() {
+        Cookie[] cookies = {};
+
+        assertNull(clanmembersService.getCookieValue(cookies));
+    }
+
+    @Test
+    void testGetCookieValueNullArray() {
+        assertNull(clanmembersService.getCookieValue(null));
+    }
+
+    @Test
+    void testGetCookieValueNoCorrectValueInArray() {
+        String name = "Clanmember 1";
+        Cookie[] cookies = {new Cookie("Another_Name", name)};
+
+        assertNull(clanmembersService.getCookieValue(cookies));
     }
 
     private JsonNode createValidJsonNode() {

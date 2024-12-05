@@ -3,6 +3,7 @@ package com.maulsinc.runescape.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.model.exception.RunescapeConnectionException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.maulsinc.runescape.CommonsService.replaceEmptySpace;
 
 @Slf4j
 @Service
@@ -132,11 +135,5 @@ public class ConnectionService {
                 return 250;
             }
         };
-    }
-
-    private String replaceEmptySpace(String name) {
-        name = name.replace(" ", "+");
-        name = name.replace(" ", "+");
-        return name;
     }
 }

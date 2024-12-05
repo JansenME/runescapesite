@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.service;
 
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.*;
 import com.maulsinc.runescape.repository.ClanmemberMinigamesRepository;
@@ -12,6 +11,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
 
 @Service
 public class ClanmemberMinigamesService {
@@ -30,7 +31,7 @@ public class ClanmemberMinigamesService {
             return new ClanmemberMinigames();
         }
 
-        return ClanmemberMinigames.mapEntityToModel(clanmemberMinigamesEntity, CommonsService.getDateAsString(clanmemberMinigamesEntity.getId().getDate()));
+        return ClanmemberMinigames.mapEntityToModel(clanmemberMinigamesEntity, getDateAsString(clanmemberMinigamesEntity.getId().getDate()));
     }
 
     public void saveClanmemberMinigamesToDatabase(final String clanmember, final List<CSVRecord> minigames, final List<CSVRecord> minigamesIronman, final List<CSVRecord> minigamesHardcoreIronman) {

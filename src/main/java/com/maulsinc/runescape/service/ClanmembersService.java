@@ -3,13 +3,13 @@ package com.maulsinc.runescape.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.Lists;
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.configuration.ExecutionTimeLogger;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.exception.ExecutionException;
 import com.maulsinc.runescape.repository.ClanmembersRepository;
 import com.maulsinc.runescape.model.entity.ClanmembersEntity;
 import com.maulsinc.runescape.model.Clanmember;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.maulsinc.runescape.CommonsService.COOKIE_NAME;
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
 
@@ -122,7 +124,19 @@ public class ClanmembersService {
             return Pair.of("", new ArrayList<>());
         }
 
-        return Pair.of(CommonsService.getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
+        return Pair.of(getDateAsString(clanmembersEntity.getId().getDate()), clanmembersEntity.getClanmembers());
+    }
+
+    public String getCookieValue(final Cookie[] cookies) {
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (COOKIE_NAME.equalsIgnoreCase(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 
     ClanmembersEntity getClanmembersFromRunescape() {

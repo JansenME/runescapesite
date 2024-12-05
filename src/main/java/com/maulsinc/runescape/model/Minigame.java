@@ -4,6 +4,8 @@ import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
+
 @Data
 public class Minigame {
     private MinigameName minigameName;
@@ -16,21 +18,21 @@ public class Minigame {
         if(rank == -1) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rank);
+        return getFormattedNumber(rank);
     }
 
     public String getFormattedRankIronman() {
         if(rankIronman == null || rankIronman == -1 || rankIronman == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rankIronman);
+        return getFormattedNumber(rankIronman);
     }
 
     public String getFormattedRankHardcoreIronman() {
         if(rankHardcoreIronman == null || rankHardcoreIronman == -1 || rankHardcoreIronman == 0) {
             return "--";
         }
-        return CommonsService.getFormattedNumber(rankHardcoreIronman);
+        return getFormattedNumber(rankHardcoreIronman);
     }
 
     public String getFormattedScore() {
@@ -38,7 +40,7 @@ public class Minigame {
             return "--";
         }
 
-        return CommonsService.getFormattedNumber(score);
+        return getFormattedNumber(score);
     }
 
     public String getMinigameNameString() {
