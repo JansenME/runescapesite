@@ -15,7 +15,7 @@ logging:
   file:
     name: /logs/runescape.log
   pattern:
-    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %X{process_id} %X{ip_address} --- [%t] %-40.40logger{39} : %m%n%wEx"
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %X{process_id} --- [%t] %-40.40logger{39} : %m%n%wEx"
 management:
   endpoints:
     web:
