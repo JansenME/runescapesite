@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.model;
 
-import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 

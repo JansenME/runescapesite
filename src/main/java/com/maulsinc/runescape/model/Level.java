@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.model;
 
-import com.maulsinc.runescape.CommonsService;
 import lombok.Data;
 
 import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
