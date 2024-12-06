@@ -11,7 +11,7 @@
 	<packaging>war</packaging>
 	<groupId>com.maulsinc</groupId>
 	<artifactId>runescape</artifactId>
-	<version>1.10.3-SNAPSHOT</version>
+	<version>1.10.3</version>
 	<name>runescapesite</name>
 	<description>Runescape info site</description>
 
