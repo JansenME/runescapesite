@@ -3,7 +3,6 @@ package com.maulsinc.runescape.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maulsinc.runescape.CommonsService;
 import com.maulsinc.runescape.model.exception.RunescapeConnectionException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -122,7 +121,7 @@ public class ConnectionService {
         return new ServiceUnavailableRetryStrategy() {
             @Override
             public boolean retryRequest(HttpResponse httpResponse, int executionCount, HttpContext httpContext) {
-                if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && executionCount >= MAX_RETRIES) {
+                if(RETRYABLE_ERROR_CODES.contains(httpResponse.getStatusLine().getStatusCode()) && executionCount <= MAX_RETRIES) {
                     log.info(String.format("This is try number %s. The url %s came back with a %s response", executionCount, ((HttpClientContext) httpContext).getRequest().getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode()));
                     return true;
                 }
