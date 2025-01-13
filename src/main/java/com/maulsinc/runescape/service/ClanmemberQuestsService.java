@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.maulsinc.runescape.CommonsService.getDateAsString;
-
 @Service
 @Slf4j
 public class ClanmemberQuestsService {
@@ -37,7 +35,7 @@ public class ClanmemberQuestsService {
             return new ClanmemberQuests();
         }
 
-        return ClanmemberQuests.mapEntityToModel(clanmemberQuestsEntity, getDateAsString(clanmemberQuestsEntity.getId().getDate()));
+        return ClanmemberQuests.mapEntityToModel(clanmemberQuestsEntity);
     }
 
     public void saveClanmemberQuestsToDatabase(final String clanmember, final JsonNode jsonNodeQuests) {

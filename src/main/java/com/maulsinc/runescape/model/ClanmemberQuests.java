@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.maulsinc.runescape.CommonsService.getDateAsString;
+
 @Data
 @AllArgsConstructor
 public class ClanmemberQuests {
@@ -27,10 +29,10 @@ public class ClanmemberQuests {
         return String.valueOf(totalQuestPoints);
     }
 
-    public static ClanmemberQuests mapEntityToModel(final ClanmemberQuestsEntity clanmemberQuestsEntity, final String date) {
+    public static ClanmemberQuests mapEntityToModel(final ClanmemberQuestsEntity clanmemberQuestsEntity) {
         List<Quest> questsFromEntity = clanmemberQuestsEntity.getQuests();
         questsFromEntity.sort(Comparator.comparing(Quest::getTitle));
 
-        return new ClanmemberQuests(clanmemberQuestsEntity.getClanmember(), questsFromEntity, clanmemberQuestsEntity.getTotalQuestPoints(), date);
+        return new ClanmemberQuests(clanmemberQuestsEntity.getClanmember(), questsFromEntity, clanmemberQuestsEntity.getTotalQuestPoints(), getDateAsString(clanmemberQuestsEntity.getId().getDate()));
     }
 }
