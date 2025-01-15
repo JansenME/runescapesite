@@ -534,6 +534,34 @@ class ClanmembersServiceTest {
         assertNull(clanmembersService.getCookieValue(cookies));
     }
 
+    @Test
+    void testCookieExistsHappyFlow() {
+        String name = "Clanmember 1";
+        Cookie[] cookies = {new Cookie(COOKIE_NAME, name)};
+
+        assertTrue(clanmembersService.cookieExists(cookies));
+    }
+
+    @Test
+    void testCookieExistsEmptyArray() {
+        Cookie[] cookies = {};
+
+        assertFalse(clanmembersService.cookieExists(cookies));
+    }
+
+    @Test
+    void testCookieExistsNullArray() {
+        assertFalse(clanmembersService.cookieExists(null));
+    }
+
+    @Test
+    void testCookieExistsNoCorrectValueInArray() {
+        String name = "Clanmember 1";
+        Cookie[] cookies = {new Cookie("Another_Name", name)};
+
+        assertFalse(clanmembersService.cookieExists(cookies));
+    }
+
     private JsonNode createValidJsonNode() {
         ObjectNode objectNode = mapper.createObjectNode();
 

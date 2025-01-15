@@ -142,6 +142,17 @@ public class ClanmembersService {
         return null;
     }
 
+    public boolean cookieExists(final Cookie[] cookies) {
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (COOKIE_NAME.equalsIgnoreCase(cookie.getName())) {
+                    return true;
+                }
+            }
+        }
+         return false;
+    }
+
     ClanmembersEntity getClanmembersFromRunescape() {
         List<CSVRecord> records = connectionService.getCSVRecordsFromRunescapeForClan();
 

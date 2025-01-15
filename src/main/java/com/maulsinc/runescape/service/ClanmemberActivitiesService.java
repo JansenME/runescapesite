@@ -89,6 +89,10 @@ public class ClanmemberActivitiesService {
     }
 
     private String buildNewString(final String value) {
+        if(value.split("[0-9]").length - 1 == 0) {
+            return value.split("[0-9]")[0] + formatNumberInValue(value);
+        }
+
         return value.split("[0-9]")[0] + formatNumberInValue(value) + value.split("[0-9]")[value.split("[0-9]").length - 1];
     }
 

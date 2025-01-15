@@ -64,14 +64,14 @@ public class ClanmemberController {
             return "setthecookie";
         }
 
-        fillModel(model, replacePlusToSpace(name));
+        fillModel(model, replacePlusToSpace(name), request.getCookies());
 
         return "clanmember";
     }
 
     @GetMapping("/clanmember/{name}")
     public String getClanMemberLevels(HttpServletRequest request, Model model, @PathVariable String name) {
-        fillModel(model, replacePlusToSpace(name));
+        fillModel(model, replacePlusToSpace(name), request.getCookies());
 
         return "clanmember";
     }
@@ -89,7 +89,20 @@ public class ClanmemberController {
         return new RedirectView("/clanmember/" + replaceEmptySpace(name));
     }
 
-    private void fillModel(Model model, final String name) {
+    @GetMapping("/deleteCookie/{name}")
+    public RedirectView deleteCookie(RedirectAttributes attributes, HttpServletResponse response, HttpServletRequest request, @PathVariable String name) {
+        if(clanmembersService.cookieExists(request.getCookies())) {
+            Cookie cookie = new Cookie(COOKIE_NAME, name);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+        }
+
+        return new RedirectView("/clanmember/" + replaceEmptySpace(name));
+    }
+
+    private void fillModel(Model model, final String name, final Cookie[] cookies) {
         ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevelsForController(name);
         ClanmemberMinigames clanmemberMinigames = clanmemberMinigamesService.getOneClanmemberMinigames(name);
         ClanmemberQuests clanmemberQuests = clanmemberQuestsService.getOneClanmemberQuests(name);
@@ -116,6 +129,7 @@ public class ClanmemberController {
         model.addAttribute("usDateFormatActivities", getDateAsUSString(clanmemberActivities.getDate()));
 
         model.addAttribute("currentYear", Calendar.getInstance().get(Calendar.YEAR));
+        model.addAttribute("cookieExists", clanmembersService.cookieExists(cookies));
 
         model.addAttribute("totalLevel", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedLevel());
         model.addAttribute("totalExperience", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedExperience());
