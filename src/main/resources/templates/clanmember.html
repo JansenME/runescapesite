@@ -50,18 +50,21 @@
                     <li><a href="#levels">Levels</a></li>
                     <li><a href="#minigames">Minigames</a></li>
                     <li><a href="#quests">Quests</a></li>
+                    <li><a href="#activities">Activities</a></li>
                 </ul>
 
                 <ul th:if="${ironmanIndicator AND !hardcoreIronmanIndicator}">
                     <li><a href="#levels-ironman">Levels</a></li>
                     <li><a href="#minigames-ironman">Minigames</a></li>
                     <li><a href="#quests">Quests</a></li>
+                    <li><a href="#activities">Activities</a></li>
                 </ul>
 
                 <ul th:if="${ironmanIndicator AND hardcoreIronmanIndicator}">
                     <li><a href="#levels-hardcore-ironman">Levels</a></li>
                     <li><a href="#minigames-hardcore-ironman">Minigames</a></li>
                     <li><a href="#quests">Quests</a></li>
+                    <li><a href="#activities">Activities</a></li>
                 </ul>
             </nav>
         </span>
@@ -358,6 +361,35 @@
             <span th:if="${clanmemberQuests.getQuests.isEmpty()}">
                 <p>This member has their Runemetrics profile set to private. Therefore the quest information cannot be shown.</p>
                 <p>If this page is yours and you want to see the quest information, you'll have to set your Runemetrics profile to public and wait for the next time this website collects the information (6x a day).</p>
+            </span>
+        </article>
+
+        <!-- ACTIVITIES -->
+        <article id="activities">
+            <p><i>Last updated: <span th:text="${clanmemberActivities.date}"></span><br />
+                American format: <span th:text="${usDateFormatActivities}"></span></i></p>
+
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
+            <div class="table-wrapper" th:unless="${clanmemberActivities.getActivities.isEmpty()}">
+                <h3>Last 10 activities</h3>
+
+                <table style="text-align:center;">
+                    <tbody>
+                    <tr th:each="clanmemberActivity : ${clanmemberActivities.getActivities()}">
+                        <td>
+                            <b th:text="${clanmemberActivity.getText()}"></b><br />
+                            <span th:text="${clanmemberActivity.getDetails()}"></span><br />
+                            <span style="font-style:italic;" th:text="${clanmemberActivity.getDate()}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <span th:if="${clanmemberActivities.getActivities.isEmpty()}">
+                <p>This member has their Runemetrics profile set to private. Therefore the activity information cannot be shown.</p>
+                <p>If this page is yours and you want to see the activity information, you'll have to set your Runemetrics profile to public and wait for the next time this website collects the information (every 20 minutes).</p>
             </span>
         </article>
     </div>

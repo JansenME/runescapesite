@@ -1,9 +1,11 @@
 package com.maulsinc.runescape.controller;
 
 import com.maulsinc.runescape.model.Clanmember;
+import com.maulsinc.runescape.model.ClanmemberActivities;
 import com.maulsinc.runescape.model.ClanmemberLevels;
 import com.maulsinc.runescape.model.ClanmemberMinigames;
 import com.maulsinc.runescape.model.ClanmemberQuests;
+import com.maulsinc.runescape.service.ClanmemberActivitiesService;
 import com.maulsinc.runescape.service.ClanmemberLevelsService;
 import com.maulsinc.runescape.service.ClanmemberMinigamesService;
 import com.maulsinc.runescape.service.ClanmemberQuestsService;
@@ -16,13 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.WebUtils;
 
 import java.util.Calendar;
 
@@ -41,16 +41,19 @@ public class ClanmemberController {
     private final ClanmemberLevelsService clanmemberLevelsService;
     private final ClanmemberMinigamesService clanmemberMinigamesService;
     private final ClanmemberQuestsService clanmemberQuestsService;
+    private final ClanmemberActivitiesService clanmemberActivitiesService;
 
     @Autowired
     public ClanmemberController(final ClanmembersService clanmembersService,
                                 final ClanmemberLevelsService clanmemberLevelsService,
                                 final ClanmemberMinigamesService clanmemberMinigamesService,
-                                final ClanmemberQuestsService clanmemberQuestsService) {
+                                final ClanmemberQuestsService clanmemberQuestsService,
+                                final ClanmemberActivitiesService clanmemberActivitiesService) {
         this.clanmembersService = clanmembersService;
         this.clanmemberLevelsService = clanmemberLevelsService;
         this.clanmemberMinigamesService = clanmemberMinigamesService;
         this.clanmemberQuestsService = clanmemberQuestsService;
+        this.clanmemberActivitiesService = clanmemberActivitiesService;
     }
 
     @GetMapping("/clanmember")
@@ -90,6 +93,7 @@ public class ClanmemberController {
         ClanmemberLevels clanmemberLevels = clanmemberLevelsService.getOneClanmemberLevelsForController(name);
         ClanmemberMinigames clanmemberMinigames = clanmemberMinigamesService.getOneClanmemberMinigames(name);
         ClanmemberQuests clanmemberQuests = clanmemberQuestsService.getOneClanmemberQuests(name);
+        ClanmemberActivities clanmemberActivities = clanmemberActivitiesService.getOneClanmemberActivities(name);
 
         Clanmember clanmember = clanmembersService.getOneNewestClanmember(name);
 
@@ -100,6 +104,7 @@ public class ClanmemberController {
         model.addAttribute("clanmemberLevels", clanmemberLevels);
         model.addAttribute("clanmemberMinigames", clanmemberMinigames);
         model.addAttribute("clanmemberQuests", clanmemberQuests);
+        model.addAttribute("clanmemberActivities", clanmemberActivities);
         model.addAttribute("clanmemberName", name);
 
         model.addAttribute("ironmanIndicator", ironmanIndicator);
@@ -108,6 +113,7 @@ public class ClanmemberController {
         model.addAttribute("usDateFormatLevels", getDateAsUSString(clanmemberLevels.getDate()));
         model.addAttribute("usDateFormatMinigames", getDateAsUSString(clanmemberMinigames.getDate()));
         model.addAttribute("usDateFormatQuests", getDateAsUSString(clanmemberQuests.getDate()));
+        model.addAttribute("usDateFormatActivities", getDateAsUSString(clanmemberActivities.getDate()));
 
         model.addAttribute("currentYear", Calendar.getInstance().get(Calendar.YEAR));
 

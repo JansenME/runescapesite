@@ -4,8 +4,6 @@ import com.maulsinc.runescape.model.MemoryStats;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.DecimalFormat;
-
 import static com.maulsinc.runescape.CommonsService.getFormattedNumber;
 
 @RestController

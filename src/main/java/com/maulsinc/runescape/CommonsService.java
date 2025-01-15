@@ -1,6 +1,7 @@
 package com.maulsinc.runescape;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -35,6 +36,10 @@ public class CommonsService {
     }
 
     public static String getDateAsUSString(String dateString) {
+        if(!StringUtils.hasLength(dateString)) {
+            return "";
+        }
+
         try {
             Date date = new SimpleDateFormat(DATE_PATTERN_ALL).parse(dateString);
             return new SimpleDateFormat(DATE_PATTERN_US).format(date);

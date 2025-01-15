@@ -538,6 +538,7 @@ class ClanmembersServiceTest {
         ObjectNode objectNode = mapper.createObjectNode();
 
         objectNode.put("skillvalues", "Lots of nice things");
+        objectNode.put("activities", "Lots of nice things");
 
         return objectNode;
     }

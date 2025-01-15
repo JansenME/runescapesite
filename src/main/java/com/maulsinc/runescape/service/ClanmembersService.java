@@ -38,6 +38,7 @@ public class ClanmembersService {
     private final ClanmemberLevelsService clanmemberLevelsService;
     private final ClanmemberMinigamesService clanmemberMinigamesService;
     private final ClanmemberQuestsService clanmemberQuestsService;
+    private final ClanmemberActivitiesService clanmemberActivitiesService;
     private final ClanmembersTop5ExperienceService clanmembersTop5ExperienceService;
     private final ClanmembersRepository clanmembersRepository;
 
@@ -46,12 +47,14 @@ public class ClanmembersService {
                               final ClanmemberLevelsService clanmemberLevelsService,
                               final ClanmemberMinigamesService clanmemberMinigamesService,
                               final ClanmemberQuestsService clanmemberQuestsService,
+                              final ClanmemberActivitiesService clanmemberActivitiesService,
                               final ClanmembersTop5ExperienceService clanmembersTop5ExperienceService,
                               final ClanmembersRepository clanmembersRepository) {
         this.connectionService = connectionService;
         this.clanmemberLevelsService = clanmemberLevelsService;
         this.clanmemberMinigamesService = clanmemberMinigamesService;
         this.clanmemberQuestsService = clanmemberQuestsService;
+        this.clanmemberActivitiesService = clanmemberActivitiesService;
         this.clanmembersTop5ExperienceService = clanmembersTop5ExperienceService;
         this.clanmembersRepository = clanmembersRepository;
     }
@@ -243,6 +246,7 @@ public class ClanmembersService {
 
         saveEachClanmemberLevels(levelsAndMinigames.get(0), levelsIronman, levelsHardcoreIronman, jsonNode, clanmember);
         saveEachClanmemberMinigames(levelsAndMinigames.get(1), minigamesIronman, minigamesHardcoreIronman, clanmember);
+        saveEachClanmemberActivities(clanmember, jsonNode);
 
         return "SUCCESS";
     }
@@ -257,6 +261,12 @@ public class ClanmembersService {
 
     private void saveEachClanmemberMinigames(final List<CSVRecord> minigames, final List<CSVRecord> minigamesIronman, final List<CSVRecord> minigamesHardcoreIronman, final Clanmember clanmember) {
         clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(clanmember.getName(), minigames, minigamesIronman, minigamesHardcoreIronman);
+    }
+
+    private void saveEachClanmemberActivities(final Clanmember clanmember, final JsonNode jsonNode) {
+        if(jsonNode.has("activities")) {
+            clanmemberActivitiesService.saveClanmemberActivitiesToDatabase(clanmember.getName(), jsonNode.get("activities"));
+        }
     }
 
     private void checkIfSaveEachClanmemberQuests(final Clanmember clanmember) {
