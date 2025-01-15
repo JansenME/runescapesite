@@ -1,6 +1,5 @@
 package com.maulsinc.runescape.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,16 +8,12 @@ import com.maulsinc.runescape.model.ClanmemberActivities;
 import com.maulsinc.runescape.model.entity.ClanmemberActivitiesEntity;
 import com.maulsinc.runescape.repository.ClanmemberActivitiesRepository;
 import org.bson.types.ObjectId;
-import org.checkerframework.checker.units.qual.C;
-import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.print.attribute.standard.MediaSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,21 +134,21 @@ class ClanmemberActivitiesServiceTest {
 
         activity1
                 .put("date", "14-Jan-2025 14:00")
-                .put("details", "I have done something important")
+                .put("details", "I have done something important 5000000.")
                 .put("text", "something important");
 
         ObjectNode activity2 = mapper.createObjectNode();
 
         activity2
                 .put("date", "14-Jan-2025 15:00")
-                .put("details", "I have done something important again")
+                .put("details", "I have done something important again 5000000")
                 .put("text", "something important again");
 
         ObjectNode activity3 = mapper.createObjectNode();
 
         activity3
                 .put("date", "14-Jan-2025 16:00")
-                .put("details", "I have done something important again again")
+                .put("details", "5000000 I have done something important again again")
                 .put("text", "something important again again");
 
         ObjectNode activity4 = mapper.createObjectNode();
@@ -171,15 +166,15 @@ class ClanmemberActivitiesServiceTest {
         assertEquals(4, clanmemberActivitiesEntity.getActivities().size());
 
         assertEquals("14-Jan-2025 14:00", clanmemberActivitiesEntity.getActivities().get(0).getDate());
-        assertEquals("I have done something important", clanmemberActivitiesEntity.getActivities().get(0).getDetails());
+        assertEquals("I have done something important 5.000.000.", clanmemberActivitiesEntity.getActivities().get(0).getDetails());
         assertEquals("something important", clanmemberActivitiesEntity.getActivities().get(0).getText());
 
         assertEquals("14-Jan-2025 15:00", clanmemberActivitiesEntity.getActivities().get(1).getDate());
-        assertEquals("I have done something important again", clanmemberActivitiesEntity.getActivities().get(1).getDetails());
+        assertEquals("I have done something important again 5.000.000", clanmemberActivitiesEntity.getActivities().get(1).getDetails());
         assertEquals("something important again", clanmemberActivitiesEntity.getActivities().get(1).getText());
 
         assertEquals("14-Jan-2025 16:00", clanmemberActivitiesEntity.getActivities().get(2).getDate());
-        assertEquals("I have done something important again again", clanmemberActivitiesEntity.getActivities().get(2).getDetails());
+        assertEquals("5.000.000 I have done something important again again", clanmemberActivitiesEntity.getActivities().get(2).getDetails());
         assertEquals("something important again again", clanmemberActivitiesEntity.getActivities().get(2).getText());
 
         assertEquals("14-Jan-2025 17:00", clanmemberActivitiesEntity.getActivities().get(3).getDate());
