@@ -123,7 +123,9 @@ class ClanmemberQuestsServiceTest {
                 .put("questPoints", "2")
                 .put("userEligible", "true");
 
-        clanmemberQuestsService.saveClanmemberQuestsToDatabase(null, objectNode);
+        ArrayNode arrayNode = mapper.createArrayNode().add(objectNode);
+
+        clanmemberQuestsService.saveClanmemberQuestsToDatabase(null, arrayNode);
 
         verify(clanmemberQuestsRepository, times(0)).save(any());
     }

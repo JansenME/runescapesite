@@ -41,7 +41,7 @@ public class ClanmemberQuestsService {
     public void saveClanmemberQuestsToDatabase(final String clanmember, final JsonNode jsonNodeQuests) {
         ClanmemberQuestsEntity clanmemberQuestsEntity = getClanmemberQuestsEntity(clanmember, jsonNodeQuests);
 
-        if(!CollectionUtils.isEmpty(clanmemberQuestsEntity.getQuests())) {
+        if(clanmember != null && !CollectionUtils.isEmpty(clanmemberQuestsEntity.getQuests())) {
             clanmemberQuestsRepository.save(clanmemberQuestsEntity);
         }
     }

@@ -8,7 +8,6 @@ import com.maulsinc.runescape.model.ClanmemberActivities;
 import com.maulsinc.runescape.model.entity.ClanmemberActivitiesEntity;
 import com.maulsinc.runescape.repository.ClanmemberActivitiesRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +39,7 @@ public class ClanmemberActivitiesService {
     public void saveClanmemberActivitiesToDatabase(final String clanmember, final JsonNode jsonNodeActivities) {
         ClanmemberActivitiesEntity clanmemberActivitiesEntity = getClanmemberActivitiesEntity(clanmember, jsonNodeActivities);
 
-        if(!CollectionUtils.isEmpty(clanmemberActivitiesEntity.getActivities())) {
+        if(clanmember != null && !CollectionUtils.isEmpty(clanmemberActivitiesEntity.getActivities())) {
             clanmemberActivitiesRepository.save(clanmemberActivitiesEntity);
         }
     }
