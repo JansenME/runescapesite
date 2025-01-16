@@ -130,6 +130,7 @@ public class ClanmemberController {
 
         model.addAttribute("currentYear", Calendar.getInstance().get(Calendar.YEAR));
         model.addAttribute("cookieExists", clanmembersService.cookieExists(cookies));
+        model.addAttribute("cookieUsername", clanmembersService.getCookieValue(cookies));
 
         model.addAttribute("totalLevel", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedLevel());
         model.addAttribute("totalExperience", clanmemberLevelsService.getOverallSkill(clanmemberLevels).getFormattedExperience());

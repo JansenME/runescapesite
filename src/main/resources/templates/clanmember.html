@@ -40,7 +40,7 @@
                         <img style="height:20px;" th:src="@{../images/profile/runescore.png}" /> <span th:text="${runescore}"></span>
                     </p>
                     <button th:if="${!cookieExists}" type="button" th:onclick="'window.location.href= \'' + @{/setCookie/{name}(name=${clanmemberName})}+ '\''">This is me!</button>
-                    <button th:if="${cookieExists}" type="button" th:onclick="'window.location.href= \'' + @{/deleteCookie/{name}(name=${clanmemberName})}+ '\''">This is not me! (anymore)</button>
+                    <button th:if="${cookieExists && clanmemberName == cookieUsername}" type="button" th:onclick="'window.location.href= \'' + @{/deleteCookie/{name}(name=${clanmemberName})}+ '\''">This is not me! (anymore)</button>
                 </span>
             </div>
         </div>
