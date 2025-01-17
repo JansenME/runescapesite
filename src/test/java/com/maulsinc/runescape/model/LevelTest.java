@@ -112,6 +112,43 @@ class LevelTest {
         assertEquals("--", result);
     }
 
+    @Test
+    void testGetFormattedExperienceYesterday() {
+        String result = createLevelWithCorrectValues().getFormattedExperienceYesterday();
+
+        assertEquals("250.000", result);
+    }
+
+    @Test
+    void testGetFormattedExperienceYesterdayNullValue() {
+        Level level = new Level();
+        level.setExperienceYesterday(null);
+
+        String result = level.getFormattedExperienceYesterday();
+
+        assertEquals("--", result);
+    }
+
+    @Test
+    void testGetFormattedExperienceYesterdayMinusOneValue() {
+        Level level = new Level();
+        level.setExperienceYesterday(-1L);
+
+        String result = level.getFormattedExperienceYesterday();
+
+        assertEquals("--", result);
+    }
+
+    @Test
+    void testGetFormattedExperienceYesterdayZeroValue() {
+        Level level = new Level();
+        level.setExperienceYesterday(0L);
+
+        String result = level.getFormattedExperienceYesterday();
+
+        assertEquals("--", result);
+    }
+
     private Level createLevelWithCorrectValues() {
         Level level = new Level();
         level.setSkill(Skill.AGILITY);
@@ -121,6 +158,7 @@ class LevelTest {
         level.setLevel(150L);
         level.setExperience(2500000L);
         level.setExperienceToday(250000L);
+        level.setExperienceYesterday(250000L);
 
         return level;
     }
