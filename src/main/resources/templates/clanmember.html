@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${clanmemberName}"></title>
     <meta charset="utf-8" />
@@ -33,11 +33,11 @@
                 <span th:if="${clanmemberLevels.clanmember != null}">
                     <h1 th:text="${clanmemberName}"></h1>
                     <p>
-                        <img style="height:20px;" th:src="@{../images/profile/overall.png}" /> <span th:text="${totalLevel}"></span>
-                        <img style="height:20px;" th:src="@{../images/profile/xp.png}" /> <span th:text="${totalExperience}"></span>
-                        <img style="height:20px;" th:src="@{../images/profile/combat.png}" /> <span th:text="${combatLevel}"></span>
-                        <img style="height:20px;" th:src="@{../images/profile/quest.png}" /> <span th:text="${questPoints}"></span>
-                        <img style="height:20px;" th:src="@{../images/profile/runescore.png}" /> <span th:text="${runescore}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/overall.png}" alt="Overall"/> <span th:text="${totalLevel}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/xp.png}" alt="Experience"/> <span th:text="${totalExperience}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/combat.png}" alt="Combat level"/> <span th:text="${combatLevel}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/quest.png}" alt="Quest"/> <span th:text="${questPoints}"></span>
+                        <img style="height:20px;" th:src="@{../images/profile/runescore.png}" alt="Runescore"/> <span th:text="${runescore}"></span>
                     </p>
                     <button th:if="${!cookieExists}" type="button" th:onclick="'window.location.href= \'' + @{/setCookie/{name}(name=${clanmemberName})}+ '\''">This is me!</button>
                     <button th:if="${cookieExists && clanmemberName == cookieUsername}" type="button" th:onclick="'window.location.href= \'' + @{/deleteCookie/{name}(name=${clanmemberName})}+ '\''">This is not me! (anymore)</button>
@@ -77,7 +77,7 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
             American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <b><a href="#levels">Normal ranks</a></b>
@@ -89,7 +89,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th colspan="2"1>Skill</th>
+                        <th colspan="2">Skill</th>
                         <th>Level</th>
                         <th>Rank</th>
                         <th>Experience</th>
@@ -100,15 +100,15 @@
                     <tbody>
                     <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
                         <td style="text-align:right; padding:4px;">
-                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" alt="@{skillname}(skillname=${clanmemberLevel.skill.getName()})"/>
                         </td>
 
-                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
-                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
-                        <td th:text="${clanmemberLevel.getFormattedRank()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}" />
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedRank()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -119,7 +119,7 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
                 American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#levels">Normal ranks</a>
@@ -131,7 +131,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th colspan="2"1>Skill</th>
+                        <th colspan="2">Skill</th>
                         <th>Level</th>
                         <th>Rank</th>
                         <th>Experience</th>
@@ -142,15 +142,15 @@
                     <tbody>
                     <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
                         <td style="text-align:right; padding:4px;">
-                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" alt="@{skillname}(skillname=${clanmemberLevel.skill.getName()})"/>
                         </td>
 
-                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
-                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
-                        <td th:text="${clanmemberLevel.getFormattedRankIronman()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}" />
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedRankIronman()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -161,7 +161,7 @@
             <p><i>Last updated: <span th:text="${clanmemberLevels.date}"></span><br />
                 American format: <span th:text="${usDateFormatLevels}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#levels">Normal ranks</a>
@@ -173,7 +173,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th colspan="2"1>Skill</th>
+                        <th colspan="2">Skill</th>
                         <th>Level</th>
                         <th>Rank</th>
                         <th>Experience</th>
@@ -184,15 +184,15 @@
                     <tbody>
                     <tr th:each="clanmemberLevel : ${clanmemberLevels.getLevels()}">
                         <td style="text-align:right; padding:4px;">
-                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" />
+                            <img width="20" th:src="@{../images/skills/{name}.png(name=${clanmemberLevel.skill.getName().toLowerCase()})}" alt="@{skillname}(skillname=${clanmemberLevel.skill.getName()})"/>
                         </td>
 
-                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}" />
-                        <td th:text="${clanmemberLevel.getFormattedLevel()}" />
-                        <td th:text="${clanmemberLevel.getFormattedRankHardcoreIronman()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperience()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}" />
-                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}" />
+                        <td style="padding-left:0px; vertical-align:middle;" th:text="${clanmemberLevel.skill.getName()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedLevel()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedRankHardcoreIronman()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperience()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceToday()}"></td>
+                        <td th:text="${clanmemberLevel.getFormattedExperienceYesterday()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -204,7 +204,7 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <b><a href="#minigames">Normal ranks</a></b>
@@ -224,12 +224,12 @@
                     <tbody>
                     <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
                         <td style="text-align:right; padding:1px;">
-                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" alt="@{minigamename}(minigamename=${clanmemberMinigame.getMinigameName.getName()})"/>
                         </td>
 
                         <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
-                        <td th:text="${clanmemberMinigame.getFormattedRank()}" />
-                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedRank()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -240,7 +240,7 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#minigames">Normal ranks</a>
@@ -260,12 +260,12 @@
                     <tbody>
                     <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
                         <td style="text-align:right; padding:1px;">
-                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" alt="@{minigamename}(minigamename=${clanmemberMinigame.getMinigameName.getName()})"/>
                         </td>
 
                         <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
-                        <td th:text="${clanmemberMinigame.getFormattedRankIronman()}" />
-                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedRankIronman()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -276,7 +276,7 @@
             <p><i>Last updated: <span th:text="${clanmemberMinigames.date}"></span><br />
                 American format: <span th:text="${usDateFormatMinigames}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <p th:if="${ironmanIndicator OR hardcoreIronmanIndicator}">
                 <a href="#minigames">Normal ranks</a>
@@ -296,12 +296,12 @@
                     <tbody>
                     <tr th:each="clanmemberMinigame : ${clanmemberMinigames.getMinigames()}">
                         <td style="text-align:right; padding:1px;">
-                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" />
+                            <img width="20" th:src="@{../images/minigames/{name}.png(name=${clanmemberMinigame.getMinigameNameForImage()})}" alt="@{minigamename}(minigamename=${clanmemberMinigame.getMinigameName.getName()})"/>
                         </td>
 
                         <td style="padding-left:4px; vertical-align:middle;" th:text="${clanmemberMinigame.getMinigameNameString()}"></td>
-                        <td th:text="${clanmemberMinigame.getFormattedRankHardcoreIronman()}" />
-                        <td th:text="${clanmemberMinigame.getFormattedScore()}" />
+                        <td th:text="${clanmemberMinigame.getFormattedRankHardcoreIronman()}"></td>
+                        <td th:text="${clanmemberMinigame.getFormattedScore()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -313,7 +313,7 @@
             <p><i>Last updated: <span th:text="${clanmemberQuests.date}"></span><br />
                 American format: <span th:text="${usDateFormatQuests}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>"
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <div class="table-wrapper" th:unless="${clanmemberQuests.getQuests.isEmpty()}">
                 <h3><span th:text="${questPoints}"></span> quest points</h3>
@@ -331,34 +331,34 @@
                     </thead>
                     <tbody>
                     <tr th:each="clanmemberQuest : ${clanmemberQuests.getQuests()}">
-                        <td th:text="${clanmemberQuest.getTitle()}" />
+                        <td th:text="${clanmemberQuest.getTitle()}"></td>
 
                         <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Completed')}">
-                            <td style="color:green;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                            <td style="color:green;" th:text="${clanmemberQuest.getStatus().getName()}"></td>
                         </span>
                         <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Started')}">
-                            <td style="color:yellow;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                            <td style="color:yellow;" th:text="${clanmemberQuest.getStatus().getName()}"></td>
                         </span>
                         <span th:if="${clanmemberQuest.getStatus().getName().equalsIgnoreCase('Not Started')}">
-                            <td style="color:red;" th:text="${clanmemberQuest.getStatus().getName()}" />
+                            <td style="color:red;" th:text="${clanmemberQuest.getStatus().getName()}"></td>
                         </span>
 
-                        <td th:text="${clanmemberQuest.getDifficulty().getName()}" />
+                        <td th:text="${clanmemberQuest.getDifficulty().getName()}"></td>
 
                         <span th:if="${clanmemberQuest.isMembers()}">
-                            <td><img th:src="@{../images/member.png}" /></td>
+                            <td><img th:src="@{../images/member.png}" alt="Member"/></td>
                         </span>
                         <span th:if="${!clanmemberQuest.isMembers()}">
-                            <td><img th:src="@{../images/non-member.png}" /></td>
+                            <td><img th:src="@{../images/non-member.png}" alt="Non member"/></td>
                         </span>
 
-                        <td th:text="${clanmemberQuest.getQuestPoints()}" />
+                        <td th:text="${clanmemberQuest.getQuestPoints()}"></td>
 
                         <span th:if="${clanmemberQuest.isUserEligible()}">
-                            <td><img th:src="@{../images/yes.png}" /></td>
+                            <td><img th:src="@{../images/yes.png}" alt="Yes"/></td>
                         </span>
                         <span th:if="${!clanmemberQuest.isUserEligible()}">
-                            <td><img th:src="@{../images/no.png}" /></td>
+                            <td><img th:src="@{../images/no.png}" alt="No"/></td>
                         </span>
                     </tr>
                     </tbody>
@@ -376,7 +376,7 @@
             <p><i>Last updated: <span th:text="${clanmemberActivities.date}"></span><br />
                 American format: <span th:text="${usDateFormatActivities}"></span></i></p>
 
-            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" />
+            <img th:src="@{http://secure.runescape.com/m=avatar-rs/{name}/chat.png(name=${clanmemberName})}" alt="Clanmember avatar"/>"
             <h2 th:text="${clanmemberLevels.clanmember}" class="major"></h2>
             <div class="table-wrapper" th:unless="${clanmemberActivities.getActivities.isEmpty()}">
                 <h3>Last 10 activities</h3>

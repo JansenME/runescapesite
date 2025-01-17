@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Mauls Inc.</title>
     <meta charset="utf-8" />
@@ -38,13 +38,13 @@
                     </thead>
                     <tbody>
                     <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
-                        <td style="text-align:left" th:text="${iStat.count}" />
+                        <td style="text-align:left" th:text="${iStat.count}"></td>
 
                         <td style="text-align:left">
-                            <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}" />
+                            <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}"></a>
                         </td>
 
-                        <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}" />
+                        <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -79,18 +79,18 @@
                     <tbody>
                     <tr th:each="clanmember : ${clanmembers.getSecond()}">
                         <td>
-                            <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}" />
+                            <a th:href="@{/clanmember/{name}(name=${clanmember.name})}" th:text="${clanmember.name}"></a>
                             <span th:if="${clanmember.hardcoreIronman}" >
-                                    <img style="height:20px;" th:src="@{../images/hcim.png}" />
+                                    <img style="height:20px;" th:src="@{../images/hcim.png}" alt="Hardcore Ironman"/>
                                 </span>
                             <span th:if="${clanmember.ironman AND !clanmember.hardcoreIronman}" >
-                                    <img style="height:20px;" th:src="@{../images/im.png}" />
+                                    <img style="height:20px;" th:src="@{../images/im.png}" alt="Ironman"/>
                                 </span>
                         </td>
 
-                        <td th:text="${clanmember.rank.getName()}" />
-                        <td th:text="${clanmember.getFormattedXp()}" />
-                        <td th:text="${clanmember.getFormattedKills()}" />
+                        <td th:text="${clanmember.rank.getName()}"></td>
+                        <td th:text="${clanmember.getFormattedXp()}"></td>
+                        <td th:text="${clanmember.getFormattedKills()}"></td>
                     </tr>
                     </tbody>
                 </table>
