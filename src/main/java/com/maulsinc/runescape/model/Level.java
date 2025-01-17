@@ -13,6 +13,7 @@ public class Level {
     private Long level;
     private Long experience;
     private Long experienceToday;
+    private Long experienceYesterday;
 
     public String getFormattedRank() {
         if(experience == null || experience == -1 || experience == 0) {
@@ -54,6 +55,13 @@ public class Level {
             return "--";
         }
         return getFormattedNumber(experienceToday);
+    }
+
+    public String getFormattedExperienceYesterday() {
+        if(experienceYesterday == null || experienceYesterday == -1 || experienceYesterday == 0) {
+            return "--";
+        }
+        return getFormattedNumber(experienceYesterday);
     }
 
     public static int getNumberFromSkill(Level level) {

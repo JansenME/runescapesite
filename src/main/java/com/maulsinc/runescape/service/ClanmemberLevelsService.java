@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -60,6 +61,7 @@ public class ClanmemberLevelsService {
                 ClanmemberLevels.mapEntityToModel(clanmemberLevelsEntity, getDateAsString(clanmemberLevelsEntity.getId().getDate()));
 
         setClanmemberLevelsFromToday(clanmemberName, clanmemberLevels.getLevels());
+        setClanmemberLevelsFromYesterday(clanmemberName, clanmemberLevels.getLevels());
 
         return clanmemberLevels;
     }
@@ -132,6 +134,7 @@ public class ClanmemberLevelsService {
 
         ObjectId idMin = new ObjectId(min);
         ObjectId idMax = new ObjectId(new Date());
+
         List<ClanmemberLevelsEntity> clanmemberLevelsEntities = clanmemberLevelsRepository.findByObjectIdsAndAllClanmemberLevelsByClanmember(clanmemberName, idMin, idMax);
 
         List<ClanmemberLevelsEntity> allClanmemberLevelsEntities = clanmemberLevelsEntities.stream()
@@ -150,6 +153,31 @@ public class ClanmemberLevelsService {
             Level oldLevel = firstClanmemberLevelsEntity.getLevels().get(count);
             currentLevel.setExperienceToday(currentLevel.getExperience() - oldLevel.getExperience());
             count++;
+        }
+    }
+
+    @ExecutionTimeLogger
+    private void setClanmemberLevelsFromYesterday(final String clanmemberName, final List<Level> currentLevels) {
+        ObjectId idMin = new ObjectId(Date.from(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant()));
+        ObjectId idMax = new ObjectId(Date.from(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).minusSeconds(1).atZone(ZoneId.systemDefault()).toInstant()));
+
+        List<ClanmemberLevelsEntity> clanmemberLevelsEntities = clanmemberLevelsRepository.findByObjectIdsAndAllClanmemberLevelsByClanmember(clanmemberName, idMin, idMax);
+
+        List<ClanmemberLevelsEntity> allClanmemberLevelsEntities = clanmemberLevelsEntities.stream()
+                .filter(clanmemberLevelsEntity -> clanmemberName.equalsIgnoreCase(clanmemberLevelsEntity.getClanmember()))
+                .toList();
+
+        if(!CollectionUtils.isEmpty(allClanmemberLevelsEntities)) {
+            setExperienceYesterday(allClanmemberLevelsEntities.get(0), allClanmemberLevelsEntities.get(allClanmemberLevelsEntities.size() - 1), currentLevels);
+        }
+    }
+
+    private void setExperienceYesterday(final ClanmemberLevelsEntity clanmemberLevelsEntityFirst, final ClanmemberLevelsEntity clanmemberLevelsEntityLast, final List<Level> currentLevels) {
+        int count = 0;
+
+        for (Level level : currentLevels) {
+            level.setExperienceYesterday(clanmemberLevelsEntityLast.getLevels().get(count).getExperience() - clanmemberLevelsEntityFirst.getLevels().get(count).getExperience());
+            count ++;
         }
     }
 
