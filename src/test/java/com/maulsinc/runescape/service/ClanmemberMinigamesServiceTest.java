@@ -1,5 +1,6 @@
 package com.maulsinc.runescape.service;
 
+import com.maulsinc.runescape.model.Clanmember;
 import com.maulsinc.runescape.model.ClanmemberMinigames;
 import com.maulsinc.runescape.model.Minigame;
 import com.maulsinc.runescape.model.MinigameName;
@@ -13,10 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,6 +100,135 @@ class ClanmemberMinigamesServiceTest {
         clanmemberMinigamesService.saveClanmemberMinigamesToDatabase(NAME, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         verify(clanmemberMinigamesRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testGetTop10RunescoreHappyFlow() {
+        List<Clanmember> clanmembers = createClanmemberListForRunescore(15);
+
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 1")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 1", 5000L, 450L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 2")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 2", 4658L, 35456L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 3")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 3", 12546L, 4566L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 4")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 4", 2135L, 456456L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 5")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 5", 4832L, 46554L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 6")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 6", 55458L, 456468L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 7")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 7", 212315L, 4655L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 8")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 8", 146558L, 164545L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 9")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 9", 798823L, 46555L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 10")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 10", 79540L, 789850L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 11")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 11", 452L, 13135L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 12")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 12", 135477L, 31215L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 13")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 13", 41546L, 3121550L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 14")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 14", 4889636L, 468456L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 15")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 15", 12353L, 464548L));
+
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(clanmembers);
+
+        assertEquals(10, runescores.size());
+
+        assertEquals("Clanmember 13", runescores.get(0).getFirst());
+        assertEquals("3.121.550", runescores.get(0).getSecond());
+
+        assertEquals("Clanmember 10", runescores.get(1).getFirst());
+        assertEquals("789.850", runescores.get(1).getSecond());
+
+        assertEquals("Clanmember 14", runescores.get(2).getFirst());
+        assertEquals("468.456", runescores.get(2).getSecond());
+
+        assertEquals("Clanmember 15", runescores.get(3).getFirst());
+        assertEquals("464.548", runescores.get(3).getSecond());
+
+        assertEquals("Clanmember 6", runescores.get(4).getFirst());
+        assertEquals("456.468", runescores.get(4).getSecond());
+
+        assertEquals("Clanmember 4", runescores.get(5).getFirst());
+        assertEquals("456.456", runescores.get(5).getSecond());
+
+        assertEquals("Clanmember 8", runescores.get(6).getFirst());
+        assertEquals("164.545", runescores.get(6).getSecond());
+
+        assertEquals("Clanmember 9", runescores.get(7).getFirst());
+        assertEquals("46.555", runescores.get(7).getSecond());
+
+        assertEquals("Clanmember 5", runescores.get(8).getFirst());
+        assertEquals("46.554", runescores.get(8).getSecond());
+
+        assertEquals("Clanmember 2", runescores.get(9).getFirst());
+        assertEquals("35.456", runescores.get(9).getSecond());
+    }
+
+    @Test
+    void testGetTop10RunescoreWith0Runescores() {
+        List<Clanmember> clanmembers = createClanmemberListForRunescore(10);
+
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 1")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 1", 5000L, 450L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 2")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 2", 4658L, 35456L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 3")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 3", 12546L, 0L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 4")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 4", 2135L, 456456L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 5")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 5", 4832L, 0L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 6")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 6", 55458L, 0L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 7")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 7", 212315L, 4655L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 8")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 8", 146558L, 0L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 9")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 9", 798823L, 46555L));
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 10")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 10", 79540L, 789850L));
+
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(clanmembers);
+
+        assertEquals(6, runescores.size());
+
+        assertEquals("Clanmember 10", runescores.get(0).getFirst());
+        assertEquals("789.850", runescores.get(0).getSecond());
+
+        assertEquals("Clanmember 4", runescores.get(1).getFirst());
+        assertEquals("456.456", runescores.get(1).getSecond());
+
+        assertEquals("Clanmember 9", runescores.get(2).getFirst());
+        assertEquals("46.555", runescores.get(2).getSecond());
+
+        assertEquals("Clanmember 2", runescores.get(3).getFirst());
+        assertEquals("35.456", runescores.get(3).getSecond());
+
+        assertEquals("Clanmember 7", runescores.get(4).getFirst());
+        assertEquals("4.655", runescores.get(4).getSecond());
+
+        assertEquals("Clanmember 1", runescores.get(5).getFirst());
+        assertEquals("450", runescores.get(5).getSecond());
+    }
+
+    @Test
+    void testGetTop10RunescoreEmptyClanmemberList() {
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(new ArrayList<>());
+
+        assertEquals(0, runescores.size());
+    }
+
+    @Test
+    void testGetTop10RunescoreNullClanmemberList() {
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(null);
+
+        assertEquals(0, runescores.size());
+    }
+
+    @Test
+    void testGetTop10RunescoreClanmemberNameInClanmemberMinigamesNull() {
+        List<Clanmember> clanmembers = createClanmemberListForRunescore(1);
+
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 1")).thenReturn(createClanmemberMinigamesEntityForRunescore(null, 5000L, 450L));
+
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(clanmembers);
+
+        assertEquals(0, runescores.size());
+    }
+
+    @Test
+    void testGetTop10RunescoreMinigamesRunescoreNullScore() {
+        List<Clanmember> clanmembers = createClanmemberListForRunescore(1);
+
+        when(clanmemberMinigamesRepository.findFirstByClanmemberOrderByIdDesc("Clanmember 1")).thenReturn(createClanmemberMinigamesEntityForRunescore("Clanmember 1", null, null));
+
+        List<Pair<String, String>> runescores = clanmemberMinigamesService.getTop10Runescore(clanmembers);
+
+        assertEquals(0, runescores.size());
     }
 
     @Test
@@ -218,14 +350,33 @@ class ClanmemberMinigamesServiceTest {
         assertEquals("24.567.452", clanmemberMinigamesEntity.getMinigames().get(3).getFormattedScore());
     }
 
-    private Minigame createMinigame(final MinigameName minigameName, final Long rank, final Long score) {
-        Minigame minigame = new Minigame();
+    private List<Clanmember> createClanmemberListForRunescore(final int amount) {
+        List<Clanmember> clanmembers = new ArrayList<>();
 
-        minigame.setMinigameName(minigameName);
-        minigame.setRank(rank);
-        minigame.setScore(score);
+        IntStream.range(0, amount).forEach(value -> clanmembers.add(createClanmember("Clanmember " + (value+1))));
 
-        return minigame;
+        return clanmembers;
+    }
+
+    private Clanmember createClanmember(final String name) {
+        Clanmember clanmember = new Clanmember();
+
+        clanmember.setName(name);
+
+        return clanmember;
+    }
+
+    private ClanmemberMinigamesEntity createClanmemberMinigamesEntityForRunescore(final String name, final Long rank, final Long score) {
+        ClanmemberMinigamesEntity clanmemberMinigamesEntity = new ClanmemberMinigamesEntity();
+
+        clanmemberMinigamesEntity.setId(ObjectId.get());
+        clanmemberMinigamesEntity.setClanmember(name);
+        clanmemberMinigamesEntity.setMinigames(
+                Stream.of(createMinigame(MinigameName.RUNESCORE, rank, score))
+                        .collect(Collectors.toList())
+        );
+
+        return clanmemberMinigamesEntity;
     }
 
     private CSVRecord createMockCsvRecord(final String rank, final String score) {
@@ -247,38 +398,24 @@ class ClanmemberMinigamesServiceTest {
     }
 
     private List<Minigame> createMinigamesList() {
-        Minigame bountyHunter = new Minigame();
-        bountyHunter.setMinigameName(MinigameName.BOUNTY_HUNTER);
-        bountyHunter.setRank(4652L);
-        bountyHunter.setScore(978523L);
-
-        Minigame dominionTower = new Minigame();
-        dominionTower.setMinigameName(MinigameName.DOMINION_TOWER);
-        dominionTower.setRank(7645L);
-        dominionTower.setScore(782374L);
-
-        Minigame baHealers = new Minigame();
-        baHealers.setMinigameName(MinigameName.BA_HEALERS);
-        baHealers.setRank(123L);
-        baHealers.setScore(54363L);
-
-        Minigame fistOfGuthix = new Minigame();
-        fistOfGuthix.setMinigameName(MinigameName.FIST_OF_GUTHIX);
-        fistOfGuthix.setRank(852L);
-        fistOfGuthix.setScore(9343L);
-
-        Minigame heistGuardLevel = new Minigame();
-        heistGuardLevel.setMinigameName(MinigameName.HEIST_GUARD_LEVEL);
-        heistGuardLevel.setRank(4558522L);
-        heistGuardLevel.setScore(4546L);
-
-        Minigame runescore = new Minigame();
-        runescore.setMinigameName(MinigameName.RUNESCORE);
-        runescore.setRank(558221L);
-        runescore.setScore(52588541L);
-
-        return Stream.of(bountyHunter, dominionTower, baHealers, fistOfGuthix, heistGuardLevel, runescore)
+        return Stream.of(
+                    createMinigame(MinigameName.BOUNTY_HUNTER, 4652L, 978523L),
+                    createMinigame(MinigameName.DOMINION_TOWER, 7645L, 782374L),
+                    createMinigame(MinigameName.BA_HEALERS, 123L, 54363L),
+                    createMinigame(MinigameName.FIST_OF_GUTHIX, 852L, 9343L),
+                    createMinigame(MinigameName.HEIST_GUARD_LEVEL, 4558522L, 4546L),
+                    createMinigame(MinigameName.RUNESCORE, 558221L, 52588541L))
                 .collect(Collectors.toList());
+    }
+
+    private Minigame createMinigame(final MinigameName minigameName, final Long rank, final Long score) {
+        Minigame minigame = new Minigame();
+
+        minigame.setMinigameName(minigameName);
+        minigame.setRank(rank);
+        minigame.setScore(score);
+
+        return minigame;
     }
 
 }

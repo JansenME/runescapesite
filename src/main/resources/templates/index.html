@@ -27,32 +27,63 @@
                 <h1>Mauls Inc.</h1>
                 <p>This is an awesome website!<br />
                     And if you don't like it, you can leave! :D</p>
+
                 <h3>Top 5 experience today</h3>
                 <table th:if="${!top5ExperienceToday.isEmpty()}">
                     <thead>
-                    <tr>
-                        <th style="text-align:left; width:10%;"></th>
-                        <th style="text-align:left">Name</th>
-                        <th style="text-align:left">Experience today</th>
-                    </tr>
+                        <tr>
+                            <th style="text-align:left; width:10%;"></th>
+                            <th style="text-align:left">Name</th>
+                            <th style="text-align:left">Experience today</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
-                        <td style="text-align:left" th:text="${iStat.count}"></td>
+                        <tr th:each="clanmemberLevel, iStat : ${top5ExperienceToday}">
+                            <td style="text-align:left" th:text="${iStat.count}"></td>
 
-                        <td style="text-align:left">
-                            <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}"></a>
-                        </td>
+                            <td style="text-align:left">
+                                <a th:href="@{/clanmember/{name}(name=${clanmemberLevel.clanmember})}" th:text="${clanmemberLevel.clanmember}"></a>
+                            </td>
 
-                        <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}"></td>
-                    </tr>
+                            <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}"></td>
+                        </tr>
                     </tbody>
                 </table>
-
                 <table th:unless="${!top5ExperienceToday.isEmpty()}">
                     <thead>
+                        <tr>
+                            <th style="text-align:center">This clan is slacking, no one got anything!</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="inner">
+                <h3>Top 10 Runescore</h3>
+                <table th:if="${!top10Runescore.isEmpty()}">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; width:10%;"></th>
+                            <th style="text-align:left">Name</th>
+                            <th style="text-align:left">Runescore</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="runescorePair, iStat : ${top10Runescore}">
+                            <td style="text-align:left" th:text="${iStat.count}"></td>
+
+                            <td style="text-align:left">
+                                <a th:href="@{/clanmember/{name}(name=${runescorePair.getFirst()})}" th:text="${runescorePair.getFirst()}"></a>
+                            </td>
+
+                            <td style="text-align:left" th:text="${runescorePair.getSecond()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table th:unless="${!top10Runescore.isEmpty()}">
+                    <thead>
                     <tr>
-                        <th style="text-align:center">This clan is slacking, no one got anything!</th>
+                        <th style="text-align:center">There is no data available on the Runescores. So have fun with this text!</th>
                     </tr>
                     </thead>
                 </table>
