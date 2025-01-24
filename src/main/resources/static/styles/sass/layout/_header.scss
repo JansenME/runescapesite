@@ -76,7 +76,7 @@
 				));
 				@include vendor('transition-delay', '0.25s');
 				padding: 3rem 2rem;
-				max-height: 40rem;
+				max-height: 100rem;
 				overflow: hidden;
 
 				> :last-child {
@@ -168,7 +168,7 @@
 
 			.content {
 				.inner {
-					max-height: 0;
+					max-height: 100rem;
 					padding-top: 0;
 					padding-bottom: 0;
 					opacity: 0;

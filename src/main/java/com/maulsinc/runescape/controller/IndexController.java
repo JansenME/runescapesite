@@ -35,6 +35,7 @@ public class IndexController {
         model.addAttribute("clanmembers", clanmembers);
         model.addAttribute("usDateFormat", getDateAsUSString(clanmembers.getFirst()));
         model.addAttribute("top5ExperienceToday", clanmembersService.getClanmembersTop5Experience());
+        model.addAttribute("top10Runescore", clanmembersService.getTop10Runescore());
 
         model.addAttribute("currentYear", new SimpleDateFormat("yyyy").format(new Date()));
 

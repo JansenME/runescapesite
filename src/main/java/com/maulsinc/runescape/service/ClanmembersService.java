@@ -120,6 +120,10 @@ public class ClanmembersService {
         return clanmembersTop5ExperienceService.getClanmembersTop5Experience();
     }
 
+    public List<Pair<String, String>> getTop10Runescore() {
+        return clanmemberMinigamesService.getTop10Runescore(getAllClanmembers().getSecond());
+    }
+
     @ExecutionTimeLogger
     public Pair<String, List<Clanmember>> getAllClanmembers() {
         ClanmembersEntity clanmembersEntity = clanmembersRepository.findFirstByOrderByIdDesc();
