@@ -47,6 +47,9 @@
                             <td style="text-align:left" th:text="${clanmemberLevel.getLevels().get(0).getFormattedExperienceToday()}"></td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr></tr>
+                    </tfoot>
                 </table>
                 <table th:unless="${!top5ExperienceToday.isEmpty()}">
                     <thead>
@@ -54,6 +57,9 @@
                             <th style="text-align:center">This clan is slacking, no one got anything!</th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr></tr>
+                    </tfoot>
                 </table>
             </div>
 
@@ -78,6 +84,9 @@
                             <td style="text-align:left" th:text="${runescorePair.getSecond()}"></td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr></tr>
+                    </tfoot>
                 </table>
                 <table th:unless="${!top10Runescore.isEmpty()}">
                     <thead>
@@ -85,6 +94,9 @@
                         <th style="text-align:center">There is no data available on the Runescores. So have fun with this text!</th>
                     </tr>
                     </thead>
+                    <tfoot>
+                        <tr></tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
